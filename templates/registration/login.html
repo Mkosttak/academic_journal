@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
-                        {{ form.as_p }}
+                        {% include 'partials/_form.html' with form=form %}
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Giriş Yap</button>
                         </div>

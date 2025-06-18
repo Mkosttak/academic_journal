@@ -1,0 +1,53 @@
+{% load form_tags %}
+
+{# Formun genele yayılan, bir alana ait olmayan hataları (non-field errors) en üste basalım #}
+{% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in form.non_field_errors %}
+            <p class="mb-0">{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{# Formdaki tüm görünür alanlar için döngü başlat #}
+{% for field in form.visible_fields %}
+    <div class="mb-3">
+        
+        {# Eğer alan bir checkbox/switch ise, farklı bir HTML yapısı kullan #}
+        {% if field|is_checkbox %}
+            <div class="form-check form-switch">
+                {{ field|add_class:'form-check-input' }}
+                <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+            </div>
+
+        {# Diğer tüm alanlar (metin, e-posta, dosya vb.) için bu yapıyı kullan #}
+        {% else %}
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            
+            {# Alanın widget türüne göre doğru CSS sınıfını ekleyelim #}
+            {% if field.field.widget.input_type == 'file' %}
+                {{ field|add_class:'form-control' }}
+            {% elif field.field.widget.input_type == 'select' %}
+                {{ field|add_class:'form-select' }}
+            {% else %}
+                 {{ field|add_class:'form-control' }}
+            {% endif %}
+
+        {% endif %}
+
+        {# Eğer alana ait bir hata varsa, alanın altında göster #}
+        {% if field.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in field.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# Eğer alana ait bir yardım metni varsa, onu göster #}
+        {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+        {% endif %}
+
+    </div>
+{% endfor %} 

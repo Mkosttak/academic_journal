@@ -9,7 +9,7 @@
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {% include 'partials/_form.html' with form=form %}
                 <button type="submit" class="btn btn-success">Kaydet</button>
                 <a href="{% url 'dashboard:admin_dergisayisi_list' %}" class="btn btn-secondary">İptal</a>
             </form>
