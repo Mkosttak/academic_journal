@@ -18,7 +18,6 @@ urlpatterns = [
 
     # Admin - İletişim Yönetimi
     path('iletisim/', views.AdminIletisimListView.as_view(), name='admin_iletisim_list'),
-    path('iletisim/detay/<int:pk>/', views.AdminIletisimDetailView.as_view(), name='admin_iletisim_detail'),
     path('iletisim/toggle-status/<int:pk>/', views.toggle_iletisim_status, name='toggle_iletisim_status'),
 
     # Admin - Dergi Sayısı Yönetimi

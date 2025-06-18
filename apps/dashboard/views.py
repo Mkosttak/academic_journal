@@ -121,11 +121,6 @@ class AdminIletisimListView(AdminRequiredMixin, ListView):
         elif durum == 'cevaplanmadi': queryset = queryset.filter(cevaplandi=False)
         return queryset
 
-class AdminIletisimDetailView(AdminRequiredMixin, DetailView):
-    model = IletisimFormu
-    template_name = 'dashboard/admin_iletisim_detail.html'
-    context_object_name = 'mesaj'
-
 def toggle_iletisim_status(request, pk):
     if not request.user.is_superuser:
         return JsonResponse({'status': 'error', 'message': 'Yetkiniz yok.'}, status=403)
