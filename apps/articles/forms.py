@@ -7,12 +7,10 @@ from apps.users.models import User
 # --- YENİ MİXİN ---
 class YazarFormMixin:
     """Yazar ekleme/düzenleme mantığını içeren ortak mixin."""
-    yazarlar_json = forms.CharField(widget=forms.HiddenInput(), required=False)
-
     def __init__(self, *args, **kwargs):
-        # Bu metodun en başta çağrılması önemli
         super().__init__(*args, **kwargs)
-        # Düzenleme modunda, mevcut yazarları JSON olarak gizli alana yükle
+        # Alanı her durumda ekle
+        self.fields['yazarlar_json'] = forms.CharField(widget=forms.HiddenInput(), required=False)
         if self.instance and self.instance.pk:
             yazar_listesi = []
             for yazar in self.instance.yazarlar.all():
@@ -56,7 +54,7 @@ class YazarFormMixin:
             
             instance.yazarlar.add(yazar_obj)
 
-# --- MakaleForm'u Mixin'i kullanacak şekilde GÜNCELLEYİN ---
+# --- MAKALE FORMU (DÜZELTİLMİŞ HALİ) ---
 class MakaleForm(YazarFormMixin, forms.ModelForm):
     anahtar_kelimeler_input = forms.CharField(
         label="Anahtar Kelimeler (İsteğe Bağlı)",
@@ -67,6 +65,7 @@ class MakaleForm(YazarFormMixin, forms.ModelForm):
 
     class Meta:
         model = Makale
+        # 'yazarlar_json' buradan kaldırıldı. Sadece modelde olan alanlar kalmalı.
         fields = ['baslik', 'aciklama', 'pdf_dosyasi', 'anahtar_kelimeler_input']
         
     def __init__(self, *args, **kwargs):
@@ -86,15 +85,14 @@ class MakaleForm(YazarFormMixin, forms.ModelForm):
 
         if commit:
             instance.save()
-            self._save_yazarlar(instance) # Yazar kaydetme mantığını çağır
+            self._save_yazarlar(instance)
             
         return instance
 
-# --- EditorMakaleForm'u GÜNCELLEYİN ---
+# --- EDİTÖR MAKALE FORMU ---
 class EditorMakaleForm(YazarFormMixin, forms.ModelForm):
     class Meta:
         model = Makale
-        # 'yazarlar_json' modelde olmadığı için bu listede yer almamalı
         fields = [
             'baslik', 'aciklama', 'pdf_dosyasi', 'anahtar_kelimeler',
             'dergi_sayisi', 'admin_notu', 'goster_makaleler_sayfasinda'
