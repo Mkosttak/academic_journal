@@ -2,6 +2,22 @@
 {% block title %}{{ makale.baslik }}{% endblock %}
 {% block content %}
 <div class="container mt-5">
+    
+    {# --- YENİ EKLENEN BLOK --- #}
+    {# Kullanıcı giriş yapmışsa ve makalenin yazarlarından biriyse #}
+    {% if request.user.is_authenticated and request.user.yazar_profili in makale.yazarlar.all %}
+        {# Eğer bir admin notu varsa, bunu bir uyarı kutusunda göster #}
+        {% if makale.admin_notu %}
+            <div class="alert alert-warning" role="alert">
+              <h4 class="alert-heading">Editörden Gelen Not</h4>
+              <p>{{ makale.admin_notu|linebreaks }}</p>
+              <hr>
+              <p class="mb-0">Lütfen bu notu dikkate alarak gerekli düzenlemeleri yapınız.</p>
+            </div>
+        {% endif %}
+    {% endif %}
+    {# --- YENİ BLOK BİTİŞİ --- #}
+
     <article>
         <header class="mb-4">
             <h1>{{ makale.baslik }}</h1>

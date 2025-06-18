@@ -115,8 +115,21 @@ class MakaleUpdateView(AuthorRequiredMixin, UpdateView):
         return context
     
     def form_valid(self, form):
-        super().form_valid(form)
-        messages.success(self.request, 'Makaleniz başarıyla güncellendi.')
+        """
+        Form kaydedilirken yeni iş akışını uygular:
+        1. Yazar notu okuduysa, 'admin_notu_okundu' olarak işaretlenir.
+        2. Makale yayındaysa, düzenleme sonrası taslağa çekilir.
+        """
+        makale = form.instance
+        # 1. Bildirim sayısını düşürme mantığı
+        if not self.object.admin_notu_okundu and self.object.admin_notu:
+             makale.admin_notu_okundu = True
+             messages.info(self.request, "Editör notunu okuduğunuz için bildiriminiz kaldırıldı.")
+        # 2. Yayındaki makaleyi taslağa çekme mantığı
+        if self.object.goster_makaleler_sayfasinda and not self.request.user.is_superuser:
+            makale.goster_makaleler_sayfasinda = False
+            messages.warning(self.request, "Yayındaki makalenizde değişiklik yaptığınız için makaleniz yeniden incelenmek üzere taslaklara taşındı.")
+        form.save()
         return redirect(self.get_success_url())
 
 # YENİ VIEW: Makale Silme

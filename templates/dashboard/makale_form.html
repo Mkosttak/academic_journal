@@ -8,12 +8,12 @@
         <div class="col-md-9">
              <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-
+                
                 {{ form.yazarlar_json }}
 
                 <div class="card">
                     <div class="card-header">
-                        <h3>Makale Bilgileri</h3>
+                        <h3>Makale Detayları</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -29,6 +29,16 @@
                                 <label class="form-label">{{ form.anahtar_kelimeler.label }}</label>
                                 {{ form.anahtar_kelimeler }}
                             </div>
+                            
+                            <hr class="my-3">
+                            <div class="mb-3 mt-2">
+                               <label class="form-label fw-bold">{{ form.pdf_dosyasi.label }}</label>
+                               {% if object.pdf_dosyasi %}
+                               <p class="form-text mb-1">Mevcut dosya: <a href="{{ object.pdf_dosyasi.url }}" target="_blank">{{ object.pdf_dosyasi.name|truncatechars:40 }}</a></p>
+                               {% endif %}
+                               {{ form.pdf_dosyasi }}
+                               <div class="form-text">Yeni bir dosya yüklerseniz eskisi otomatik olarak silinecektir.</div>
+                           </div>
                         </div>
                     </div>
                 </div>
@@ -63,15 +73,6 @@
                                 {{ form.goster_makaleler_sayfasinda.label }}
                             </label>
                         </div>
-                        <hr>
-                        <div class="mb-3 mt-3">
-                           <label class="form-label fw-bold">{{ form.pdf_dosyasi.label }}</label>
-                           {% if object.pdf_dosyasi %}
-                           <p class="form-text">Mevcut dosya: <a href="{{ object.pdf_dosyasi.url }}" target="_blank">{{ object.pdf_dosyasi.name|truncatechars:40 }}</a></p>
-                           {% endif %}
-                           {{ form.pdf_dosyasi }}
-                           <div class="form-text">Yeni bir dosya yüklerseniz eskisi silinecektir.</div>
-                       </div>
                     </div>
                 </div>
 
