@@ -17,8 +17,7 @@ class GirisYapView(LoginView):
     template_name = 'registration/login.html'
     success_url = '/'  # veya reverse_lazy('anasayfa')
 
-class CikisYapView(LogoutView):
-    next_page = reverse_lazy('anasayfa')
+
 
 class ParolaDegistirView(PasswordChangeView):
     template_name = 'registration/parola_degistir.html'

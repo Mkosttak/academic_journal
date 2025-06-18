@@ -41,7 +41,7 @@
                     <td>{{ makale.olusturulma_tarihi|date:"d M Y, H:i" }}</td>
                     <td>
                         <a href="{% url 'makale_detail' makale.slug %}" class="btn btn-sm btn-info" title="Görüntüle"><i class="bi bi-eye"></i></a>
-                        <a href="{% url 'editor_makale_duzenle' makale.slug %}" class="btn btn-sm btn-primary" title="Düzenle"><i class="bi bi-pencil-square"></i></a>
+                        <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" %}" class="btn btn-sm btn-primary" title="Düzenle"><i class="bi bi-pencil-square"></i></a>
                     </td>
                 </tr>
                 {% empty %}

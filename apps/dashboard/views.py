@@ -16,20 +16,18 @@ from .forms import AdminUserUpdateForm, DergiSayisiForm
 # Create your views here.
 
 class EditorPanelView(EditorRequiredMixin, ListView):
-    model = Makale
-    template_name = 'articles/editor_panel.html'
-    context_object_name = 'makaleler'
-    paginate_by = 10
-
+    # ...
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = Makale.objects.all().select_related('dergi_sayisi').prefetch_related('yazarlar')
         status = self.request.GET.get('status')
         if status == 'published':
-            queryset = queryset.filter(yayinda=True)
+            # --- BURAYI DÜZELTİN ---
+            queryset = queryset.filter(goster_makaleler_sayfasinda=True)
         elif status == 'draft':
-            queryset = queryset.filter(yayinda=False)
+            # --- BURAYI DÜZELTİN ---
+            queryset = queryset.filter(goster_makaleler_sayfasinda=False)
         return queryset.order_by('-olusturulma_tarihi')
-
+        
 class EditorMakaleUpdateView(EditorRequiredMixin, UpdateView):
     model = Makale
     form_class = EditorMakaleForm

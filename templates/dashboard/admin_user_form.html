@@ -1,1 +1,35 @@
- 
+{% extends 'base.html' %}
+{% block title %}Rolleri Düzenle{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h3>{{ object.get_full_name|default:object.username }} için Rolleri Düzenle</h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-check form-switch mb-3">
+                    {{ form.is_editor }}
+                    <label class="form-check-label" for="{{ form.is_editor.id_for_label }}">Editör Yetkisi</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                    {{ form.goster_editorler_sayfasinda }}
+                    <label class="form-check-label" for="{{ form.goster_editorler_sayfasinda.id_for_label }}">Editörler Sayfasında Göster</label>
+                </div>
+                <hr>
+                <div class="form-check form-switch mb-3">
+                    {{ form.is_staff }}
+                    <label class="form-check-label" for="{{ form.is_staff.id_for_label }}">Admin Paneline Erişim (Staff)</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                    {{ form.is_superuser }}
+                    <label class="form-check-label" for="{{ form.is_superuser.id_for_label }}">Süper Kullanıcı (Tüm Yetkiler)</label>
+                </div>
+                <button type="submit" class="btn btn-success">Kaydet</button>
+                <a href="{% url 'dashboard:admin_user_list' %}" class="btn btn-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
