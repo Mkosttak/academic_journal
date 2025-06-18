@@ -1,35 +1,104 @@
 {% extends 'base.html' %}
-{% block title %}Rolleri Düzenle{% endblock %}
+
+{% block title %}Kullanıcıyı Düzenle - {{ object.get_full_name|default:object.username }}{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h3>{{ object.get_full_name|default:object.username }} için Rolleri Düzenle</h3>
-        </div>
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-check form-switch mb-3">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Kullanıcıyı Düzenle</h2>
+        <a href="{% url 'dashboard:admin_user_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Kullanıcı Listesine Dön
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ object.get_full_name|default:object.username }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img id="image-preview" src="{{ object.profile_resmi.url }}" class="img-thumbnail rounded-circle mb-3" alt="Profil Resmi" style="width: 150px; height: 150px; object-fit: cover;">
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.profile_resmi.id_for_label }}" class="form-label fw-bold">{{ form.profile_resmi.label }}</label>
+                            {{ form.profile_resmi }}
+                        </div>
+                        
+                        <hr>
+
+                        <div class="mb-3">
+                            <label for="{{ form.resume.id_for_label }}" class="form-label fw-bold">{{ form.resume.label }}</label>
+                            {% if object.resume %}
+                                <p class="form-text">Mevcut: <a href="{{ object.resume.url }}" target="_blank">Özgeçmişi Görüntüle</a></p>
+                            {% endif %}
+                            {{ form.resume }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.biyografi.id_for_label }}" class="form-label">{{ form.biyografi.label }}</label>
+                            {{ form.biyografi }}
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+
+                <h5 class="mt-4">Roller ve Yetkiler</h5>
+                <div class="form-check form-switch mb-2">
                     {{ form.is_editor }}
                     <label class="form-check-label" for="{{ form.is_editor.id_for_label }}">Editör Yetkisi</label>
                 </div>
-                <div class="form-check form-switch mb-3">
+                <div class="form-check form-switch">
                     {{ form.goster_editorler_sayfasinda }}
                     <label class="form-check-label" for="{{ form.goster_editorler_sayfasinda.id_for_label }}">Editörler Sayfasında Göster</label>
                 </div>
-                <hr>
-                <div class="form-check form-switch mb-3">
-                    {{ form.is_staff }}
-                    <label class="form-check-label" for="{{ form.is_staff.id_for_label }}">Admin Paneline Erişim (Staff)</label>
-                </div>
-                <div class="form-check form-switch mb-3">
-                    {{ form.is_superuser }}
-                    <label class="form-check-label" for="{{ form.is_superuser.id_for_label }}">Süper Kullanıcı (Tüm Yetkiler)</label>
-                </div>
-                <button type="submit" class="btn btn-success">Kaydet</button>
+            </div>
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-success">Değişiklikleri Kaydet</button>
                 <a href="{% url 'dashboard:admin_user_list' %}" class="btn btn-secondary">İptal</a>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Profil resmi seçildiğinde önizlemesini gösteren basit bir script
+document.addEventListener('DOMContentLoaded', function() {
+    const profilePicInput = document.getElementById('{{ form.profile_resmi.id_for_label }}');
+    const imagePreview = document.getElementById('image-preview');
+
+    if (profilePicInput) {
+        profilePicInput.addEventListener('change', function(event) {
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

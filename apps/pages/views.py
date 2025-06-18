@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from .forms import IletisimModelForm
 from apps.users.models import User
+from django.contrib import messages
 
 # Create your views here.
 
@@ -19,9 +20,9 @@ class IletisimView(CreateView):
     success_url = reverse_lazy('anasayfa') # Mesaj gönderildikten sonra anasayfaya yönlendir
 
     def form_valid(self, form):
-        # Form geçerliyse, kullanıcıya bir başarı mesajı gösterilebilir
-        # messages framework kullanılabilir. Şimdilik direkt yönlendirme yapıyoruz.
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        messages.success(self.request, 'Mesajınız başarıyla gönderildi. En kısa sürede size geri döneceğiz.')
+        return response
 
 class EditorlerListView(ListView):
     model = User

@@ -1,3 +1,5 @@
+# apps/core/context_processors.py
+
 from apps.articles.models import Makale
 from apps.pages.models import IletisimFormu
 
@@ -5,27 +7,26 @@ def notification_context(request):
     if not request.user.is_authenticated:
         return {}
 
-    context = {
-        'unread_messages_count': 0,
-        'draft_articles_count': 0,
-        'unread_notes_count': 0,
-    }
-
     user = request.user
+    context = {}
 
     # Admin için okunmamış iletişim formu mesajları
     if user.is_superuser:
         context['unread_messages_count'] = IletisimFormu.objects.filter(cevaplandi=False).count()
+    else:
+        context['unread_messages_count'] = 0
 
     # Admin ve Editör için taslak makaleler
     if user.is_superuser or user.is_editor:
         context['draft_articles_count'] = Makale.objects.filter(goster_makaleler_sayfasinda=False).count()
+    else:
+        context['draft_articles_count'] = 0
         
     # Tüm giriş yapmış kullanıcılar için okunmamış admin notları
-    # Sadece kullanıcının yazar olduğu ve notu okunmamış makaleleri say
+    # --- BU SORGULAMAYI GÜNCELLEYİN ---
     context['unread_notes_count'] = Makale.objects.filter(
-        yazarlar=user, 
+        yazarlar__user_hesabi=user,  # Doğru sorgu: Yazar modeli üzerinden kullanıcı hesabına ulaş
         admin_notu_okundu=False
     ).exclude(admin_notu__isnull=True).exclude(admin_notu__exact='').count()
 
-    return context 
+    return context

@@ -1,40 +1,128 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends "base.html" %}
 
-{% block title %}{{ page_title|default:"Yeni Makale Ekle" }}{% endblock %}
+{% block title %}Makale Formu{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3>{{ page_title|default:"Yeni Makale Ekle" }}</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.yazarlar_json }}
+        <div class="card">
+            <div class="card-header"><h3>Makale Bilgileri</h3></div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ form.baslik.id_for_label }}" class="form-label">{{ form.baslik.label }}</label>
+                    {{ form.baslik }}
                 </div>
-                <div class="card-body">
-                    
-                    {% if admin_notu %}
-                    <div class="alert alert-warning" role="alert">
-                      <h4 class="alert-heading">Editör Notu</h4>
-                      <p>{{ admin_notu|linebreaks }}</p>
-                    </div>
-                    {% endif %}
-
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        {{ form.as_p }}
-
-                        <div class="d-grid gap-2">
-                           <button type="submit" class="btn btn-primary btn-lg">Kaydet</button>
-                        </div>
-                    </form>
+                <div class="mb-3">
+                    <label for="{{ form.aciklama.id_for_label }}" class="form-label">{{ form.aciklama.label }}</label>
+                    {{ form.aciklama }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.pdf_dosyasi.id_for_label }}" class="form-label">{{ form.pdf_dosyasi.label }}</label>
+                    {{ form.pdf_dosyasi }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.anahtar_kelimeler_input.id_for_label }}" class="form-label">{{ form.anahtar_kelimeler_input.label }}</label>
+                    {{ form.anahtar_kelimeler_input }}
                 </div>
             </div>
         </div>
-    </div>
+        <div class="card mt-4">
+            <div class="card-header"><h3>Yazarlar</h3></div>
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="text" id="author-input" class="form-control" placeholder="İsim Soyisim veya İsim Soyisim @kullaniciadi">
+                    <button class="btn btn-outline-success" type="button" id="add-author-btn">Ekle</button>
+                </div>
+                <div id="author-error-message" class="text-danger mb-2"></div>
+                <p class="form-text">Eklenen Yazarlar:</p>
+                <div id="author-list" class="d-flex flex-wrap gap-2"></div>
+            </div>
+        </div>
+        <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Makaleyi Kaydet</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addAuthorBtn = document.getElementById('add-author-btn');
+    const authorInput = document.getElementById('author-input');
+    const authorListDiv = document.getElementById('author-list');
+    const authorErrorDiv = document.getElementById('author-error-message');
+    const hiddenAuthorsInput = document.getElementById('id_yazarlar_json');
+    // Başlangıçtaki yazarları yükle (düzenleme modu için)
+    initializeAuthors();
+    addAuthorBtn.addEventListener('click', function() {
+        const authorText = authorInput.value.trim();
+        if (!authorText) return;
+        const formData = new FormData();
+        formData.append('author_text', authorText);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        fetch("{% url 'check_author' %}", {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                addAuthorTag(data.isim_soyisim, data.username);
+                authorInput.value = '';
+                authorErrorDiv.textContent = '';
+            } else {
+                authorErrorDiv.textContent = data.message;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            authorErrorDiv.textContent = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+        });
+    });
+    authorListDiv.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-author-btn')) {
+            e.target.parentElement.remove();
+            updateHiddenInput();
+        }
+    });
+    function addAuthorTag(isim_soyisim, username) {
+        const tag = document.createElement('div');
+        tag.className = 'badge d-flex align-items-center p-2 text-dark-emphasis bg-light-subtle border border-dark-subtle rounded-pill';
+        tag.dataset.isim_soyisim = isim_soyisim;
+        tag.dataset.username = username || '';
+        tag.innerHTML = `
+            ${isim_soyisim} ${username ? '(@' + username + ')' : ''}
+            <button type="button" class="btn-close ms-2 remove-author-btn" aria-label="Close"></button>
+        `;
+        authorListDiv.appendChild(tag);
+        updateHiddenInput();
+    }
+    function updateHiddenInput() {
+        const authorTags = authorListDiv.querySelectorAll('.badge');
+        const authors = [];
+        authorTags.forEach(tag => {
+            authors.push({
+                isim_soyisim: tag.dataset.isim_soyisim,
+                username: tag.dataset.username || null
+            });
+        });
+        hiddenAuthorsInput.value = JSON.stringify(authors);
+    }
+    function initializeAuthors() {
+        if (hiddenAuthorsInput.value) {
+            try {
+                const initialAuthors = JSON.parse(hiddenAuthorsInput.value);
+                initialAuthors.forEach(author => {
+                    addAuthorTag(author.isim_soyisim, author.username);
+                });
+            } catch (e) {
+                console.error("Yazar verisi ayrıştırılamadı:", e);
+            }
+        }
+    }
+});
+</script>
 {% endblock %} 

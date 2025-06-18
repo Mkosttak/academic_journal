@@ -11,7 +11,12 @@
             <div>
                 <strong>Yazarlar:</strong>
                 {% for yazar in makale.yazarlar.all %}
-                <a href="{% url 'kullanici_profili' yazar.username %}" class="text-decoration-none">{{ yazar.get_full_name }}</a>{% if not forloop.last %}, {% endif %}
+                    {% if yazar.user_hesabi %}
+                        <a href="{% url 'kullanici_profili' yazar.user_hesabi.username %}" class="text-decoration-none">{{ yazar.isim_soyisim }}</a>
+                    {% else %}
+                        {{ yazar.isim_soyisim }}
+                    {% endif %}
+                    {% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </div>
         </header>

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
@@ -6,6 +6,12 @@ from django.db.models import Q
 from .models import Makale, DergiSayisi
 from .forms import MakaleForm
 from apps.core.mixins import AdminRequiredMixin, AuthorRequiredMixin
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from apps.users.models import User
+import re
+from django.contrib import messages
 
 # Create your views here.
 
@@ -57,18 +63,17 @@ class MakaleCreateView(LoginRequiredMixin, CreateView):
     model = Makale
     form_class = MakaleForm
     template_name = 'articles/makale_form.html'
-    success_url = reverse_lazy('makalelerim') # Makale eklendikten sonra 'Makalelerim' sayfasına yönlendir
+    success_url = reverse_lazy('makalelerim')
 
     def get_form_kwargs(self):
-        kwargs = super(MakaleCreateView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
 
     def form_valid(self, form):
-        # Formu kaydederken, formu gönderen kullanıcıyı yazar olarak ata
-        form.instance.save() # Önce makaleyi kaydet
-        form.instance.yazarlar.add(self.request.user) # Sonra yazarı ekle
-        return super().form_valid(form)
+        super().form_valid(form)
+        messages.success(self.request, 'Makaleniz başarıyla oluşturuldu ve incelenmek üzere gönderildi.')
+        return redirect(self.get_success_url())
 
 class MakalelerimView(LoginRequiredMixin, ListView):
     model = Makale
@@ -76,9 +81,14 @@ class MakalelerimView(LoginRequiredMixin, ListView):
     context_object_name = 'makaleler'
 
     def get_queryset(self):
-        # Sadece giriş yapmış kullanıcının yazdığı makaleleri listele
-        return Makale.objects.filter(yazarlar=self.request.user)
-    
+        # Giriş yapan kullanıcının Yazar profili varsa, ona ait makaleleri getir
+        user = self.request.user
+        try:
+            yazar = user.yazar_profili
+            return Makale.objects.filter(yazarlar=yazar)
+        except Exception:
+            return Makale.objects
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
@@ -105,18 +115,63 @@ class MakaleUpdateView(AuthorRequiredMixin, UpdateView):
         return context
     
     def form_valid(self, form):
-        # Makale güncellendiğinde, admin notu okunmuş sayılabilir.
-        # Bu mantığı daha da geliştirebiliriz. Şimdilik admin notu okunmuşsa,
-        # kullanıcı düzenleme yaptığında tekrar okunmadı yapmayalım.
-        makale = form.save(commit=False)
-        if self.request.user in makale.yazarlar.all() and not makale.admin_notu_okundu:
-            makale.admin_notu_okundu = True
-        makale.save()
-        form.save_m2m()
-        return super().form_valid(form)
+        super().form_valid(form)
+        messages.success(self.request, 'Makaleniz başarıyla güncellendi.')
+        return redirect(self.get_success_url())
 
 # YENİ VIEW: Makale Silme
 class MakaleDeleteView(AuthorRequiredMixin, DeleteView):
     model = Makale
     template_name = 'articles/makale_confirm_delete.html'
     success_url = reverse_lazy('makalelerim')
+
+    def form_valid(self, form):
+        # success_message'i obj silinmeden önce al
+        success_message = f"'{self.object.baslik}' başlıklı makale başarıyla silindi."
+        self.object.delete()
+        messages.success(self.request, success_message)
+        return redirect(self.success_url)
+
+@login_required
+@require_POST
+def check_author_view(request):
+    """
+    AJAX isteği ile gönderilen yazar metnini kontrol eder.
+    Sadece @kullaniciadi ile veya sadece isim ile çalışır.
+    """
+    author_text = request.POST.get('author_text', '').strip()
+    if not author_text:
+        return JsonResponse({'status': 'error', 'message': 'Yazar adı boş olamaz.'}, status=400)
+
+    # Senaryo 1: Kayıtlı kullanıcıyı kontrol et (@kullaniciadi)
+    # Metnin başında ve sonunda boşluk olmadan sadece @ ile başlayıp başlamadığını kontrol et
+    if author_text.startswith('@'):
+        username = author_text[1:] # @ işaretini kaldır
+        try:
+            user = User.objects.get(username=username)
+            # Kullanıcının tam ismini profilden alıyoruz
+            isim_soyisim = user.get_full_name()
+            if not isim_soyisim: # Eğer kullanıcı isim girmemişse, kullanıcı adını kullan
+                isim_soyisim = user.username
+
+            return JsonResponse({
+                'status': 'success',
+                'isim_soyisim': isim_soyisim, # Otomatik olarak bulunan isim
+                'username': user.username,
+                'is_registered': True
+            })
+        except User.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': f"'{username}' kullanıcı adı ile kayıtlı bir yazar bulunamadı."}, status=404)
+            
+    # Senaryo 2: Harici yazar (sadece isim soyisim)
+    else:
+        # @ işareti içeriyorsa, formatın yanlış olduğunu belirt
+        if '@' in author_text:
+            return JsonResponse({'status': 'error', 'message': "Kayıtlı kullanıcı eklemek için sadece '@kullaniciadi' formatını kullanın."}, status=400)
+
+        return JsonResponse({
+            'status': 'success',
+            'isim_soyisim': author_text,
+            'username': None,
+            'is_registered': False
+        })

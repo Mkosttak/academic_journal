@@ -25,25 +25,42 @@ class DergiSayisi(models.Model):
     def __str__(self):
         return self.sayi
 
+# --- YENİ MODEL: YAZAR ---
+class Yazar(models.Model):
+    """
+    Hem sisteme kayıtlı kullanıcıları (User) hem de harici yazarları
+    temsil eden model.
+    """
+    isim_soyisim = models.CharField(max_length=255, verbose_name="Yazarın Adı Soyadı")
+    user_hesabi = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='yazar_profili'
+    )
+
+    class Meta:
+        verbose_name = "Yazar"
+        verbose_name_plural = "Yazarlar"
+        ordering = ['isim_soyisim']
+
+    def __str__(self):
+        return self.isim_soyisim
+
 class Makale(models.Model):
     baslik = models.CharField(max_length=255, verbose_name="Başlık")
     slug = models.SlugField(max_length=255, unique=True, blank=True, help_text="Bu alan otomatik oluşturulur.")
     aciklama = models.TextField(verbose_name="Açıklama/Özet")
     pdf_dosyasi = models.FileField(upload_to=article_pdf_path, verbose_name="PDF Dosyası")
     anahtar_kelimeler = models.CharField(max_length=255, verbose_name="Anahtar Kelimeler", help_text="Kelimeleri virgül (,) ile ayırınız.")
-    
-    yazarlar = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='makaleler', verbose_name="Yazarlar")
+    yazarlar = models.ManyToManyField(Yazar, related_name='makaleler', verbose_name="Yazarlar")
     dergi_sayisi = models.ForeignKey(DergiSayisi, on_delete=models.SET_NULL, null=True, blank=True, related_name='makaleler', verbose_name="Dergi Sayısı")
-
     admin_notu = models.TextField(blank=True, null=True, verbose_name="Editör/Admin Notu")
     goruntulenme_sayisi = models.PositiveIntegerField(default=0, verbose_name="Görüntülenme Sayısı")
-    
     goster_makaleler_sayfasinda = models.BooleanField(default=False, verbose_name="Yayında mı?")
-    
     olusturulma_tarihi = models.DateTimeField(auto_now_add=True)
     guncellenme_tarihi = models.DateTimeField(auto_now=True)
-    
-    # Bu alan, kullanıcı admin notunu okuduğunda yönetilecek
     admin_notu_okundu = models.BooleanField(default=True)
 
     class Meta:
@@ -78,11 +95,10 @@ class Makale(models.Model):
 
         super().save(*args, **kwargs)
 
-    def get_yazarlar_display(self):
-        return ", ".join([user.get_full_name() for user in self.yazarlar.all()])
-
     def get_keywords_list(self):
-        """Anahtar kelimeler metnini virgüllerden ayırarak bir liste döndürür."""
         if self.anahtar_kelimeler:
             return [keyword.strip() for keyword in self.anahtar_kelimeler.split(',')]
         return []
+
+    def get_yazarlar_display(self):
+        return ", ".join([yazar.isim_soyisim for yazar in self.yazarlar.all()])

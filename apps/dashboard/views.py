@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, DetailView, TemplateView
 from django.urls import reverse_lazy
 from django.db.models import Q
@@ -17,17 +17,29 @@ from .forms import AdminUserUpdateForm, DergiSayisiForm
 
 class EditorPanelView(EditorRequiredMixin, ListView):
     model = Makale
-    template_name = 'dashboard/editor_panel.html'
+    template_name = 'dashboard/makale_yonetim_list.html'
     context_object_name = 'makaleler'
     paginate_by = 20
 
     def get_queryset(self):
         queryset = Makale.objects.all().select_related('dergi_sayisi').prefetch_related('yazarlar')
+        
+        # Filtreleme
         status = self.request.GET.get('status')
         if status == 'published':
             queryset = queryset.filter(goster_makaleler_sayfasinda=True)
         elif status == 'draft':
             queryset = queryset.filter(goster_makaleler_sayfasinda=False)
+            
+        # Arama
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(baslik__icontains=query) |
+                Q(yazarlar__isim_soyisim__icontains=query) |
+                Q(anahtar_kelimeler__icontains=query)
+            ).distinct()
+
         return queryset.order_by('-olusturulma_tarihi')
 
 class EditorMakaleUpdateView(EditorRequiredMixin, UpdateView):
@@ -35,11 +47,30 @@ class EditorMakaleUpdateView(EditorRequiredMixin, UpdateView):
     form_class = EditorMakaleForm
     template_name = 'dashboard/makale_form.html'
     success_url = reverse_lazy('dashboard:editor_panel')
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Makale Yönetimi (Editör)'
         return context
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        View çalışmadan önce bu metot çalışır.
+        SADECE editörlerin kendi makalelerini düzenlemesini engeller ve onları normal forma yönlendirir.
+        Adminler bu kısıtlamadan muaftır.
+        """
+        makale = self.get_object()
+        is_author = makale.yazarlar.filter(user_hesabi=request.user).exists()
+
+        # Koşulu güncelliyoruz: Kullanıcı editör olmalı, ama admin olmamalı.
+        if request.user.is_editor and not request.user.is_superuser and is_author:
+            # Kullanıcı bir editör (ama admin değil) ve makalenin de yazarı ise,
+            # kısıtlı düzenleme sayfasına yönlendir.
+            return redirect('makale_duzenle', slug=makale.slug)
+
+        # Yukarıdaki koşul sağlanmazsa (kullanıcı admin ise veya başkasının makalesini düzenliyorsa),
+        # normal şekilde güçlü düzenleme sayfasını göster.
+        return super().dispatch(request, *args, **kwargs)
 
 # ----------------- YENİ ADMIN VIEW'LARI ---------------------------
 class AdminDashboardView(AdminRequiredMixin, TemplateView):

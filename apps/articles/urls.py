@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     MakaleListView, MakaleDetailView, MakaleCreateView, MakalelerimView,
-    MakaleUpdateView, MakaleDeleteView
+    MakaleUpdateView, MakaleDeleteView, check_author_view
 )
 
 urlpatterns = [
@@ -14,4 +14,5 @@ urlpatterns = [
     path('makalelerim/', MakalelerimView.as_view(), name='makalelerim'),
     path('duzenle/<slug:slug>/', MakaleUpdateView.as_view(), name='makale_duzenle'),
     path('sil/<slug:slug>/', MakaleDeleteView.as_view(), name='makale_sil'),
+    path('check-author/', check_author_view, name='check_author'),
 ]

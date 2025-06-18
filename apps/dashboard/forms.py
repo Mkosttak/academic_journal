@@ -5,12 +5,20 @@ from apps.articles.models import DergiSayisi
 class AdminUserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['is_editor', 'goster_editorler_sayfasinda', 'is_staff', 'is_superuser']
+        fields = [
+            'first_name', 'last_name', 'email', 'biyografi', 
+            'profile_resmi', 'resume', 
+            'is_editor', 'goster_editorler_sayfasinda'
+        ]
         widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'biyografi': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+            'profile_resmi': forms.FileInput(attrs={'class': 'form-control'}),
+            'resume': forms.FileInput(attrs={'class': 'form-control'}),
             'is_editor': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'goster_editorler_sayfasinda': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'is_staff': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'is_superuser': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
 class DergiSayisiForm(forms.ModelForm):
