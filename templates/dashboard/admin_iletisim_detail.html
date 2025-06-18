@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Mesaj Detayı{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'dashboard:admin_iletisim_list' %}" class="btn btn-secondary mb-3"><i class="bi bi-arrow-left"></i> Geri Dön</a>
+    <div class="card">
+        <div class="card-header">
+            <h4>Konu: {{ mesaj.konu }}</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Gönderen:</strong> {{ mesaj.isim_soyisim }}</p>
+            <p><strong>E-posta:</strong> {{ mesaj.email }}</p>
+            <p><strong>Tarih:</strong> {{ mesaj.olusturulma_tarihi|date:"d M Y, H:i" }}</p>
+            <hr>
+            <p><strong>Mesaj:</strong></p>
+            <p>{{ mesaj.mesaj|linebreaks }}</p>
+        </div>
+        <div class="card-footer">
+            <a href="mailto:{{ mesaj.email }}?subject=RE: {{ mesaj.konu }}" class="btn btn-success">
+                <i class="bi bi-reply-fill"></i> Bu Mesajı Yanıtla
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

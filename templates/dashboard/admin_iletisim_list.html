@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Gelen Mesajlar{% endblock %}
+{% block content %}
+<div class="container-fluid mt-4">
+    <h2>Gelen Mesajlar</h2>
+    <div class="d-flex justify-content-start mb-3">
+        <a href="{% url 'dashboard:admin_iletisim_list' %}" class="btn btn-outline-secondary me-2">Tümü</a>
+        <a href="?durum=cevaplanmadi" class="btn btn-outline-warning me-2">Cevaplanmayanlar</a>
+        <a href="?durum=cevaplandi" class="btn btn-outline-success me-2">Cevaplananlar</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <tbody>
+                {% for mesaj in mesajlar %}
+                <tr>
+                    <td>{{ mesaj.isim_soyisim }}</td>
+                    <td>{{ mesaj.email }}</td>
+                    <td>{{ mesaj.konu|truncatechars:50 }}</td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="cevapSwitch{{ mesaj.pk }}" {% if mesaj.cevaplandi %}checked{% endif %} onchange="toggleStatus({{ mesaj.pk }})">
+                            <label class="form-check-label" for="cevapSwitch{{ mesaj.pk }}" id="label-{{ mesaj.pk }}">{% if mesaj.cevaplandi %}Cevaplandı{% else %}Cevaplanmadı{% endif %}</label>
+                        </div>
+                    </td>
+                    <td><a href="{% url 'dashboard:admin_iletisim_detail' mesaj.pk %}" class="btn btn-sm btn-info">Detay</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function toggleStatus(pk) {
+    const url = `/panel/admin/iletisim/toggle-status/${pk}/`;
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json())
+      .then(data => {
+          if(data.status === 'success') {
+              const label = document.getElementById(`label-${pk}`);
+              label.textContent = data.cevaplandi ? 'Cevaplandı' : 'Cevaplanmadı';
+          }
+      });
+}
+</script>
+{% endblock %} 

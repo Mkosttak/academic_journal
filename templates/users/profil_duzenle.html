@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Profili Düzenle{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header"><h3>Profili Düzenle</h3></div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Değişiklikleri Kaydet</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

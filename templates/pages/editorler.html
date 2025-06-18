@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Editörler{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Editör Kadromuz</h2>
+    <div class="card card-body mb-4">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-md-10">
+                <input type="text" name="q" class="form-control" placeholder="Editör ismine göre ara..." value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Ara</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row">
+        {% for editor in editorler %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <img src="{{ editor.profile_resmi.url }}" alt="{{ editor.get_full_name }}" class="rounded-circle mb-3" width="120" height="120">
+                    <h5 class="card-title">{{ editor.get_full_name }}</h5>
+                    <p class="card-text text-muted">{{ editor.biyografi|truncatewords:15 }}</p>
+                    <a href="{% url 'kullanici_profili' editor.username %}" class="btn btn-outline-primary">Profilini Görüntüle</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">Arama kriterlerinize uygun editör bulunamadı.</p>
+        {% endfor %}
+    </div>
+    {% include 'partials/_pagination.html' %}
+</div>
+{% endblock %} 

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Kullanıcı Yönetimi{% endblock %}
+{% block content %}
+<div class="container-fluid mt-4">
+    <h2>Kullanıcı Yönetimi</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Kullanıcı Adı</th>
+                    <th>İsim Soyisim</th>
+                    <th>Email</th>
+                    <th>Editör</th>
+                    <th>Sayfada Göster</th>
+                    <th>Admin</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in kullanicilar %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.get_full_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{% if user.is_editor %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-danger"></i>{% endif %}</td>
+                    <td>{% if user.goster_editorler_sayfasinda %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-danger"></i>{% endif %}</td>
+                    <td>{% if user.is_superuser %}<i class="bi bi-shield-lock-fill text-primary"></i>{% else %}<i class="bi bi-person-fill"></i>{% endif %}</td>
+                    <td>
+                        <a href="{% url 'dashboard:admin_user_update' user.pk %}" class="btn btn-sm btn-primary">Rolleri Düzenle</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'partials/_pagination.html' %}
+</div>
+{% endblock %} 

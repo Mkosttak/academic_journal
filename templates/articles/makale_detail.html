@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{{ makale.baslik }}{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <article>
+        <header class="mb-4">
+            <h1>{{ makale.baslik }}</h1>
+            <div class="text-muted fst-italic mb-2">
+                Yayınlanma Tarihi: {{ makale.olusturulma_tarihi|date:"d F Y" }} | Görüntülenme: {{ makale.goruntulenme_sayisi }}
+            </div>
+            <div>
+                <strong>Yazarlar:</strong>
+                {% for yazar in makale.yazarlar.all %}
+                <a href="{% url 'kullanici_profili' yazar.username %}" class="text-decoration-none">{{ yazar.get_full_name }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+        </header>
+        <section class="mb-5">
+            <h4 class="mt-4">Özet</h4>
+            <p class="fs-5">{{ makale.aciklama|linebreaks }}</p>
+            
+            <h4 class="mt-4">Anahtar Kelimeler</h4>
+            <p>
+                {% for keyword in makale.anahtar_kelimeler.split(',') %}
+                <span class="badge bg-secondary">{{ keyword|strip }}</span>
+                {% endfor %}
+            </p>
+
+            <div class="mt-4">
+                <a href="{{ makale.pdf_dosyasi.url }}" target="_blank" class="btn btn-danger"><i class="bi bi-file-earmark-pdf-fill"></i> PDF Olarak Görüntüle/İndir</a>
+            </div>
+        </section>
+    </article>
+    {% if request.user in makale.yazarlar.all or request.user.is_editor or request.user.is_superuser %}
+    <hr>
+    <div class="d-flex justify-content-end">
+        <a href="{% url 'makale_duzenle' makale.slug %}" class="btn btn-warning me-2">Bu Makaleyi Düzenle</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

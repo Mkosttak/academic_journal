@@ -1,0 +1,95 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'anasayfa' %}">Akademik Dergi</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="{% url 'anasayfa' %}">Ana Sayfa</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'makale_list' %}">Makaleler</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'editorler' %}">Editörler</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'hakkinda' %}">Hakkında</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'iletisim' %}">İletişim</a></li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    {% if user.is_superuser and unread_messages_count > 0 %}
+                    <li class="nav-item">
+                        <a href="#" class="nav-link position-relative text-warning">
+                            <i class="bi bi-envelope-fill"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ unread_messages_count }}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if user.is_superuser or user.is_editor %}
+                        {% if draft_articles_count > 0 %}
+                        <li class="nav-item">
+                            <a href="#" class="nav-link position-relative text-info">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ draft_articles_count }}</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                    {% if unread_notes_count > 0 %}
+                    <li class="nav-item">
+                        <a href="{% url 'makalelerim' %}" class="nav-link position-relative text-light">
+                            <i class="bi bi-chat-left-dots-fill"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ unread_notes_count }}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item"><a href="{% url 'makale_ekle' %}" class="btn btn-success btn-sm me-2 mt-1">Makale Ekle</a></li>
+                    
+                    {% if user.is_editor and not user.is_superuser %}
+                    <li class="nav-item"><a href="{% url 'dashboard:editor_panel' %}" class="btn btn-primary btn-sm me-2 mt-1">Editör İşlemleri</a></li>
+                    {% endif %}
+                    
+                    {% if user.is_superuser %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Admin İşlemleri
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" href="{% url 'dashboard:admin_dashboard' %}">Admin Paneli</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'dashboard:editor_panel' %}">Makale Yönetimi</a></li>
+                            <li><a class="dropdown-item" href="{% url 'dashboard:admin_user_list' %}">Kullanıcı Yönetimi</a></li>
+                            <li><a class="dropdown-item" href="{% url 'dashboard:admin_iletisim_list' %}">İletişim Yönetimi</a></li>
+                            <li><a class="dropdown-item" href="{% url 'dashboard:admin_dergisayisi_list' %}">Dergi Sayısı Yönetimi</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ user.profile_resmi.url }}" alt="{{ user.username }}" class="rounded-circle me-2" style="width:32px; height:32px; object-fit:cover;">
+                            {{ user.get_full_name|default:user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'profil' %}">Profil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'makalelerim' %}">Makalelerim</a></li>
+                            <li><a class="dropdown-item" href="{% url 'parola_degistir' %}">Parola Değiştir</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Çıkış Yap</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Giriş Yap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'kayit_ol' %}" class="btn btn-warning btn-sm">Kayıt Ol</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav> 

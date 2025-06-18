@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Dergi Sayısı Yönetimi{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dergi Sayısı Yönetimi</h2>
+        <a href="{% url 'dashboard:admin_dergisayisi_create' %}" class="btn btn-success">Yeni Dergi Sayısı Ekle</a>
+    </div>
+    <ul class="list-group">
+        {% for dergi in dergi_sayilari %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ dergi.sayi }}
+            <span>
+                <a href="{% url 'dashboard:admin_dergisayisi_update' dergi.pk %}" class="btn btn-sm btn-primary">Düzenle</a>
+                <a href="{% url 'dashboard:admin_dergisayisi_delete' dergi.pk %}" class="btn btn-sm btn-danger">Sil</a>
+            </span>
+        </li>
+        {% empty %}
+        <li class="list-group-item">Henüz eklenmiş dergi sayısı yok.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %} 

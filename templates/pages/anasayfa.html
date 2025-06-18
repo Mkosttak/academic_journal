@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Ana Sayfa{% endblock %}
+{% block content %}
+<div class="container text-center my-5">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Akademik Dergi Platformuna Hoş Geldiniz</h1>
+            <p class="col-md-8 fs-4 mx-auto">Bilginin ve araştırmanın merkezi. En son makaleleri keşfedin, kendi çalışmalarınızı yayınlayın ve akademik dünyaya katkıda bulunun.</p>
+            <a href="{% url 'makale_list' %}" class="btn btn-primary btn-lg">Makaleleri Keşfet</a>
+            <a href="{% url 'kayit_ol' %}" class="btn btn-success btn-lg">Hemen Katıl</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Makaleler{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Makaleler</h2>
+    <div class="card card-body mb-4">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-md-6">
+                <input type="text" name="q" class="form-control" placeholder="Başlık, yazar veya anahtar kelime ara..." value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-4">
+                <select name="dergi" class="form-select">
+                    <option value="">Tüm Dergi Sayıları</option>
+                    {% for dergi in dergi_sayilari %}
+                    <option value="{{ dergi.id }}" {% if request.GET.dergi == dergi.id|stringformat:"s" %}selected{% endif %}>{{ dergi.sayi }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Filtrele / Ara</button>
+            </div>
+        </form>
+    </div>
+
+    {% for makale in makaleler %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title"><a href="{% url 'makale_detail' makale.slug %}" class="text-decoration-none">{{ makale.baslik }}</a></h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+                Yazarlar: {{ makale.get_yazarlar_display }}
+            </h6>
+            <p class="card-text">{{ makale.aciklama|truncatewords:40 }}</p>
+            <small class="text-muted">Dergi: {{ makale.dergi_sayisi.sayi|default:"Belirtilmemiş" }} | Yayın Tarihi: {{ makale.olusturulma_tarihi|date:"d M Y" }}</small>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center">Gösterilecek makale bulunamadı.</p>
+    {% endfor %}
+
+    {% include 'partials/_pagination.html' %}
+</div>
+{% endblock %} 

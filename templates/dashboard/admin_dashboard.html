@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Admin Paneli{% endblock %}
+{% block content %}
+<div class="container-fluid mt-4">
+    <h2>Admin Paneli</h2>
+    <p>Site yönetimine hoş geldiniz, {{ request.user.get_full_name }}.</p>
+    <hr>
+    <div class="row">
+        <div class="col-md-3"><div class="card text-white bg-primary mb-3"><div class="card-header">Toplam Kullanıcı</div><div class="card-body"><h5 class="card-title fs-2">{{ toplam_kullanici }}</h5></div></div></div>
+        <div class="col-md-3"><div class="card text-white bg-success mb-3"><div class="card-header">Toplam Makale</div><div class="card-body"><h5 class="card-title fs-2">{{ toplam_makale }}</h5></div></div></div>
+        <div class="col-md-3"><div class="card text-white bg-warning mb-3"><div class="card-header">Cevap Bekleyen Mesaj</div><div class="card-body"><h5 class="card-title fs-2">{{ cevap_bekleyen_mesaj }}</h5></div></div></div>
+        <div class="col-md-3"><div class="card text-white bg-info mb-3"><div class="card-header">Yayındaki Makaleler</div><div class="card-body"><h5 class="card-title fs-2">{{ unread_messages_count }}</h5></div></div></div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h4>Hızlı Erişim</h4>
+            <div class="list-group">
+                <a href="{% url 'dashboard:editor_panel' %}" class="list-group-item list-group-item-action">Makale Yönetimi</a>
+                <a href="{% url 'dashboard:admin_user_list' %}" class="list-group-item list-group-item-action">Kullanıcı Yönetimi</a>
+                <a href="{% url 'dashboard:admin_iletisim_list' %}" class="list-group-item list-group-item-action">İletişim Mesajları</a>
+                <a href="{% url 'dashboard:admin_dergisayisi_list' %}" class="list-group-item list-group-item-action">Dergi Sayısı Yönetimi</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>Son Eklenen 5 Makale</h4>
+            <ul class="list-group">
+                {% for makale in son_makaleler %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ makale.baslik }}
+                        <span class="badge bg-primary rounded-pill">{{ makale.olusturulma_tarihi|timesince }} önce</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Henüz makale eklenmemiş.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %} 

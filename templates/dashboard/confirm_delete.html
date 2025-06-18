@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Silme Onayı{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card text-center">
+        <div class="card-header bg-danger text-white"><h3>Silme Onayı</h3></div>
+        <div class="card-body">
+            <p>{{ delete_message|default:"Bu öğeyi silmek istediğinizden emin misiniz?" }}</p>
+            <p class="text-danger"><strong>Bu işlem geri alınamaz!</strong></p>
+            <form method="post">
+                {% csrf_token %}
+                <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-secondary">İptal</a>
+                <button type="submit" class="btn btn-danger">Evet, Sil</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

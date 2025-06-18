@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Makaleyi Sil{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h3>Silme Onayı</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>"{{ object.baslik }}"</strong> başlıklı makaleyi silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger">Bu işlem geri alınamaz!</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <a href="{{ object.get_absolute_url|default_if_none:request.META.HTTP_REFERER }}" class="btn btn-secondary">İptal</a>
+                        <button type="submit" class="btn btn-danger">Evet, Sil</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
