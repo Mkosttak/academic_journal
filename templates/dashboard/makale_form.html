@@ -8,12 +8,12 @@
         <div class="col-md-9">
              <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                
+
                 {{ form.yazarlar_json }}
 
                 <div class="card">
                     <div class="card-header">
-                        <h3>{{ page_title|default:"Makale Yönetimi" }}</h3>
+                        <h3>Makale Bilgileri</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -28,10 +28,6 @@
                              <div class="col-md-12 mb-3">
                                 <label class="form-label">{{ form.anahtar_kelimeler.label }}</label>
                                 {{ form.anahtar_kelimeler }}
-                            </div>
-                             <div class="col-md-12 mb-3">
-                                <label class="form-label">{{ form.dergi_sayisi.label }}</label>
-                                {{ form.dergi_sayisi }}
                             </div>
                         </div>
                     </div>
@@ -54,20 +50,28 @@
                     <div class="card-header"><h3>Yönetim Paneli</h3></div>
                     <div class="card-body">
                         <div class="mb-3">
+                           <label class="form-label">{{ form.dergi_sayisi.label }}</label>
+                           {{ form.dergi_sayisi }}
+                       </div>
+                        <div class="mb-3">
                             <label class="form-label">{{ form.admin_notu.label }}</label>
                             {{ form.admin_notu }}
                         </div>
-                        <div class="form-check form-switch">
+                        <div class="form-check form-switch mb-3">
                             {{ form.goster_makaleler_sayfasinda }}
                             <label class="form-check-label" for="{{ form.goster_makaleler_sayfasinda.id_for_label }}">
                                 {{ form.goster_makaleler_sayfasinda.label }}
                             </label>
                         </div>
-                         <div class="mb-3 mt-3">
-                            <label class="form-label">{{ form.pdf_dosyasi.label }}</label>
-                            <p class="form-text">Mevcut dosya: <a href="{{ object.pdf_dosyasi.url }}" target="_blank">{{ object.pdf_dosyasi.name|truncatechars:40 }}</a></p>
-                            {{ form.pdf_dosyasi }}
-                        </div>
+                        <hr>
+                        <div class="mb-3 mt-3">
+                           <label class="form-label fw-bold">{{ form.pdf_dosyasi.label }}</label>
+                           {% if object.pdf_dosyasi %}
+                           <p class="form-text">Mevcut dosya: <a href="{{ object.pdf_dosyasi.url }}" target="_blank">{{ object.pdf_dosyasi.name|truncatechars:40 }}</a></p>
+                           {% endif %}
+                           {{ form.pdf_dosyasi }}
+                           <div class="form-text">Yeni bir dosya yüklerseniz eskisi silinecektir.</div>
+                       </div>
                     </div>
                 </div>
 
@@ -82,7 +86,7 @@
 {% endblock %}
 
 {% block extra_js %}
-{# Makale ekleme formundaki JavaScript'in aynısı buraya kopyalanır #}
+{# JavaScript kodunda değişiklik yok, aynı kalıyor #}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const addAuthorBtn = document.getElementById('add-author-btn');
