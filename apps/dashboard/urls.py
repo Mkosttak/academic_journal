@@ -8,7 +8,7 @@ urlpatterns = [
     # Admin Ana Panel
     path('', views.AdminDashboardView.as_view(), name='admin_dashboard'),
 
-    # Editör Paneli
+    # Editör & Admin Makale Yönetimi
     path('editor/', views.EditorPanelView.as_view(), name='editor_panel'),
     path('editor/duzenle/<slug:slug>/', views.EditorMakaleUpdateView.as_view(), name='editor_makale_duzenle'),
 

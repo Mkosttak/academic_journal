@@ -90,12 +90,13 @@ class MakaleForm(YazarFormMixin, forms.ModelForm):
             
         return instance
 
-# --- EditorMakaleForm'u Mixin'i kullanacak şekilde GÜNCELLEYİN ---
+# --- EditorMakaleForm'u GÜNCELLEYİN ---
 class EditorMakaleForm(YazarFormMixin, forms.ModelForm):
     class Meta:
         model = Makale
+        # 'yazarlar_json' modelde olmadığı için bu listede yer almamalı
         fields = [
-            'baslik', 'aciklama', 'pdf_dosyasi', 'anahtar_kelimeler', 
+            'baslik', 'aciklama', 'pdf_dosyasi', 'anahtar_kelimeler',
             'dergi_sayisi', 'admin_notu', 'goster_makaleler_sayfasinda'
         ]
         widgets = {
@@ -109,7 +110,6 @@ class EditorMakaleForm(YazarFormMixin, forms.ModelForm):
         }
 
     def save(self, commit=True):
-        # Bu formun save metodu yoktu, şimdi ekliyoruz.
-        instance = super().save(commit=True) # Önce ana formu ve değişiklikleri kaydet
-        self._save_yazarlar(instance) # Sonra yazar bilgilerini işle ve kaydet
+        instance = super().save(commit=True)
+        self._save_yazarlar(instance)
         return instance
