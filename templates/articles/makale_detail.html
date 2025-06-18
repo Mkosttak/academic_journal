@@ -21,8 +21,8 @@
             
             <h4 class="mt-4">Anahtar Kelimeler</h4>
             <p>
-                {% for keyword in makale.anahtar_kelimeler.split(',') %}
-                <span class="badge bg-secondary">{{ keyword|strip }}</span>
+                {% for keyword in makale.get_keywords_list %}
+                <span class="badge bg-secondary">{{ keyword }}</span>
                 {% endfor %}
             </p>
 

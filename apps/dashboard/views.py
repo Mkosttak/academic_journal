@@ -16,24 +16,26 @@ from .forms import AdminUserUpdateForm, DergiSayisiForm
 # Create your views here.
 
 class EditorPanelView(EditorRequiredMixin, ListView):
-    # ...
+    model = Makale
+    template_name = 'dashboard/editor_panel.html'
+    context_object_name = 'makaleler'
+    paginate_by = 20
+
     def get_queryset(self):
         queryset = Makale.objects.all().select_related('dergi_sayisi').prefetch_related('yazarlar')
         status = self.request.GET.get('status')
         if status == 'published':
-            # --- BURAYI DÜZELTİN ---
             queryset = queryset.filter(goster_makaleler_sayfasinda=True)
         elif status == 'draft':
-            # --- BURAYI DÜZELTİN ---
             queryset = queryset.filter(goster_makaleler_sayfasinda=False)
         return queryset.order_by('-olusturulma_tarihi')
-        
+
 class EditorMakaleUpdateView(EditorRequiredMixin, UpdateView):
     model = Makale
     form_class = EditorMakaleForm
     template_name = 'dashboard/makale_form.html'
     success_url = reverse_lazy('dashboard:editor_panel')
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Makale Yönetimi (Editör)'
@@ -48,15 +50,25 @@ class AdminDashboardView(AdminRequiredMixin, TemplateView):
         context['toplam_kullanici'] = User.objects.count()
         context['toplam_makale'] = Makale.objects.count()
         context['cevap_bekleyen_mesaj'] = IletisimFormu.objects.filter(cevaplandi=False).count()
-        context['yayindaki_makaleler'] = Makale.objects.filter(yayinda=True).count()
+        context['yayindaki_makaleler'] = Makale.objects.filter(goster_makaleler_sayfasinda=True).count()
         context['son_makaleler'] = Makale.objects.all().order_by('-olusturulma_tarihi')[:5]
         return context
 
 class AdminUserListView(AdminRequiredMixin, ListView):
     model = User
     template_name = 'dashboard/admin_user_list.html'
-    context_object_name = 'users'
-    paginate_by = 10
+    context_object_name = 'kullanicilar'
+    paginate_by = 20
+
+    def get_queryset(self):
+        queryset = User.objects.all().order_by('-date_joined')
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(username__icontains=query) | Q(email__icontains=query) |
+                Q(first_name__icontains=query) | Q(last_name__icontains=query)
+            )
+        return queryset
 
 class AdminUserUpdateView(AdminRequiredMixin, UpdateView):
     model = User
@@ -68,8 +80,15 @@ class AdminIletisimListView(AdminRequiredMixin, ListView):
     model = IletisimFormu
     template_name = 'dashboard/admin_iletisim_list.html'
     context_object_name = 'mesajlar'
-    paginate_by = 10
+    paginate_by = 15
     ordering = ['-olusturulma_tarihi']
+    
+    def get_queryset(self):
+        queryset = IletisimFormu.objects.all()
+        durum = self.request.GET.get('durum')
+        if durum == 'cevaplandi': queryset = queryset.filter(cevaplandi=True)
+        elif durum == 'cevaplanmadi': queryset = queryset.filter(cevaplandi=False)
+        return queryset
 
 class AdminIletisimDetailView(AdminRequiredMixin, DetailView):
     model = IletisimFormu
@@ -88,7 +107,7 @@ class AdminDergiSayisiListView(AdminRequiredMixin, ListView):
     model = DergiSayisi
     template_name = 'dashboard/admin_dergisayisi_list.html'
     context_object_name = 'dergi_sayilari'
-    paginate_by = 10
+    paginate_by = 20
     ordering = ['-olusturulma_tarihi']
 
 class AdminDergiSayisiCreateView(AdminRequiredMixin, CreateView):

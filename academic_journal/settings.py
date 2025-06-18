@@ -94,3 +94,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django'nun varsayılan User modeli yerine kendi modelimizi kullanacağımızı belirtiyoruz
 AUTH_USER_MODEL = 'users.User'
+
+LOGIN_REDIRECT_URL = 'anasayfa'

@@ -80,3 +80,9 @@ class Makale(models.Model):
 
     def get_yazarlar_display(self):
         return ", ".join([user.get_full_name() for user in self.yazarlar.all()])
+
+    def get_keywords_list(self):
+        """Anahtar kelimeler metnini virgüllerden ayırarak bir liste döndürür."""
+        if self.anahtar_kelimeler:
+            return [keyword.strip() for keyword in self.anahtar_kelimeler.split(',')]
+        return []
