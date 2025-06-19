@@ -16,7 +16,7 @@
             </nav>
              <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ form.yazarlar_json }}
+                <input type="hidden" id="id_yazarlar_json" name="yazarlar_json" value="{{ form.yazarlar_json.value|default:'' }}">
                 <div class="card shadow rounded-4 border-0 mb-4">
                     <div class="card-header bg-primary text-white rounded-top-4 py-3">
                         <h4 class="mb-0"><i class="bi bi-journal-text me-2"></i>Makale Detayları</h4>
@@ -128,112 +128,26 @@
 {% endblock %}
 
 {% block extra_js %}
-{# JavaScript kodunda değişiklik yok, aynı kalıyor #}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const addAuthorBtn = document.getElementById('add-author-btn');
-    const authorInput = document.getElementById('author-input');
-    const authorListDiv = document.getElementById('author-list');
-    const authorErrorDiv = document.getElementById('author-error-message');
-    const hiddenAuthorsInput = document.getElementById('id_yazarlar_json');
-
-    initializeAuthors();
-
-    addAuthorBtn.addEventListener('click', function() {
-        const authorText = authorInput.value.trim();
-        if (!authorText) return;
-
-        const formData = new FormData();
-        formData.append('author_text', authorText);
-        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-
-        fetch("{% url 'check_author' %}", {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                addAuthorTag(data.isim_soyisim, data.username);
-                authorInput.value = '';
-                authorErrorDiv.textContent = '';
-            } else {
-                authorErrorDiv.textContent = data.message;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            authorErrorDiv.textContent = 'Bir hata oluştu. Lütfen tekrar deneyin.';
-        });
-    });
-
-    authorListDiv.addEventListener('click', function(e) {
-        if (e.target && e.target.classList.contains('remove-author-btn')) {
-            e.target.parentElement.remove();
-            updateHiddenInput();
-        }
-    });
-
-    function addAuthorTag(isim_soyisim, username) {
-        const tag = document.createElement('div');
-        tag.className = 'badge d-flex align-items-center p-2 text-dark-emphasis bg-light-subtle border border-dark-subtle rounded-pill';
-        
-        tag.dataset.isim_soyisim = isim_soyisim;
-        tag.dataset.username = username || '';
-
-        tag.innerHTML = `
-            ${isim_soyisim} ${username ? '<span class="text-muted small ms-1">(@' + username + ')</span>' : ''}
-            <button type="button" class="btn-close ms-2 remove-author-btn" aria-label="Close"></button>
-        `;
-        authorListDiv.appendChild(tag);
-        updateHiddenInput();
-    }
-
-    function updateHiddenInput() {
-        const authorTags = authorListDiv.querySelectorAll('.badge');
-        const authors = [];
-        authorTags.forEach(tag => {
-            authors.push({
-                isim_soyisim: tag.dataset.isim_soyisim,
-                username: tag.dataset.username || null
-            });
-        });
-        hiddenAuthorsInput.value = JSON.stringify(authors);
-    }
-
-    function initializeAuthors() {
-        if (hiddenAuthorsInput.value) {
-            try {
-                const initialAuthors = JSON.parse(hiddenAuthorsInput.value);
-                initialAuthors.forEach(author => {
-                    addAuthorTag(author.isim_soyisim, author.username);
-                });
-            } catch (e) {
-                console.error("Yazar verisi ayrıştırılamadı:", e);
-                hiddenAuthorsInput.value = '[]';
-            }
-        } else {
-             hiddenAuthorsInput.value = '[]';
-        }
-    }
-
-    var clearBtn = document.getElementById('clear-admin-note');
-    if (clearBtn) {
-        clearBtn.addEventListener('click', function() {
-            var noteInput = document.getElementById('{{ form.admin_notu.id_for_label }}');
-            if (noteInput) noteInput.value = '';
-        });
-    }
-});
+window.currentUsername = "{{ request.user.username|escapejs }}";
+window.currentFullName = "{{ request.user.get_full_name|default:request.user.username|escapejs }}";
+window.checkAuthorUrl = "{% url 'check_author' %}";
+window.csrfToken = "{{ csrf_token }}";
 </script>
+{% endblock %}
+
+{% block extra_css %}
 <style>
-.resume-filename {
-    max-width: 180px;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: bottom;
-    white-space: nowrap;
+.form-control-lg, .form-control.shadow-sm {
+    font-size: 1.25rem;
+    border-radius: 1.5rem !important;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15), 0 2px 12px 0 rgba(0,0,0,0.08);
+    border-color: #86b7fe;
+    background: #fff;
 }
 </style>
 {% endblock %} 

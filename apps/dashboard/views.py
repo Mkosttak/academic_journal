@@ -60,6 +60,11 @@ class EditorMakaleUpdateView(EditorRequiredMixin, UpdateView):
         context['page_title'] = 'Makale Yönetimi (Editör)'
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def dispatch(self, request, *args, **kwargs):
         """
         View çalışmadan önce bu metot çalışır.

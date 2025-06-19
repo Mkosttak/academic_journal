@@ -7,16 +7,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Makale ekle formu için yazarlar alanı kontrolü
-    if (document.getElementById('author-list') && window.currentUsername && window.currentFullName && window.checkAuthorUrl) {
+    const authorListDiv = document.getElementById('author-list');
+    const hiddenAuthorsInput = document.getElementById('id_yazarlar_json');
+    
+    if (authorListDiv && hiddenAuthorsInput) {
         const addAuthorBtn = document.getElementById('add-author-btn');
         const authorInput = document.getElementById('author-input');
-        const authorListDiv = document.getElementById('author-list');
         const authorErrorDiv = document.getElementById('author-error-message');
-        const hiddenAuthorsInput = document.getElementById('id_yazarlar_json');
 
         function addAuthorTag(isim_soyisim, username) {
-            // Aynı yazar tekrar eklenmesin
-            const exists = Array.from(authorListDiv.children).some(tag => tag.dataset.username === username && username);
+            // Aynı yazar tekrar eklenmesin (isim ve username ile kontrol)
+            const exists = Array.from(authorListDiv.children).some(tag => {
+                return (tag.dataset.username && tag.dataset.username === (username || '')) ||
+                       (!tag.dataset.username && !username && tag.dataset.isim_soyisim === isim_soyisim);
+            });
             if (exists) return;
             const tag = document.createElement('div');
             tag.className = 'badge d-flex align-items-center p-2 text-dark-emphasis bg-light-subtle border border-dark-subtle rounded-pill';
@@ -25,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tag.innerHTML = `
                 ${isim_soyisim} ${username ? '(@' + username + ')' : ''}
                 ${username && username !== window.currentUsername ? '<button type="button" class="btn-close ms-2 remove-author-btn" aria-label="Close"></button>' : ''}
+                ${!username ? '<button type="button" class="btn-close ms-2 remove-author-btn" aria-label="Close"></button>' : ''}
             `;
             authorListDiv.appendChild(tag);
             updateHiddenInput();
@@ -47,57 +52,76 @@ document.addEventListener('DOMContentLoaded', function() {
                     initialAuthors = JSON.parse(hiddenAuthorsInput.value);
                 }
             } catch (e) {
+                console.error("Yazar verisi ayrıştırılamadı:", e);
                 initialAuthors = [];
             }
-            // Eğer hiç yazar yoksa, giriş yapan kullanıcıyı ekle
-            if (!initialAuthors.length) {
-                initialAuthors = [{isim_soyisim: window.currentFullName, username: window.currentUsername}];
-            }
-            // Giriş yapan kullanıcı mutlaka ilk sırada ve silinemez olsun
-            let foundSelf = false;
+
+            // Mevcut yazarları ekle
             initialAuthors.forEach(author => {
-                if (author.username === window.currentUsername) {
-                    foundSelf = true;
-                    addAuthorTag(author.isim_soyisim, author.username);
-                }
+                addAuthorTag(author.isim_soyisim, author.username);
             });
-            if (!foundSelf) {
+
+            // Eğer hiç yazar yoksa ve currentUsername/currentFullName varsa, giriş yapan kullanıcıyı ekle
+            if (!initialAuthors.length && window.currentUsername && window.currentFullName) {
                 addAuthorTag(window.currentFullName, window.currentUsername);
             }
-            // Diğer yazarları ekle
-            initialAuthors.forEach(author => {
-                if (author.username !== window.currentUsername) {
-                    addAuthorTag(author.isim_soyisim, author.username);
-                }
-            });
         }
         // Ekle tuşu event handler
         if (addAuthorBtn && authorInput) {
             addAuthorBtn.addEventListener('click', function() {
                 const authorText = authorInput.value.trim();
-                if (!authorText) return;
+                if (!authorText) {
+                    authorErrorDiv.textContent = 'Yazar adı boş olamaz.';
+                    return;
+                }
+
+                // CSRF token kontrolü
+                const csrfToken = window.csrfToken || document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+                if (!csrfToken) {
+                    console.error('CSRF token bulunamadı!');
+                    authorErrorDiv.textContent = 'Güvenlik hatası oluştu. Sayfayı yenileyip tekrar deneyin.';
+                    return;
+                }
+
+                // checkAuthorUrl kontrolü
+                if (!window.checkAuthorUrl) {
+                    console.error('checkAuthorUrl tanımlanmamış!');
+                    authorErrorDiv.textContent = 'Sistem hatası oluştu. Sayfayı yenileyip tekrar deneyin.';
+                    return;
+                }
+
                 const formData = new FormData();
                 formData.append('author_text', authorText);
-                // CSRF token'ı formdan al
-                const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
-                formData.append('csrfmiddlewaretoken', csrfInput ? csrfInput.value : '');
+                formData.append('csrfmiddlewaretoken', csrfToken);
+
+                authorErrorDiv.textContent = 'Yazar kontrol ediliyor...';
                 fetch(window.checkAuthorUrl, {
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Sunucu hatası oluştu.');
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.status === 'success') {
                         addAuthorTag(data.isim_soyisim, data.username);
                         authorInput.value = '';
                         authorErrorDiv.textContent = '';
                     } else {
-                        authorErrorDiv.textContent = data.message;
+                        authorErrorDiv.textContent = data.message || 'Bilinmeyen bir hata oluştu.';
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    authorErrorDiv.textContent = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+                    authorErrorDiv.textContent = error.message || 'Bir hata oluştu. Lütfen tekrar deneyin.';
                 });
             });
         }
@@ -114,5 +138,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         initializeAuthors();
+    }
+
+    // Admin notu temizleme butonu
+    const clearBtn = document.getElementById('clear-admin-note');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            const noteInput = document.getElementById('id_admin_notu');
+            if (noteInput) noteInput.value = '';
+        });
     }
 }); 

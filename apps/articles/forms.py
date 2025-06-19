@@ -8,17 +8,29 @@ from apps.users.models import User
 class YazarFormMixin:
     """Yazar ekleme/düzenleme mantığını içeren ortak mixin."""
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
         # Alanı her durumda ekle
         self.fields['yazarlar_json'] = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+        # Yazarlar JSON initial değerini set et
+        yazar_listesi = []
         if self.instance and self.instance.pk:
-            yazar_listesi = []
+            # Düzenleme: mevcut yazarları ekle
             for yazar in self.instance.yazarlar.all():
                 yazar_listesi.append({
                     'isim_soyisim': yazar.isim_soyisim,
                     'username': yazar.user_hesabi.username if yazar.user_hesabi else None
                 })
-            self.fields['yazarlar_json'].initial = json.dumps(yazar_listesi)
+        elif self.request and self.request.user.is_authenticated:
+            # Yeni ekleme: giriş yapan kullanıcıyı otomatik ekle
+            user = self.request.user
+            yazar_listesi.append({
+                'isim_soyisim': user.get_full_name() or user.username,
+                'username': user.username
+            })
+
+        self.fields['yazarlar_json'].initial = json.dumps(yazar_listesi)
 
     def clean_yazarlar_json(self):
         yazarlar_str = self.cleaned_data.get('yazarlar_json')
@@ -36,11 +48,14 @@ class YazarFormMixin:
         """JSON verisinden yazarları işleyip makaleye ekler."""
         processed_yazarlar = self.cleaned_data.get('yazarlar_json')
         instance.yazarlar.clear()
-        
+        eklenen_yazarlar = set()
         for yazar_data in processed_yazarlar:
             username = yazar_data.get('username')
             isim = yazar_data.get('isim_soyisim')
-            
+            yazar_key = (isim, username or '')
+            if yazar_key in eklenen_yazarlar:
+                continue
+            eklenen_yazarlar.add(yazar_key)
             if username:
                 user = User.objects.get(username=username)
                 yazar_obj, created = Yazar.objects.get_or_create(
@@ -51,7 +66,6 @@ class YazarFormMixin:
                     yazar_obj.save()
             else:
                 yazar_obj = Yazar.objects.create(isim_soyisim=isim, user_hesabi=None)
-            
             instance.yazarlar.add(yazar_obj)
 
 # --- MAKALE FORMU (DÜZELTİLMİŞ HALİ) ---
