@@ -8,6 +8,7 @@ from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib import messages
 from django.contrib.auth import login, get_user_model
 from django.db.models import Sum
+from apps.articles.models import Yazar
 
 User = get_user_model()
 
@@ -43,7 +44,11 @@ class CikisYapView(LogoutView):
 
 class ParolaDegistirView(PasswordChangeView):
     template_name = 'registration/parola_degistir.html'
-    success_url = reverse_lazy('profil')
+    success_url = reverse_lazy('my_profil')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Parolanız başarıyla değiştirildi.')
+        return super().form_valid(form)
 
 class MyProfilView(LoginRequiredMixin, DetailView):
     model = User
@@ -87,12 +92,30 @@ class ProfilDuzenleView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = CustomUserChangeForm
     template_name = 'users/profil_duzenle.html'
-    success_url = reverse_lazy('profil')
+    success_url = reverse_lazy('my_profil')
 
     def get_object(self, queryset=None):
-        # Kullanıcı sadece kendi profilini düzenleyebilir
         return self.request.user
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+        user = self.object
+        
+        # Kullanıcının yazar profili varsa, isim_soyisim'i güncelle
+        try:
+            yazar = user.yazar_profili
+            if yazar:
+                yeni_isim = user.get_full_name() or user.username
+                if yazar.isim_soyisim != yeni_isim:
+                    yazar.isim_soyisim = yeni_isim
+                    yazar.save()
+        except Yazar.DoesNotExist:
+            # Eğer yazar profili yoksa ve kullanıcının makalesi varsa, yeni profil oluştur
+            yeni_isim = user.get_full_name() or user.username
+            Yazar.objects.create(
+                user_hesabi=user,
+                isim_soyisim=yeni_isim
+            )
+
         messages.success(self.request, 'Profil bilgileriniz başarıyla güncellendi.')
-        return super().form_valid(form)
+        return response
