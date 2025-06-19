@@ -78,4 +78,21 @@ body {
 /* Footer Stili */
 footer {
     border-top: 3px solid #ffc107;
+}
+
+/* Form Hata Mesajı ve Hatalı Input Stili */
+.form-error-text {
+    border-radius: 0 0 0.6rem 0.6rem;
+    padding: 0.2rem 0.7rem 0.3rem 0.7rem;
+    background: #fff6f6;
+    border-top: 1px solid #f8d7da;
+    margin-bottom: 0.2rem;
+    color: #d32f2f;
+    font-size: 0.97em;
+    font-weight: 500;
+}
+.form-control.is-invalid, .form-control.border-danger {
+    border-color: #d32f2f !important;
+    box-shadow: 0 0 0 0.15rem #ffbdbd, 0 1px 4px rgba(211,47,47,0.08);
+    border-width: 2px !important;
 } 

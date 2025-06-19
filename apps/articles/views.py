@@ -75,6 +75,9 @@ class MakaleCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, 'Makaleniz başarıyla oluşturuldu ve incelenmek üzere gönderildi.')
         return redirect(self.get_success_url())
 
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
 class MakalelerimView(LoginRequiredMixin, ListView):
     model = Makale
     template_name = 'articles/makalelerim.html'

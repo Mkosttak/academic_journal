@@ -1,16 +1,185 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 {% block title %}Profili Düzenle{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header"><h3>Profili Düzenle</h3></div>
-        <div class="card-body">
-            <form method="post" enctype="multipart/form-data">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12 col-12">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Profili Düzenle</li>
+                </ol>
+            </nav>
+            <div class="card glass-card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-gradient bg-primary text-white text-center rounded-top-4 py-3">
+                    <h4 class="mb-0"><i class="bi bi-person-gear me-2"></i>Profili Düzenle</h4>
+                </div>
+                <form method="post" enctype="multipart/form-data" class="p-0">
                 {% csrf_token %}
-                {% include 'partials/_form.html' with form=form %}
-                <button type="submit" class="btn btn-success">Değişiklikleri Kaydet</button>
+                    <div class="card-body p-4">
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+                        {% endif %}
+                        <div class="row g-4">
+                            <div class="col-md-4 col-12 d-flex flex-column align-items-center">
+                                <div class="position-relative mb-4" style="width: 130px;">
+                                    {% if form.profile_pic.value %}
+                                        <img id="image-preview" src="{{ form.profile_pic.value.url }}" class="rounded-circle shadow border border-3 border-white" alt="Profil Resmi" style="width: 130px; height: 130px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="rounded-circle shadow border border-3 border-white bg-secondary d-flex align-items-center justify-content-center" style="width: 130px; height: 130px;">
+                                            <i class="bi bi-person-fill text-white" style="font-size: 2.5rem;"></i>
+                                        </div>
+                                    {% endif %}
+                                    <label for="{{ form.profile_pic.id_for_label }}" class="position-absolute bottom-0 start-50 translate-middle-x badge bg-primary text-white shadow px-3 py-2" style="cursor:pointer; font-size:1rem; border-radius: 1.5rem;">
+                                        <i class="bi bi-camera me-1"></i> Değiştir
+                                    </label>
+                                    {{ form.profile_pic }}
+                                </div>
+                                <div class="w-100 mb-2">
+                                    <label for="{{ form.resume.id_for_label }}" class="form-label fw-semibold">Özgeçmiş (PDF)</label>
+                                    <div class="card p-2 shadow-sm border-0 bg-light d-flex flex-column align-items-center">
+                                        {% if user.resume %}
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-file-earmark-person-fill text-primary fs-4"></i>
+                                                <span class="badge bg-success">Yüklü</span>
+                                                <a href="{{ user.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-download"></i></a>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted small mb-2">Yüklü dosya yok</span>
+                                        {% endif %}
+                                        <div class="w-100">
+                                            {{ form.resume }}
+                                            <small class="text-muted">Sadece PDF yükleyin.</small>
+                                            {% if form.resume.errors %}
+                                                <div class="alert alert-danger mt-2 py-1 px-2">{{ form.resume.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-12">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">Kullanıcı Adı</label>
+                                        <div class="input-group align-items-center mb-2">
+                                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                            {{ form.username }}
+                                            <span class="badge bg-light text-muted border ms-2 small">Değiştirilemez</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">Ad</label>
+                                        <div class="input-group align-items-center mb-2">
+                                            <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                            {{ form.first_name }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">Soyad</label>
+                                        <div class="input-group align-items-center mb-2">
+                                            <span class="input-group-text"><i class="bi bi-person-badge-fill"></i></span>
+                                            {{ form.last_name }}
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">E-posta</label>
+                                        <div class="input-group align-items-center mb-2">
+                                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                            {{ form.email }}
+                                            <span class="badge bg-light text-muted border ms-2 small">Değiştirilemez</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="{{ form.bio.id_for_label }}" class="form-label fw-semibold">Biyografi</label>
+                                        <div class="input-group align-items-center mb-2">
+                                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                            {{ form.bio }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end bg-light border-0 rounded-bottom-4 d-flex flex-wrap gap-2 justify-content-end px-4 py-3">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-semibold shadow-sm">Kaydet</button>
+                        <a href="/" class="btn btn-secondary rounded-pill px-4 py-2 fw-semibold shadow-sm">İptal</a>
+                    </div>
             </form>
+            </div>
         </div>
     </div>
 </div>
+<style>
+.glass-card {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(44,62,80,0.13);
+    border: 1.5px solid #e0e0e0;
+}
+.input-group-text {
+    font-size: 1.2rem;
+    background: #f8f9fa !important;
+    border-radius: 2rem !important;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.input-group > .form-control, .input-group > .form-select {
+    border-radius: 2rem !important;
+    font-size: 1.08rem;
+    padding: 0.8rem 1.2rem;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    border: 1.5px solid #e0e0e0;
+    background: #fff;
+    height: 48px;
+}
+input[type="file"] {
+    border-radius: 1rem !important;
+    background: #f8f9fa;
+}
+.card-footer .btn {
+    min-width: 160px;
+}
+.badge.bg-light.text-muted {
+    font-size: 0.95rem;
+    padding: 0.4em 0.8em;
+    background: #f5f5f5 !important;
+    border-radius: 1rem;
+    border: 1px solid #e0e0e0;
+}
+@media (max-width: 991.98px) {
+    .glass-card { border-radius: 1.2rem !important; }
+}
+@media (max-width: 767.98px) {
+    .card-body, .card-header, .card-footer { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .card { border-radius: 1.2rem !important; }
+    .rounded-top-4, .rounded-bottom-4 { border-radius: 1.2rem !important; }
+    .btn { width: 100%; margin-bottom: 0.5rem; }
+    .form-control, .form-check-input { font-size: 1.1rem; }
+    .position-relative.mb-4 { width: 90px !important; }
+    #image-preview { width: 90px !important; height: 90px !important; }
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Profil resmi önizleme
+    const profilePicInput = document.getElementById('{{ form.profile_pic.id_for_label }}');
+    const imagePreview = document.getElementById('image-preview');
+    if (profilePicInput) {
+        profilePicInput.addEventListener('change', function(event) {
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+    }
+});
+</script>
 {% endblock %} 

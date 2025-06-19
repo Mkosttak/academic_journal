@@ -24,6 +24,9 @@ class IletisimView(CreateView):
         messages.success(self.request, 'Mesajınız başarıyla gönderildi. En kısa sürede size geri döneceğiz.')
         return response
 
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
 class EditorlerListView(ListView):
     model = User
     template_name = 'pages/editorler.html'

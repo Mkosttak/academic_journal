@@ -53,7 +53,7 @@ class Makale(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True, help_text="Bu alan otomatik oluşturulur.")
     aciklama = models.TextField(verbose_name="Açıklama/Özet")
     pdf_dosyasi = models.FileField(upload_to=article_pdf_path, verbose_name="PDF Dosyası")
-    anahtar_kelimeler = models.CharField(max_length=255, verbose_name="Anahtar Kelimeler", help_text="Kelimeleri virgül (,) ile ayırınız.")
+    anahtar_kelimeler = models.CharField(max_length=255, verbose_name="Anahtar Kelimeler", help_text="Kelimeleri virgül (,) ile ayırınız.", blank=True)
     yazarlar = models.ManyToManyField(Yazar, related_name='makaleler', verbose_name="Yazarlar")
     dergi_sayisi = models.ForeignKey(DergiSayisi, on_delete=models.SET_NULL, null=True, blank=True, related_name='makaleler', verbose_name="Dergi Sayısı")
     admin_notu = models.TextField(blank=True, null=True, verbose_name="Editör/Admin Notu")

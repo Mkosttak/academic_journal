@@ -2,64 +2,83 @@
 {% block title %}Admin - Gelen Mesajlar{% endblock %}
 
 {% block content %}
-<div class="container-fluid mt-4">
-    <h2>Gelen Mesajlar</h2>
-    <div class="card card-body mb-4">
-        <p class="mb-1 fw-bold">Duruma Göre Filtrele:</p>
-        <div class="d-flex justify-content-start">
-            <a href="{% url 'dashboard:admin_iletisim_list' %}" class="btn btn-sm btn-outline-secondary me-2">Tümü</a>
-            <a href="?durum=cevaplanmadi" class="btn btn-sm btn-outline-warning me-2">Cevaplanmayanlar</a>
-            <a href="?durum=cevaplandi" class="btn btn-sm btn-outline-success me-2">Cevaplananlar</a>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 col-md-12 col-12">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/dashboard/" class="text-decoration-none">Admin Paneli</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Gelen Mesajlar</li>
+                </ol>
+            </nav>
+            <div class="card shadow rounded-4 border-0">
+                <div class="card-header bg-primary text-white rounded-top-4 d-flex flex-column flex-md-row justify-content-between align-items-center py-3">
+                    <h4 class="mb-2 mb-md-0"><i class="bi bi-envelope-paper me-2"></i>Gelen Mesajlar</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{% url 'dashboard:admin_iletisim_list' %}" class="btn btn-sm btn-light border-secondary">Tümü</a>
+                        <a href="?durum=cevaplanmadi" class="btn btn-sm btn-warning text-dark border-warning">Cevaplanmayanlar</a>
+                        <a href="?durum=cevaplandi" class="btn btn-sm btn-success border-success">Cevaplananlar</a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Gönderen</th>
+                                    <th>E-posta</th>
+                                    <th>Konu</th>
+                                    <th class="text-center">Durum</th>
+                                    <th class="text-end">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mesaj in mesajlar %}
+                                <tr>
+                                    <td>{{ mesaj.isim_soyisim }}</td>
+                                    <td>{{ mesaj.email }}</td>
+                                    <td>{{ mesaj.konu|truncatechars:50 }}</td>
+                                    <td class="text-center">
+                                        <div class="form-check form-switch d-inline-block">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="cevapSwitch{{ mesaj.pk }}" {% if mesaj.cevaplandi %}checked{% endif %} onchange="toggleStatus({{ mesaj.pk }})">
+                                            <label class="form-check-label" for="cevapSwitch{{ mesaj.pk }}" id="label-{{ mesaj.pk }}">
+                                                {% if mesaj.cevaplandi %}Cevaplandı{% else %}Cevaplanmadı{% endif %}
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-sm btn-info detail-btn rounded-pill" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#messageDetailModal"
+                                                data-isim="{{ mesaj.isim_soyisim }}"
+                                                data-email="{{ mesaj.email }}"
+                                                data-konu="{{ mesaj.konu }}"
+                                                data-tarih="{{ mesaj.olusturulma_tarihi|date:'d M Y, H:i' }}"
+                                                data-mesaj="{{ mesaj.mesaj|escapejs }}">
+                                            <i class="bi bi-search"></i> Detay
+                                        </button>
+                                        <a href="{% url 'dashboard:admin_iletisim_sil' mesaj.pk %}" class="btn btn-sm btn-danger rounded-pill ms-1" onclick="return confirm('Bu mesajı silmek istediğinize emin misiniz?');">
+                                            <i class="bi bi-trash3"></i> Sil
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center p-5">
+                                        <div class="alert alert-warning text-center rounded-3 shadow-sm border-0 mb-0" role="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>Gösterilecek mesaj bulunamadı.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% include 'partials/_pagination.html' %}
+                </div>
+            </div>
         </div>
     </div>
-    
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Gönderen</th>
-                    <th>E-posta</th>
-                    <th>Konu</th>
-                    <th class="text-center">Durum</th>
-                    <th class="text-end">İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for mesaj in mesajlar %}
-                <tr>
-                    <td>{{ mesaj.isim_soyisim }}</td>
-                    <td>{{ mesaj.email }}</td>
-                    <td>{{ mesaj.konu|truncatechars:50 }}</td>
-                    <td class="text-center">
-                        <div class="form-check form-switch d-inline-block">
-                            <input class="form-check-input" type="checkbox" role="switch" id="cevapSwitch{{ mesaj.pk }}" {% if mesaj.cevaplandi %}checked{% endif %} onchange="toggleStatus({{ mesaj.pk }})">
-                            <label class="form-check-label" for="cevapSwitch{{ mesaj.pk }}" id="label-{{ mesaj.pk }}">
-                                {% if mesaj.cevaplandi %}Cevaplandı{% else %}Cevaplanmadı{% endif %}
-                            </label>
-                        </div>
-                    </td>
-                    <td class="text-end">
-                        <button type="button" class="btn btn-sm btn-info detail-btn" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#messageDetailModal"
-                                data-isim="{{ mesaj.isim_soyisim }}"
-                                data-email="{{ mesaj.email }}"
-                                data-konu="{{ mesaj.konu }}"
-                                data-tarih="{{ mesaj.olusturulma_tarihi|date:'d M Y, H:i' }}"
-                                data-mesaj="{{ mesaj.mesaj|escapejs }}">
-                            <i class="bi bi-search"></i> Detay
-                        </button>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">Gösterilecek mesaj bulunamadı.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% include 'partials/_pagination.html' %}
 </div>
 
 <div class="modal fade" id="messageDetailModal" tabindex="-1" aria-labelledby="messageDetailModalLabel" aria-hidden="true">
@@ -85,34 +104,66 @@
     </div>
   </div>
 </div>
+
+<style>
+.status-text, .form-check-label {
+    min-width: 110px;
+    display: inline-block;
+    text-align: left;
+}
+</style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-// --- 1. İSTEK İÇİN GEREKLİ JAVASCRIPT (Switch metnini anında değiştirme) ---
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 function toggleStatus(pk) {
-    const url = `/panel/iletisim/toggle-status/${pk}/`;
+    const url = `/dashboard/iletisim/toggle-status/${pk}/`;
     const label = document.getElementById(`label-${pk}`);
-    
+    const checkbox = document.getElementById(`cevapSwitch${pk}`);
+    const csrftoken = getCookie('csrftoken');
+
     fetch(url, {
         method: 'POST',
         headers: {
-            'X-CSRFToken': '{{ csrf_token }}',
+            'X-CSRFToken': csrftoken,
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if(data.status === 'success') {
-            // Switch'in yanındaki yazıyı anında değiştiriyoruz
-            label.textContent = data.cevaplandi ? 'Cevaplandı' : 'Cevaplanmadı';
+    .then(response => {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            return response.json();
         } else {
-            // Bir hata olursa switch'i eski haline getir (isteğe bağlı)
-            const checkbox = document.getElementById(`cevapSwitch${pk}`);
-            checkbox.checked = !checkbox.checked;
+            throw new Error('Sunucu JSON dışında bir yanıt döndü. Oturumunuz açık mı? Yetkiniz var mı?');
         }
     })
-    .catch(error => console.error('Hata:', error));
+    .then(data => {
+        if(data.status === 'success') {
+            label.textContent = data.cevaplandi ? 'Cevaplandı' : 'Cevaplanmadı';
+        } else {
+            checkbox.checked = !checkbox.checked;
+            alert('İşlem başarısız: ' + (data.message || 'Bilinmeyen hata'));
+        }
+    })
+    .catch(error => {
+        checkbox.checked = !checkbox.checked;
+        alert(error);
+    });
 }
 
 // --- 2. İSTEK İÇİN GEREKLİ JAVASCRIPT (Modal penceresini veriyle doldurma) ---

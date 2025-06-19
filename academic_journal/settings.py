@@ -29,6 +29,9 @@ INSTALLED_APPS = [
     'apps.pages',
     'apps.core',
     'apps.dashboard',
+
+    # 3. parti paketler
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

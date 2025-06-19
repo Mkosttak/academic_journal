@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.decorators.http import require_POST
 
 from apps.core.mixins import AdminRequiredMixin, EditorRequiredMixin
 from apps.users.models import User
@@ -40,6 +41,12 @@ class EditorPanelView(EditorRequiredMixin, ListView):
                 Q(anahtar_kelimeler__icontains=query)
             ).distinct()
 
+        # Özel sıralama: önce taslaklar, sonra yayındakiler, her ikisi de tarihe göre azalan
+        if not status:
+            taslaklar = queryset.filter(goster_makaleler_sayfasinda=False).order_by('-olusturulma_tarihi')
+            yayinlar = queryset.filter(goster_makaleler_sayfasinda=True).order_by('-olusturulma_tarihi')
+            from itertools import chain
+            return list(chain(taslaklar, yayinlar))
         return queryset.order_by('-olusturulma_tarihi')
 
 class EditorMakaleUpdateView(EditorRequiredMixin, UpdateView):
@@ -83,6 +90,8 @@ class AdminDashboardView(AdminRequiredMixin, TemplateView):
         context['cevap_bekleyen_mesaj'] = IletisimFormu.objects.filter(cevaplandi=False).count()
         context['yayindaki_makaleler'] = Makale.objects.filter(goster_makaleler_sayfasinda=True).count()
         context['son_makaleler'] = Makale.objects.all().order_by('-olusturulma_tarihi')[:5]
+        context['son_kullanicilar'] = User.objects.all().order_by('-date_joined')[:5]
+        context['en_cok_okunan_makaleler'] = Makale.objects.all().order_by('-goruntulenme_sayisi')[:5]
         return context
 
 class AdminUserListView(AdminRequiredMixin, ListView):
@@ -92,13 +101,19 @@ class AdminUserListView(AdminRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = User.objects.all().order_by('-date_joined')
+        queryset = User.objects.all()
         query = self.request.GET.get('q')
         if query:
             queryset = queryset.filter(
                 Q(username__icontains=query) | Q(email__icontains=query) |
                 Q(first_name__icontains=query) | Q(last_name__icontains=query)
             )
+        # Önce editörler, sonra editörler sayfasında gösterilenler, sonra diğerleri
+        queryset = queryset.order_by(
+            '-is_editor',
+            '-goster_editorler_sayfasinda',
+            '-date_joined'
+        )
         return queryset
 
 class AdminUserUpdateView(AdminRequiredMixin, UpdateView):
@@ -121,8 +136,9 @@ class AdminIletisimListView(AdminRequiredMixin, ListView):
         elif durum == 'cevaplanmadi': queryset = queryset.filter(cevaplandi=False)
         return queryset
 
+@require_POST
 def toggle_iletisim_status(request, pk):
-    if not request.user.is_superuser:
+    if not request.user.is_authenticated or not request.user.is_superuser:
         return JsonResponse({'status': 'error', 'message': 'Yetkiniz yok.'}, status=403)
     mesaj = get_object_or_404(IletisimFormu, pk=pk)
     mesaj.cevaplandi = not mesaj.cevaplandi
@@ -156,3 +172,8 @@ class AdminDergiSayisiDeleteView(AdminRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['delete_message'] = f"'{self.object.sayi}' isimli dergi sayısını silmek üzeresiniz."
         return context
+
+class AdminIletisimSilView(AdminRequiredMixin, DeleteView):
+    model = IletisimFormu
+    template_name = 'dashboard/iletisim_confirm_delete.html'
+    success_url = reverse_lazy('dashboard:admin_iletisim_list')

@@ -60,13 +60,31 @@ class MakaleForm(YazarFormMixin, forms.ModelForm):
         label="Anahtar Kelimeler (İsteğe Bağlı)",
         help_text="Kelimeleri virgül (,) ile ayırınız.",
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        error_messages={
+            'max_length': 'En fazla 255 karakter girebilirsiniz.'
+        }
     )
 
     class Meta:
         model = Makale
-        # 'yazarlar_json' buradan kaldırıldı. Sadece modelde olan alanlar kalmalı.
         fields = ['baslik', 'aciklama', 'pdf_dosyasi', 'anahtar_kelimeler_input']
+        widgets = {
+            'pdf_dosyasi': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf'}),
+        }
+        error_messages = {
+            'baslik': {
+                'required': 'Başlık alanı zorunludur.',
+                'max_length': 'En fazla 255 karakter girebilirsiniz.'
+            },
+            'aciklama': {
+                'required': 'Açıklama alanı zorunludur.'
+            },
+            'pdf_dosyasi': {
+                'required': 'PDF dosyası yüklemek zorunludur.',
+                'invalid': 'Geçerli bir PDF dosyası yükleyiniz.'
+            },
+        }
         
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -106,6 +124,26 @@ class EditorMakaleForm(YazarFormMixin, forms.ModelForm):
             'admin_notu': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'goster_makaleler_sayfasinda': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+        error_messages = {
+            'baslik': {
+                'required': 'Başlık alanı zorunludur.',
+                'max_length': 'En fazla 255 karakter girebilirsiniz.'
+            },
+            'aciklama': {
+                'required': 'Açıklama alanı zorunludur.'
+            },
+            'pdf_dosyasi': {
+                'required': 'PDF dosyası yüklemek zorunludur.',
+                'invalid': 'Geçerli bir PDF dosyası yükleyiniz.'
+            },
+            'anahtar_kelimeler': {
+                'max_length': 'En fazla 255 karakter girebilirsiniz.'
+            },
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['anahtar_kelimeler'].required = False
 
     def save(self, commit=True):
         instance = super().save(commit=True)

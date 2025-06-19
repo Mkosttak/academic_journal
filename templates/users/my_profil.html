@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Profilim{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-md-12 col-12">
+      <div class="row g-4">
+        <!-- Sol Sütun: Profil Bilgileri -->
+        <div class="col-md-4 col-12">
+          <div class="card glass-card shadow-lg border-0 rounded-4 mb-4">
+            <div class="card-body d-flex flex-column align-items-center p-4">
+              <div class="position-relative mb-3" style="width: 120px;">
+                {% if user.profile_resmi %}
+                  <img src="{{ user.profile_resmi.url }}" class="rounded-circle shadow border border-3 border-white" alt="Profil Resmi" style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                  <div class="rounded-circle shadow border border-3 border-white bg-secondary d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                    <i class="bi bi-person-fill text-white" style="font-size: 2.5rem;"></i>
+                  </div>
+                {% endif %}
+              </div>
+              <h5 class="fw-bold mb-1">{{ user.first_name }} {{ user.last_name }}</h5>
+              <span class="text-muted mb-2">@{{ user.username }}</span>
+              <span class="mb-2"><i class="bi bi-envelope me-1"></i>{{ user.email }}</span>
+              {% if user.resume %}
+                <a href="{{ user.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm mb-2"><i class="bi bi-download"></i> Özgeçmişi İndir</a>
+              {% endif %}
+              <a href="{% url 'profil_duzenle' %}" class="btn btn-primary rounded-pill px-4 mt-2"><i class="bi bi-pencil me-1"></i> Profili Düzenle</a>
+            </div>
+          </div>
+        </div>
+        <!-- Sağ Sütun: Biyografi ve İstatistikler -->
+        <div class="col-md-8 col-12">
+          <div class="card glass-card shadow-lg border-0 rounded-4 mb-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3"><i class="bi bi-card-text me-2"></i>Biyografi</h5>
+              <p class="mb-0">{{ user.biyografi|default:'Henüz biyografi eklenmemiş.' }}</p>
+            </div>
+          </div>
+          <div class="card glass-card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3"><i class="bi bi-file-earmark-text me-2"></i>Son Makalelerim</h5>
+              {% if last_articles %}
+                <ul class="list-group list-group-flush">
+                  {% for article in last_articles %}
+                    <li class="list-group-item bg-transparent px-0 py-2 d-flex align-items-center justify-content-between">
+                      <div class="d-flex align-items-center flex-wrap">
+                        <a href="{% url 'makale_detail' article.pk %}" class="fw-semibold text-decoration-none" title="{{ article.baslik }}">{{ article.baslik|truncatechars:40 }}</a>
+                        <span class="badge bg-light text-muted ms-2">{{ article.get_status_display }}</span>
+                      </div>
+                      <div class="d-flex align-items-center flex-wrap justify-content-end">
+                        {% if article.admin_notu %}
+                          {% if not article.admin_notu_okundu %}
+                            <span class="badge bg-danger text-white ms-2 blink">Admin Notu Var! (Yeni)</span>
+                          {% else %}
+                            <span class="badge bg-secondary text-dark ms-2">Admin Notu Var!</span>
+                          {% endif %}
+                        {% endif %}
+                        <span class="text-muted small ms-2"><i class="bi bi-eye me-1"></i>{{ article.goruntulenme_sayisi|default:0 }}</span>
+                      </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <div class="mt-3 text-end">
+                  <a href="{% url 'makalelerim' %}" class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="bi bi-journals me-1"></i> Tüm Makalelerim
+                  </a>
+                </div>
+              {% else %}
+                <div class="text-muted">Henüz makale eklenmemiş.</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+.glass-card {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(44,62,80,0.13);
+  border: 1.5px solid #e0e0e0;
+}
+@media (max-width: 991.98px) {
+  .glass-card { border-radius: 1.2rem !important; }
+}
+@media (max-width: 767.98px) {
+  .card-body, .card-header, .card-footer { padding-left: 1rem !important; padding-right: 1rem !important; }
+  .card { border-radius: 1.2rem !important; }
+  .rounded-top-4, .rounded-bottom-4 { border-radius: 1.2rem !important; }
+  .btn { width: 100%; margin-bottom: 0.5rem; }
+  .form-control, .form-check-input { font-size: 1.1rem; }
+  .position-relative.mb-3 { width: 80px !important; }
+  .rounded-circle { width: 80px !important; height: 80px !important; }
+}
+.blink {
+  animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+  50% { opacity: 0; }
+}
+</style>
+{% endblock %}

@@ -22,10 +22,9 @@ def notification_context(request):
     else:
         context['draft_articles_count'] = 0
         
-    # Tüm giriş yapmış kullanıcılar için okunmamış admin notları
-    # --- BU SORGULAMAYI GÜNCELLEYİN ---
+    # Her kullanıcı için sadece kendi makalelerinde yeni admin notu varsa say
     context['unread_notes_count'] = Makale.objects.filter(
-        yazarlar__user_hesabi=user,  # Doğru sorgu: Yazar modeli üzerinden kullanıcı hesabına ulaş
+        yazarlar__user_hesabi=user,
         admin_notu_okundu=False
     ).exclude(admin_notu__isnull=True).exclude(admin_notu__exact='').count()
 

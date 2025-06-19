@@ -6,6 +6,7 @@ class AdminUserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
+            'username',
             'first_name', 'last_name', 'email', 'biyografi', 
             'profile_resmi', 'resume', 
             'is_editor', 'goster_editorler_sayfasinda'
@@ -20,6 +21,9 @@ class AdminUserUpdateForm(forms.ModelForm):
             'is_editor': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'goster_editorler_sayfasinda': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 class DergiSayisiForm(forms.ModelForm):
     class Meta:

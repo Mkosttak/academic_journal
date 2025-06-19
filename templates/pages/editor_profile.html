@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profil_kullanici.get_full_name|default:profil_kullanici.username }} - Yazar Profili{% endblock %}
+
+{% block content %}
+<div class="container py-5 animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card modern-card shadow-lg slide-up">
+                <div class="card-body p-lg-5">
+                    <div class="row align-items-center mb-4 pb-4 border-bottom">
+                        <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-4 mb-md-0">
+                            {% if profil_kullanici.profile_resmi %}
+                                <img src="{{ profil_kullanici.profile_resmi.url }}" class="rounded-circle shadow-sm img-fluid" width="180" height="180" alt="{{ profil_kullanici.get_full_name }}" style="object-fit: cover; border: 4px solid #fff;">
+                            {% else %}
+                                <div class="profile-image-placeholder rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center bg-secondary text-white" style="width: 180px; height: 180px; border: 4px solid #fff;">
+                                    <i class="bi bi-person-fill" style="font-size: 6rem;"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8 d-flex flex-column align-items-start">
+                            <h2 class="fw-bold display-5 mb-2 text-start">{{ profil_kullanici.get_full_name|default:profil_kullanici.username }}</h2>
+                            {% if profil_kullanici.biyografi %}
+                                <div class="profile-info-box mb-3 p-4 text-start w-100">
+                                    <p class="author-bio-box text-muted mb-0">{{ profil_kullanici.biyografi|linebreaks }}</p>
+                                </div>
+                            {% endif %}
+                            {% if profil_kullanici.resume %}
+                                <a href="{{ profil_kullanici.resume.url }}" target="_blank" class="btn btn-primary rounded-pill px-4 py-2 mb-3 align-self-start" style="margin-top: 0.5rem; max-width: 250px;">
+                                    <i class="bi bi-file-earmark-person me-2"></i> Özgeçmişi Görüntüle
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h3 class="fw-bold mb-4"><i class="bi bi-journal-richtext me-2"></i>Yayınlanan Makaleleri</h3>
+                        {% if makaleler %}
+                            <div class="list-group list-group-flush">
+                                {% for makale in makaleler %}
+                                    <a href="{% url 'makale_detail' makale.slug %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 px-0 article-list-item">
+                                        <div>
+                                            <h5 class="mb-1 fw-semibold">{{ makale.baslik }}</h5>
+                                            <small class="text-muted">Yayınlanma Tarihi: {{ makale.olusturulma_tarihi|date:"d F Y" }}</small>
+                                        </div>
+                                        <i class="bi bi-chevron-right text-primary"></i>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-journal-x fs-1 text-muted mb-3"></i>
+                                <p class="text-muted fs-5">Bu yazar henüz hiç makale yayınlamamış.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.modern-card {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+.profile-info-box {
+    background: #f5f6fa;
+    border-radius: 0.75rem;
+    border: 1px solid #f0f1f5;
+    display: block;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem 1.5rem;
+    min-height: unset;
+}
+.author-bio-box {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #495057;
+    font-size: 1.05rem;
+    display: block;
+}
+.article-list-item {
+    border-bottom: 1px solid #eee;
+}
+.article-list-item:last-child {
+    border-bottom: none;
+}
+.article-list-item:hover {
+    background-color: #f8f9fa;
+}
+.article-list-item h5 {
+    color: #343a40;
+}
+.article-list-item:hover h5 {
+    color: #0d6efd;
+}
+</style>
+{% endblock %} 
