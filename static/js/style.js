@@ -1,6 +1,3 @@
-// Tüm formlardaki required attribute'unu kaldır
-// Böylece sadece Django'nun sunucu tarafı validasyonu ve özel hata kutuları çalışır
-
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('form input[required], form textarea[required], form select[required]').forEach(function(el) {
         el.removeAttribute('required');

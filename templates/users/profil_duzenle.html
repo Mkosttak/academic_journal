@@ -9,24 +9,22 @@
             <div class="profile-card shadow-lg border-0 rounded-5 p-4 mx-auto">
                 <form method="post" enctype="multipart/form-data" class="p-0">
                     {% csrf_token %}
-                    <div class="text-center mb-4">
-                        <div class="profile-pic-wrapper mx-auto mb-3">
-                            <label for="id_profile_pic" class="profile-pic-label">
-                                {% if user.profile_resmi %}
-                                    <img id="image-preview" src="{{ user.profile_resmi.url }}" class="profile-pic" alt="Profil Resmi">
-                                {% else %}
-                                    <div class="profile-pic profile-pic-empty d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-person-fill"></i>
-                                    </div>
-                                {% endif %}
-                            </label>
-                            <div class="d-flex justify-content-center gap-2 mt-2">
-                                <button type="button" class="btn btn-sm btn-primary" id="change-profile-pic-btn"><i class="bi bi-camera"></i> Değiştir</button>
-                                <button type="button" class="btn btn-sm btn-danger" id="remove-profile-pic-btn"><i class="bi bi-x-circle"></i> Kaldır</button>
-                            </div>
-                            {{ form.profile_pic|add_class:'d-none' }}
-                            <input type="checkbox" name="profile_pic-clear" id="profile_pic-clear_id" class="d-none">
+                    <div class="d-flex flex-column align-items-center text-center mb-4">
+                        <div class="mb-3">
+                            <img id="image-preview" src="{% if form.instance.profile_resmi %}{{ form.instance.profile_resmi.url }}{% else %}/static/images/default_profile.png{% endif %}" alt="Profil Resmi" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
                         </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-primary" id="change-pic-btn">
+                                <i class="bi bi-pencil-square"></i> Değiştir
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger {% if not form.instance.profile_resmi %}d-none{% endif %}" id="remove-pic-btn">
+                                <i class="bi bi-trash"></i> Sil
+                            </button>
+                        </div>
+                        <span id="pic-filename" class="form-text mt-2"></span>
+                    </div>
+                    <div style="display:none">
+                        {{ form.profile_resmi.as_widget }}
                     </div>
                     <div class="row g-3">
                         <div class="col-12">
@@ -75,12 +73,12 @@
                                 <div class="bio-char-count text-end small text-muted mt-1" id="bio-char-count"></div>
                             </div>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-3">
                             <label class="form-label fw-bold">{{ form.resume.label }}</label>
                             <div class="pdf-upload-wrapper" id="resume-wrapper">
                                 <div class="pdf-display">
                                     <i class="bi bi-file-earmark-pdf-fill pdf-icon"></i>
-                                    <span id="pdf-filename" class="pdf-filename">
+                                    <span id="resume-filename" class="pdf-filename">
                                         {% if form.instance.resume and form.instance.resume.url %}
                                             <a href="{{ form.instance.resume.url }}" target="_blank">{{ form.instance.resume.name|cut:'resumes/' }}</a>
                                         {% else %}
@@ -89,8 +87,8 @@
                                     </span>
                                 </div>
                                 <div class="pdf-actions">
-                                    <button type="button" class="btn btn-sm btn-secondary" id="change-pdf-btn">{% if form.instance.resume and form.instance.resume.url %}Değiştir{% else %}Yükle{% endif %}</button>
-                                    <button type="button" class="btn btn-sm btn-danger {% if not form.instance.resume %}d-none{% endif %}" id="remove-pdf-btn">Kaldır</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" id="change-resume-btn">Değiştir</button>
+                                    <button type="button" class="btn btn-sm btn-danger {% if not form.instance.resume %}d-none{% endif %}" id="remove-resume-btn">Kaldır</button>
                                 </div>
                             </div>
                             <div class="d-none">
@@ -390,68 +388,99 @@
     color: #fff;
 }
 </style>
+{% block extra_js %}
+{{ block.super }}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Profil resmi değiştir
-    const changeBtn = document.getElementById('change-profile-pic-btn');
-    const fileInput = document.getElementById('id_profile_pic');
-    const imagePreview = document.getElementById('image-preview');
-    const clearCheckbox = document.getElementById('profile_pic-clear_id');
-    const removeBtn = document.getElementById('remove-profile-pic-btn');
+    /**
+     * Özel dosya yükleme alanlarını (profil resmi, pdf vb.) interaktif hale getiren fonksiyon.
+     * @param {object} config - Gerekli elementlerin ID'lerini içeren obje.
+     * {
+     * changeBtnId: 'Değiştir butonu IDsi',
+     * removeBtnId: 'Kaldır/Sil butonu IDsi',
+     * realInputId: "Django'nun gizli <input type='file'> IDsi",
+     * clearCheckboxId: "Django'nun gizli 'temizle' checkbox IDsi",
+     * previewImgId: '(Opsiyonel) Resim önizleme <img> elementi IDsi',
+     * filenameSpanId: '(Opsiyonel) Dosya adını gösterecek <span> elementi IDsi'
+     * }
+     */
+    function setupCustomFileInput(config) {
+        const changeBtn = document.getElementById(config.changeBtnId);
+        const removeBtn = document.getElementById(config.removeBtnId);
+        const realInput = document.getElementById(config.realInputId);
+        const clearCheckbox = document.getElementById(config.clearCheckboxId);
+        const previewImg = config.previewImgId ? document.getElementById(config.previewImgId) : null;
+        const filenameSpan = config.filenameSpanId ? document.getElementById(config.filenameSpanId) : null;
 
-    if (changeBtn && fileInput) {
-        changeBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            fileInput.click();
+        if (!changeBtn || !removeBtn || !realInput) {
+            // Gerekli elemanlar yoksa fonksiyonu çalıştırma
+            // console.error('Eksik eleman IDsi:', config);
+            return;
+        }
+
+        // "Değiştir" butonu gizli dosya inputunu tetikler
+        changeBtn.addEventListener('click', () => realInput.click());
+
+        // "Kaldır/Sil" butonu dosyayı temizler
+        removeBtn.addEventListener('click', () => {
+            realInput.value = ''; // Dosya seçimini iptal et
+            if (clearCheckbox) {
+                clearCheckbox.checked = true;
+            }
+            if (previewImg) {
+                // Varsayılan resme geri dön
+                previewImg.src = '/static/images/default_profile.png';
+            }
+            if (filenameSpan) {
+                filenameSpan.innerHTML = '<i>Dosya kaldırıldı. Kaydedince silinecek.</i>';
+            }
+            removeBtn.classList.add('d-none');
         });
-    }
-    // Yeni profil resmi seçildiğinde önizlemeyi güncelle
-    if (fileInput && imagePreview) {
-        fileInput.addEventListener('change', function(event) {
-            if (event.target.files && event.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                    // Eğer daha önce default icon eklendiyse kaldır
-                    const emptyDiv = imagePreview.parentNode.querySelector('.profile-pic-empty');
-                    if (emptyDiv) emptyDiv.remove();
+
+        // Yeni bir dosya seçildiğinde arayüzü güncelle
+        realInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0];
+                if (filenameSpan) {
+                    filenameSpan.textContent = file.name;
                 }
-                reader.readAsDataURL(event.target.files[0]);
-                // Kaldır işaretini kaldır
-                if (clearCheckbox) clearCheckbox.checked = false;
+                if (previewImg && file.type.startsWith('image/')) {
+                    // Resim önizlemesini güncelle
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previewImg.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+                
+                removeBtn.classList.remove('d-none');
+                if (clearCheckbox) {
+                    clearCheckbox.checked = false;
+                }
             }
         });
     }
-    // Profil resmi kaldır
-    if (removeBtn && clearCheckbox && imagePreview) {
-        removeBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            clearCheckbox.checked = true;
-            imagePreview.src = '';
-            imagePreview.style.display = 'none';
-            // Default iconu göster
-            let emptyDiv = imagePreview.parentNode.querySelector('.profile-pic-empty');
-            if (!emptyDiv) {
-                emptyDiv = document.createElement('div');
-                emptyDiv.className = 'profile-pic profile-pic-empty d-flex align-items-center justify-content-center';
-                emptyDiv.innerHTML = '<i class="bi bi-person-fill"></i>';
-                imagePreview.parentNode.appendChild(emptyDiv);
-            }
-        });
-    }
-    // PDF dosya adı gösterimi
-    const resumeInput = document.getElementById('id_resume');
-    const resumeFileName = document.getElementById('resume-file-name');
-    if (resumeInput && resumeFileName) {
-        resumeInput.addEventListener('change', function() {
-            if (resumeInput.files && resumeInput.files.length > 0) {
-                resumeFileName.innerHTML = '<i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> ' + resumeInput.files[0].name;
-            } else {
-                resumeFileName.innerHTML = '';
-            }
-        });
-    }
+
+    // 1. Profil Resmini Ayarla
+    setupCustomFileInput({
+        changeBtnId:     'change-pic-btn',
+        removeBtnId:     'remove-pic-btn',
+        realInputId:     'id_profile_resmi',
+        clearCheckboxId: 'profile_resmi-clear_id',
+        previewImgId:    'image-preview',
+        filenameSpanId:  'pic-filename'
+    });
+
+    // 2. Özgeçmiş (PDF) Dosyasını Ayarla
+    setupCustomFileInput({
+        changeBtnId:     'change-resume-btn',
+        removeBtnId:     'remove-resume-btn',
+        realInputId:     'id_resume',
+        clearCheckboxId: 'resume-clear_id',
+        previewImgId:    null, // PDF için resim önizlemesi yok
+        filenameSpanId:  'resume-filename'
+    });
+
     // Biyografi karakter sayacı
     const bioInput = document.getElementById('id_biyografi');
     const bioCharCount = document.getElementById('bio-char-count');
@@ -462,39 +491,8 @@ document.addEventListener('DOMContentLoaded', function() {
         bioInput.addEventListener('input', updateBioCount);
         updateBioCount();
     }
-    const changePdfBtn = document.getElementById('change-pdf-btn');
-    const removePdfBtn = document.getElementById('remove-pdf-btn');
-    const pdfFilenameSpan = document.getElementById('pdf-filename');
-    const realFileInput = document.getElementById('id_resume');
-    const clearFileCheckbox = document.getElementById('resume-clear_id');
-
-    if (changePdfBtn) {
-        changePdfBtn.addEventListener('click', function() {
-            realFileInput.click();
-        });
-    }
-    if (realFileInput) {
-        realFileInput.addEventListener('change', function() {
-            if (this.files && this.files.length > 0) {
-                pdfFilenameSpan.textContent = this.files[0].name;
-                removePdfBtn.classList.remove('d-none');
-                if (clearFileCheckbox) {
-                    clearFileCheckbox.checked = false;
-                }
-            }
-        });
-    }
-    if (removePdfBtn) {
-        removePdfBtn.addEventListener('click', function() {
-            if (clearFileCheckbox) {
-                clearFileCheckbox.checked = true;
-            }
-            realFileInput.value = '';
-            pdfFilenameSpan.innerHTML = '<i>Dosya kaldırıldı. Kaydedince silinecek.</i>';
-            removePdfBtn.classList.add('d-none');
-        });
-    }
 });
 </script>
+{% endblock %}
 {% endblock %} 
 
