@@ -1,184 +1,380 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
 {% block title %}Profili Düzenle{% endblock %}
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10 col-md-12 col-12">
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Ana Sayfa</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Profili Düzenle</li>
-                </ol>
-            </nav>
-            <div class="card glass-card shadow-lg border-0 rounded-4">
-                <div class="card-header bg-gradient bg-primary text-white text-center rounded-top-4 py-3">
-                    <h4 class="mb-0"><i class="bi bi-person-gear me-2"></i>Profili Düzenle</h4>
-                </div>
+        <div class="col-lg-7 col-md-10 col-12">
+            <div class="profile-card shadow-lg border-0 rounded-5 p-4 mx-auto">
                 <form method="post" enctype="multipart/form-data" class="p-0">
-                {% csrf_token %}
-                    <div class="card-body p-4">
-                        {% if form.non_field_errors %}
-                        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
-                        {% endif %}
-                        <div class="row g-4">
-                            <div class="col-md-4 col-12 d-flex flex-column align-items-center">
-                                <div class="position-relative mb-4" style="width: 130px;">
-                                    {% if form.profile_pic.value %}
-                                        <img id="image-preview" src="{{ form.profile_pic.value.url }}" class="rounded-circle shadow border border-3 border-white" alt="Profil Resmi" style="width: 130px; height: 130px; object-fit: cover;">
-                                    {% else %}
-                                        <div class="rounded-circle shadow border border-3 border-white bg-secondary d-flex align-items-center justify-content-center" style="width: 130px; height: 130px;">
-                                            <i class="bi bi-person-fill text-white" style="font-size: 2.5rem;"></i>
-                                        </div>
-                                    {% endif %}
-                                    <label for="{{ form.profile_pic.id_for_label }}" class="position-absolute bottom-0 start-50 translate-middle-x badge bg-primary text-white shadow px-3 py-2" style="cursor:pointer; font-size:1rem; border-radius: 1.5rem;">
-                                        <i class="bi bi-camera me-1"></i> Değiştir
-                                    </label>
-                                    {{ form.profile_pic }}
-                                </div>
-                                <div class="w-100 mb-2">
-                                    <label for="{{ form.resume.id_for_label }}" class="form-label fw-semibold">Özgeçmiş (PDF)</label>
-                                    <div class="card p-2 shadow-sm border-0 bg-light d-flex flex-column align-items-center">
-                                        {% if user.resume %}
-                                            <div class="d-flex align-items-center gap-2 mb-2">
-                                                <i class="bi bi-file-earmark-person-fill text-primary fs-4"></i>
-                                                <span class="badge bg-success">Yüklü</span>
-                                                <a href="{{ user.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-download"></i></a>
-                                            </div>
-                                        {% else %}
-                                            <span class="text-muted small mb-2">Yüklü dosya yok</span>
-                                        {% endif %}
-                                        <div class="w-100">
-                                            {{ form.resume }}
-                                            <small class="text-muted">Sadece PDF yükleyin.</small>
-                                            {% if form.resume.errors %}
-                                                <div class="alert alert-danger mt-2 py-1 px-2">{{ form.resume.errors }}</div>
-                                            {% endif %}
-                                        </div>
+                    {% csrf_token %}
+                    <div class="text-center mb-4">
+                        <div class="profile-pic-wrapper mx-auto mb-3">
+                            <label for="id_profile_pic" class="profile-pic-label">
+                                {% if form.profile_pic.value %}
+                                    <img id="image-preview" src="{{ form.profile_pic.value.url }}" class="profile-pic" alt="Profil Resmi">
+                                {% else %}
+                                    <div class="profile-pic profile-pic-empty d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-person-fill"></i>
                                     </div>
+                                {% endif %}
+                                <span class="profile-pic-change-btn"><i class="bi bi-camera"></i> Değiştir</span>
+                            </label>
+                            {{ form.profile_pic|add_class:'d-none' }}
+                        </div>
+                        <div class="resume-modern-box mb-4">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div class="resume-modern-icon-wrap">
+                                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                                </div>
+                                <div>
+                                    <div class="resume-modern-title">Özgeçmiş (PDF)</div>
+                                    <div class="resume-modern-desc">Sadece PDF dosyası yükleyebilirsiniz.</div>
                                 </div>
                             </div>
-                            <div class="col-md-8 col-12">
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">Kullanıcı Adı</label>
-                                        <div class="input-group align-items-center mb-2">
-                                            <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                            {{ form.username }}
-                                            <span class="badge bg-light text-muted border ms-2 small">Değiştirilemez</span>
-                                        </div>
+                            <div class="resume-modern-content mt-2">
+                                {% if user.resume %}
+                                    <div class="resume-modern-file d-flex align-items-center gap-2 mb-2">
+                                        <span class="badge bg-success">Yüklü</span>
+                                        <a href="{{ user.resume.url }}" target="_blank" class="resume-modern-filename">
+                                            <i class="bi bi-file-earmark-pdf-fill text-danger"></i> {{ user.resume.name|cut:'resumes/' }}
+                                        </a>
+                                        <a href="{{ user.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-download"></i> İndir</a>
+                                        {# Temizle butonu için bir checkbox veya buton ekleyebilirsiniz, backend desteği gerekebilir #}
                                     </div>
-                                    <div class="col-md-6 col-12">
-                                        <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">Ad</label>
-                                        <div class="input-group align-items-center mb-2">
-                                            <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                                            {{ form.first_name }}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">Soyad</label>
-                                        <div class="input-group align-items-center mb-2">
-                                            <span class="input-group-text"><i class="bi bi-person-badge-fill"></i></span>
-                                            {{ form.last_name }}
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">E-posta</label>
-                                        <div class="input-group align-items-center mb-2">
-                                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                            {{ form.email }}
-                                            <span class="badge bg-light text-muted border ms-2 small">Değiştirilemez</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="{{ form.bio.id_for_label }}" class="form-label fw-semibold">Biyografi</label>
-                                        <div class="input-group align-items-center mb-2">
-                                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                            {{ form.bio }}
-                                        </div>
-                                    </div>
+                                {% endif %}
+                                <div class="resume-modern-upload d-flex align-items-center gap-2">
+                                    {{ form.resume|add_class:'form-control resume-modern-input'|attr:'accept:application/pdf' }}
+                                    <span id="resume-file-name" class="resume-modern-selected ms-2"></span>
                                 </div>
+                                {% if form.resume.errors %}
+                                    <div class="alert alert-danger mt-2 py-1 px-2">{{ form.resume.errors }}</div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer text-end bg-light border-0 rounded-bottom-4 d-flex flex-wrap gap-2 justify-content-end px-4 py-3">
-                        <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-semibold shadow-sm">Kaydet</button>
-                        <a href="/" class="btn btn-secondary rounded-pill px-4 py-2 fw-semibold shadow-sm">İptal</a>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="id_username" class="form-label">Kullanıcı Adı</label>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="input-icon-group flex-grow-1" style="position:relative; width:100%;">
+                                    <i class="bi bi-person"></i>
+                                    {{ form.username|add_class:'form-control profile-input'|attr:'readonly:true' }}
+                                </div>
+                                <span class="badge bg-light text-muted align-middle" style="height: 44px; display: flex; align-items: center;">Değiştirilemez</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <label for="id_first_name" class="form-label">Ad</label>
+                            <div class="input-icon-group">
+                                <i class="bi bi-person-badge"></i>
+                                {{ form.first_name|add_class:'form-control profile-input' }}
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <label for="id_last_name" class="form-label">Soyad</label>
+                            <div class="input-icon-group">
+                                <i class="bi bi-person-badge-fill"></i>
+                                {{ form.last_name|add_class:'form-control profile-input' }}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="id_email" class="form-label">E-posta</label>
+                            <div class="input-icon-group">
+                                <i class="bi bi-envelope"></i>
+                                {{ form.email|add_class:'form-control profile-input'|attr:'readonly:true' }}
+                                <span class="badge bg-light text-muted ms-2 align-middle" style="height: 44px; display: flex; align-items: center;">Değiştirilemez</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="bi bi-card-text bio-title-icon me-2"></i>
+                                <label for="id_biyografi" class="form-label mb-0">Biyografi</label>
+                            </div>
+                            <div class="bio-modern-box position-relative mb-2">
+                                {{ form.biyografi|add_class:'form-control bio-modern-textarea'|attr:'rows:5'|attr:'placeholder:Kendinizi kısaca tanıtın (ör. ilgi alanlarınız, mesleğiniz, eğitim vb.)' }}
+                                <div class="bio-char-count text-end small text-muted mt-1" id="bio-char-count"></div>
+                            </div>
+                        </div>
                     </div>
-            </form>
+                    <div class="d-flex flex-wrap gap-2 justify-content-end mt-4">
+                        <button type="submit" class="btn btn-success profile-btn">Kaydet</button>
+                        <a href="/" class="btn btn-secondary profile-btn">İptal</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 <style>
-.glass-card {
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgba(44,62,80,0.13);
-    border: 1.5px solid #e0e0e0;
+.profile-card {
+    background: #fff;
+    border-radius: 2.5rem;
+    box-shadow: 0 8px 32px 0 rgba(44,62,80,0.13), 0 2px 8px 0 rgba(44,62,80,0.08);
+    padding: 2.5rem 2rem;
+    margin-top: 2rem;
 }
-.input-group-text {
-    font-size: 1.2rem;
-    background: #f8f9fa !important;
-    border-radius: 2rem !important;
-    height: 48px;
+.profile-pic-wrapper {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 1rem;
+}
+.profile-pic-label {
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.profile-pic {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    background: #f1f5f9;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.profile-pic-empty {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: #e0e7ef;
+    font-size: 3rem;
+    color: #b0b8c1;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.input-group > .form-control, .input-group > .form-select {
-    border-radius: 2rem !important;
+.profile-pic-change-btn {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #6366f1 0%, #2563eb 100%);
+    color: #fff;
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    border: none;
+    transition: background 0.2s;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.profile-pic-label input[type="file"] {
+    display: none;
+}
+.resume-modern-box {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px 0 rgba(225,29,72,0.07), 0 2px 8px 0 rgba(44,62,80,0.08);
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    margin-bottom: 2rem;
+    border: 1.5px solid #f3f4f6;
+}
+.resume-modern-icon-wrap {
+    width: 3.2rem;
+    height: 3.2rem;
+    background: #fee2e2;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.1rem;
+    color: #e11d48;
+    box-shadow: 0 2px 8px rgba(225,29,72,0.07);
+}
+.resume-modern-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #e11d48;
+}
+.resume-modern-desc {
+    font-size: 0.97rem;
+    color: #6b7280;
+}
+.resume-modern-file {
+    font-size: 1.05rem;
+}
+.resume-modern-filename {
+    color: #e11d48;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.resume-modern-filename:hover {
+    color: #be123c;
+    text-decoration: underline;
+}
+.resume-modern-upload .resume-modern-input {
+    border-radius: 1rem !important;
+    border: 1.5px solid #e0e0e0;
+    background: #f8fafc;
+    font-size: 1.05rem;
+    padding: 0.5rem 1rem;
+    box-shadow: none;
+    width: 260px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.resume-modern-upload .resume-modern-input:focus {
+    border-color: #e11d48;
+    box-shadow: 0 0 0 0.15rem #fda4af, 0 2px 8px 0 rgba(225,29,72,0.10);
+    background: #fff;
+}
+.resume-modern-selected {
+    font-size: 0.98rem;
+    color: #e11d48;
+    font-weight: 500;
+}
+.input-icon-group {
+    position: relative;
+    width: 100%;
+}
+.input-icon-group i {
+    position: absolute;
+    left: 1.1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: #6366f1;
+    z-index: 2;
+}
+.input-icon-group .form-control {
+    width: 100%;
+    padding-left: 2.5rem;
+    border-radius: 1.5rem;
     font-size: 1.08rem;
-    padding: 0.8rem 1.2rem;
+    height: 44px;
     box-shadow: 0 2px 8px rgba(44,62,80,0.07);
     border: 1.5px solid #e0e0e0;
+    background: #f8fafc;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.input-icon-group .form-control:focus {
+    box-shadow: 0 0 0 0.15rem #b6d4fe, 0 2px 8px 0 rgba(44,62,80,0.10);
+    border-color: #6366f1;
     background: #fff;
-    height: 48px;
 }
-input[type="file"] {
-    border-radius: 1rem !important;
-    background: #f8f9fa;
+.input-icon-group textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+    padding-top: 1.2rem;
 }
-.card-footer .btn {
+.profile-btn {
     min-width: 160px;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
-.badge.bg-light.text-muted {
-    font-size: 0.95rem;
-    padding: 0.4em 0.8em;
-    background: #f5f5f5 !important;
-    border-radius: 1rem;
-    border: 1px solid #e0e0e0;
+.btn-success.profile-btn {
+    background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+    border: none;
+}
+.btn-success.profile-btn:hover {
+    background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px 0 rgba(34,197,94,0.13);
+}
+.btn-secondary.profile-btn {
+    background: linear-gradient(90deg, #64748b 0%, #334155 100%);
+    border: none;
+    color: #fff;
+}
+.btn-secondary.profile-btn:hover {
+    background: linear-gradient(90deg, #334155 0%, #64748b 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px 0 rgba(100,116,139,0.13);
 }
 @media (max-width: 991.98px) {
-    .glass-card { border-radius: 1.2rem !important; }
+    .profile-card { border-radius: 1.2rem !important; padding: 1.5rem 0.5rem; }
+    .profile-pic-wrapper, .profile-pic, .profile-pic-empty { width: 90px !important; height: 90px !important; }
 }
 @media (max-width: 767.98px) {
-    .card-body, .card-header, .card-footer { padding-left: 1rem !important; padding-right: 1rem !important; }
-    .card { border-radius: 1.2rem !important; }
-    .rounded-top-4, .rounded-bottom-4 { border-radius: 1.2rem !important; }
-    .btn { width: 100%; margin-bottom: 0.5rem; }
-    .form-control, .form-check-input { font-size: 1.1rem; }
-    .position-relative.mb-4 { width: 90px !important; }
-    #image-preview { width: 90px !important; height: 90px !important; }
+    .profile-card { border-radius: 1.2rem !important; padding: 1rem 0.2rem; }
+    .profile-btn { width: 100%; margin-bottom: 0.5rem; }
+    .input-icon-group .form-control { font-size: 1.05rem; height: 42px; }
+}
+.bio-title-icon {
+    font-size: 1.3rem;
+    color: #6366f1;
+    margin-right: 0.5rem;
+}
+.bio-modern-box {
+    background: #f8fafc;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    padding: 1.2rem 1rem 0.5rem 1rem;
+    position: relative;
+}
+.bio-modern-textarea {
+    min-height: 120px;
+    border-radius: 1rem !important;
+    border: 1.5px solid #e0e0e0;
+    background: transparent;
+    font-size: 1.08rem;
+    padding: 1.2rem 1.2rem 1.2rem 1.2rem;
+    box-shadow: none;
+    resize: vertical;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.bio-modern-textarea:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 0.15rem #b6d4fe, 0 2px 8px 0 rgba(44,62,80,0.10);
+    background: #fff;
 }
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Profil resmi önizleme
-    const profilePicInput = document.getElementById('{{ form.profile_pic.id_for_label }}');
+    // Profil resmi önizleme ve dosya seçme
+    const profilePicInput = document.getElementById('id_profile_pic');
     const imagePreview = document.getElementById('image-preview');
-    if (profilePicInput) {
+    const profilePicLabel = document.querySelector('.profile-pic-label');
+    if (profilePicInput && profilePicLabel) {
+        profilePicLabel.addEventListener('click', function(e) {
+            if (e.target.classList.contains('profile-pic-change-btn') || e.target.classList.contains('bi-camera')) {
+                profilePicInput.click();
+            }
+        });
         profilePicInput.addEventListener('change', function(event) {
             if (event.target.files && event.target.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
+                    if (imagePreview) imagePreview.src = e.target.result;
                 }
                 reader.readAsDataURL(event.target.files[0]);
             }
         });
+    }
+    // PDF dosya adı gösterimi
+    const resumeInput = document.getElementById('id_resume');
+    const resumeFileName = document.getElementById('resume-file-name');
+    if (resumeInput && resumeFileName) {
+        resumeInput.addEventListener('change', function() {
+            if (resumeInput.files && resumeInput.files.length > 0) {
+                resumeFileName.innerHTML = '<i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> ' + resumeInput.files[0].name;
+            } else {
+                resumeFileName.innerHTML = '';
+            }
+        });
+    }
+    // Biyografi karakter sayacı
+    const bioInput = document.getElementById('id_biyografi');
+    const bioCharCount = document.getElementById('bio-char-count');
+    if (bioInput && bioCharCount) {
+        const updateBioCount = () => {
+            bioCharCount.textContent = bioInput.value.length + ' karakter';
+        };
+        bioInput.addEventListener('input', updateBioCount);
+        updateBioCount();
     }
 });
 </script>

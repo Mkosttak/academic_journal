@@ -29,26 +29,44 @@
                         </div>
                     </div>
                 </div>
-                {% if request.user in makale.yazarlar.all or request.user.is_editor or request.user.is_superuser %}
-                <div class="dropdown">
-                    <button class="btn btn-light rounded-circle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                        <li>
-                            <a href="{% url 'makale_duzenle' makale.slug %}" class="dropdown-item">
-                                <i class="bi bi-pencil-square me-2"></i>Düzenle
-                            </a>
-                        </li>
-                        {% if request.user.is_superuser %}
-                        <li>
-                            <a href="#" class="dropdown-item text-danger" onclick="return confirm('Bu makale silinsin mi?');">
-                                <i class="bi bi-trash me-2"></i>Sil
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
+                {% if request.user.is_authenticated %}
+                    {% if request.user in makale.yazarlar.all or request.user.is_editor or request.user.is_superuser %}
+                        <div class="dropdown">
+                            <button class="btn btn-light rounded-circle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <li>
+                                    {% if request.user.is_superuser %}
+                                        <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" class="dropdown-item">
+                                            <i class="bi bi-pencil-square me-2"></i>Düzenle (Admin)
+                                        </a>
+                                    {% elif request.user.is_editor %}
+                                        {% if request.user not in makale.yazarlar.all %}
+                                            <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" class="dropdown-item">
+                                                <i class="bi bi-pencil-square me-2"></i>Düzenle (Editör)
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'makale_duzenle' makale.slug %}" class="dropdown-item">
+                                                <i class="bi bi-pencil-square me-2"></i>Düzenle
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'makale_duzenle' makale.slug %}" class="dropdown-item">
+                                            <i class="bi bi-pencil-square me-2"></i>Düzenle
+                                        </a>
+                                    {% endif %}
+                                </li>
+                                {% if request.user.is_superuser %}
+                                <li>
+                                    <a href="#" class="dropdown-item text-danger" onclick="return confirm('Bu makale silinsin mi?');">
+                                        <i class="bi bi-trash me-2"></i>Sil
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </div>
 

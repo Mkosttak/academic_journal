@@ -8,23 +8,57 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'makale_list' %}" class="text-decoration-none">Makaleler</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Yeni Makale</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ form_title }}</li>
         </ol>
     </nav>
 
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-12">
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-header bg-gradient bg-primary text-white border-0 py-3">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-pencil-square fs-4 me-2"></i>
-                        <h5 class="card-title mb-0">Yeni Makale Oluştur</h5>
-                </div>
+                <div class="card-header bg-primary text-white text-center rounded-top-4 py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        {{ form_title }}
+                    </h4>
                 </div>
                 <div class="card-body p-4">
                     <form method="post" enctype="multipart/form-data" class="article-form">
                         {% csrf_token %}
                         {% include 'partials/_form.html' with form=form %}
+
+                        <div class="mb-3 mt-2">
+                            <label class="form-label fw-bold">{{ form.pdf_dosyasi.label }}</label>
+                            <div class="card p-3 shadow-sm border-0 bg-light d-flex flex-column align-items-center align-items-md-start">
+                                <div class="d-flex flex-column flex-md-row align-items-center w-100 gap-2">
+                                    <i class="bi bi-file-earmark-pdf-fill text-danger fs-2 me-2"></i>
+                                    <div class="flex-grow-1">
+                                        {% if form.instance.pdf_dosyasi %}
+                                            <span id="pdf-file-info" class="badge bg-success mb-2"><i class="bi bi-file-earmark-pdf-fill me-1"></i> Yüklü:
+                                                <a href="{{ form.instance.pdf_dosyasi.url }}" target="_blank" class="text-white text-decoration-underline resume-filename">
+                                                    {% with name=form.instance.pdf_dosyasi.name|cut:'article_pdfs/' %}
+                                                        {% if name|length > 25 %}
+                                                            {{ name|slice:"0:10" }}...{{ name|slice:"-10:" }}
+                                                        {% else %}
+                                                            {{ name }}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </a>
+                                            </span>
+                                            <a href="{{ form.instance.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2"><i class="bi bi-download"></i> İndir</a>
+                                        {% else %}
+                                            <span id="pdf-file-info" class="text-muted">Henüz PDF yüklenmedi.</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="w-100 mt-3">
+                                    {{ form.pdf_dosyasi|add_class:'form-control rounded-3 shadow-sm' }}
+                                    <small class="text-muted">Sadece PDF dosyası yükleyiniz.</small>
+                                    {% if form.pdf_dosyasi.errors %}
+                                        <div class="alert alert-danger mt-2 py-1 px-2">{{ form.pdf_dosyasi.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Yazarlar Alanı -->
                         <div class="card border-0 shadow-sm rounded-4 mb-4 mt-4">
@@ -32,17 +66,17 @@
                                 <div class="d-flex align-items-center">
                                     <i class="bi bi-people fs-5 me-2 text-primary"></i>
                                     <h6 class="mb-0">Yazarlar</h6>
-                </div>
-            </div>
+                                </div>
+                            </div>
                             <div class="card-body pt-3 pb-2">
-                <div class="input-group mb-3">
+                                <div class="input-group mb-3">
                                     <input type="text" id="author-input" class="form-control" placeholder="Uygulamaya kayıtlı ise @kullanıcıadi değil ise İsim Soyisim Giriniz">
-                    <button class="btn btn-outline-success" type="button" id="add-author-btn">Ekle</button>
-                </div>
-                <div id="author-error-message" class="text-danger mb-2"></div>
-                <p class="form-text">Eklenen Yazarlar:</p>
-                <div id="author-list" class="d-flex flex-wrap gap-2"></div>
-                <input type="hidden" id="id_yazarlar_json" name="yazarlar_json" value="{{ form.yazarlar_json.value|default:'' }}">
+                                    <button class="btn btn-outline-success" type="button" id="add-author-btn">Ekle</button>
+                                </div>
+                                <div id="author-error-message" class="text-danger mb-2"></div>
+                                <p class="form-text">Eklenen Yazarlar:</p>
+                                <div id="author-list" class="d-flex flex-wrap gap-2"></div>
+                                <input type="hidden" id="id_yazarlar_json" name="yazarlar_json" value="{{ form.yazarlar_json.value|default:'' }}">
                             </div>
                         </div>
                         <!-- /Yazarlar Alanı -->
@@ -51,9 +85,7 @@
                             <a href="#" type="button" onclick="history.back();" class="btn btn-light px-4 rounded-pill">
                                 <i class="bi bi-arrow-left me-1"></i> Vazgeç
                             </a>
-                            <button class="btn btn-primary px-4 py-2 rounded-pill shadow-sm" type="submit">
-                                <i class="bi bi-send-fill me-1"></i> Makaleyi Oluştur
-                            </button>
+                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">{{ submit_text }}</button>
                         </div>
                     </form>
                 </div>
@@ -108,6 +140,23 @@
 window.currentUsername = "{{ request.user.username|escapejs }}";
 window.currentFullName = "{{ request.user.get_full_name|default:request.user.username|escapejs }}";
 window.checkAuthorUrl = "{% url 'check_author' %}";
+
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('input[type="file"][name="pdf_dosyasi"]');
+    const fileInfo = document.getElementById('pdf-file-info');
+    if (fileInput && fileInfo) {
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files && fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                fileInfo.className = 'badge bg-success mb-2';
+                fileInfo.innerHTML = '<i class="bi bi-file-earmark-pdf-fill me-1"></i> Seçilen: ' + fileName;
+            } else {
+                fileInfo.className = 'text-muted';
+                fileInfo.innerHTML = 'Henüz PDF yüklenmedi.';
+            }
+        });
+    }
+});
 </script>
 {% endblock %}
 

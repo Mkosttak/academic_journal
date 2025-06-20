@@ -70,6 +70,12 @@ class MakaleCreateView(LoginRequiredMixin, CreateView):
         kwargs['request'] = self.request
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_title'] = 'Yeni Makale'
+        context['submit_text'] = 'Makale Oluştur'
+        return context
+
     def form_valid(self, form):
         super().form_valid(form)
         messages.success(self.request, 'Makaleniz başarıyla oluşturuldu ve incelenmek üzere gönderildi.')
@@ -111,7 +117,8 @@ class MakaleUpdateView(AuthorRequiredMixin, UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_title'] = 'Makale Düzenle'
+        context['form_title'] = 'Makale Düzenle'
+        context['submit_text'] = 'Kaydet'
         # Admin notu şablonda göstermek için context'e ekle
         if self.object.admin_notu:
             context['admin_notu'] = self.object.admin_notu

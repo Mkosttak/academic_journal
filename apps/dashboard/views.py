@@ -52,7 +52,7 @@ class EditorPanelView(EditorRequiredMixin, ListView):
 class EditorMakaleUpdateView(EditorRequiredMixin, UpdateView):
     model = Makale
     form_class = EditorMakaleForm
-    template_name = 'dashboard/makale_form.html'
+    template_name = 'dashboard/admin_makale_form.html'
     success_url = reverse_lazy('dashboard:editor_panel')
 
     def get_context_data(self, **kwargs):

@@ -27,4 +27,13 @@ class CustomUserChangeForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'email', 'biyografi', 'profile_resmi', 'resume')
         widgets = {
             'biyografi': forms.Textarea(attrs={'rows': 4}),
+            'resume': forms.ClearableFileInput(attrs={
+                'accept': 'application/pdf',
+            }),
+        }
+        labels = {
+            'resume': 'Özgeçmiş (PDF)',
+        }
+        help_texts = {
+            'resume': None,
         }
