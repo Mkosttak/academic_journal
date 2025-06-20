@@ -22,9 +22,17 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(forms.ModelForm):
     # Parolayı bu formda gösterme
     password = None
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].disabled = True
+        self.fields['username'].disabled = True
+        self.fields['first_name'].required = True
+        self.fields['first_name'].error_messages = {'required': 'Ad alanı zorunludur.'}
+        self.fields['last_name'].required = True
+        self.fields['last_name'].error_messages = {'required': 'Soyad alanı zorunludur.'}
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'biyografi', 'profile_resmi', 'resume')
+        fields = ('username', 'first_name', 'last_name', 'email', 'biyografi', 'profile_resmi', 'resume')
         widgets = {
             'biyografi': forms.Textarea(attrs={'rows': 4}),
             'resume': forms.ClearableFileInput(attrs={

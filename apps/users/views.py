@@ -98,24 +98,5 @@ class ProfilDuzenleView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        user = self.object
-        
-        # Kullanıcının yazar profili varsa, isim_soyisim'i güncelle
-        try:
-            yazar = user.yazar_profili
-            if yazar:
-                yeni_isim = user.get_full_name() or user.username
-                if yazar.isim_soyisim != yeni_isim:
-                    yazar.isim_soyisim = yeni_isim
-                    yazar.save()
-        except Yazar.DoesNotExist:
-            # Eğer yazar profili yoksa ve kullanıcının makalesi varsa, yeni profil oluştur
-            yeni_isim = user.get_full_name() or user.username
-            Yazar.objects.create(
-                user_hesabi=user,
-                isim_soyisim=yeni_isim
-            )
-
         messages.success(self.request, 'Profil bilgileriniz başarıyla güncellendi.')
-        return response
+        return super().form_valid(form)
