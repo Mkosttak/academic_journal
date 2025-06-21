@@ -145,4 +145,77 @@ document.addEventListener('DOMContentLoaded', function() {
             if (noteInput) noteInput.value = '';
         });
     }
-}); 
+
+    // Profil resmi yönetimi
+    const profilePicInput = document.getElementById('id_profile_resmi');
+    const changePicButton = document.getElementById('change-pic-btn');
+    const removePicButton = document.getElementById('remove-pic-btn');
+    const imagePreview = document.getElementById('image-preview');
+    const filenameSpan = document.getElementById('pic-filename');
+    const defaultPicUrl = '/static/images/default_profile.png';
+    const clearCheckbox = document.querySelector('input[name="profile_resmi-clear"]');
+
+    if (changePicButton && profilePicInput) {
+        changePicButton.addEventListener('click', function() {
+            profilePicInput.click();
+        });
+    }
+
+    if (profilePicInput) {
+        profilePicInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Ön yüzde resmi göster
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (imagePreview) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block'; // Görünür yap
+                    }
+                };
+                reader.readAsDataURL(file);
+
+                // Dosya adını ve butonları güncelle
+                if (filenameSpan) {
+                    filenameSpan.textContent = file.name;
+                }
+                if (removePicButton) {
+                    removePicButton.classList.remove('d-none');
+                }
+                // Arka planda "temizle" işaretini kaldır
+                if (clearCheckbox) {
+                    clearCheckbox.checked = false;
+                }
+            }
+        });
+    }
+
+    if (removePicButton && imagePreview && clearCheckbox) {
+        removePicButton.addEventListener('click', function() {
+            // 1. Arka planda, Django'ya 'bu alanı temizle' komutunu ver.
+            clearCheckbox.checked = true;
+            
+            // Dosya seçimini de temizle
+            profilePicInput.value = '';
+
+            // 2. Ön yüzde, resmi varsayılan haline getir ve dosya adını temizle.
+            imagePreview.src = defaultPicUrl;
+            if (filenameSpan) {
+                filenameSpan.textContent = '';
+            }
+
+            // 3. "Kaldır" butonunu gizle.
+            removePicButton.classList.add('d-none');
+        });
+    }
+});
+
+/*
+// Tıklanabilir profil resmi önizlemesi
+const profilePicPreview = document.getElementById('profile-pic-preview');
+if (profilePicPreview) {
+    profilePicPreview.addEventListener('click', function() {
+        profilePicInput.click();
+    });
+}
+*/ 

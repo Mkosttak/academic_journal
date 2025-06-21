@@ -21,8 +21,9 @@ class User(AbstractUser):
     biyografi = models.TextField(blank=True, null=True, verbose_name="Biyografi")
     profile_resmi = models.ImageField(
         upload_to=profile_pic_path,
-        default='profile_pics/default.png',
-        verbose_name="Profil Resmi"
+        verbose_name="Profil Resmi",
+        null=True,
+        blank=True
     )
     resume = models.FileField(
         upload_to=resume_path,

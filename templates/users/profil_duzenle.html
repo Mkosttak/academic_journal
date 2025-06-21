@@ -24,7 +24,7 @@
                         <span id="pic-filename" class="form-text mt-2"></span>
                     </div>
                     <div style="display:none">
-                        {{ form.profile_resmi.as_widget }}
+                        {{ form.profile_resmi }}
                     </div>
                     <div class="row g-3">
                         <div class="col-12">
@@ -387,112 +387,11 @@
     background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
     color: #fff;
 }
+.profile-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 0.2rem rgba(99,102,241,0.2);
+    background: #fff;
+}
 </style>
-{% block extra_js %}
-{{ block.super }}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    /**
-     * Özel dosya yükleme alanlarını (profil resmi, pdf vb.) interaktif hale getiren fonksiyon.
-     * @param {object} config - Gerekli elementlerin ID'lerini içeren obje.
-     * {
-     * changeBtnId: 'Değiştir butonu IDsi',
-     * removeBtnId: 'Kaldır/Sil butonu IDsi',
-     * realInputId: "Django'nun gizli <input type='file'> IDsi",
-     * clearCheckboxId: "Django'nun gizli 'temizle' checkbox IDsi",
-     * previewImgId: '(Opsiyonel) Resim önizleme <img> elementi IDsi',
-     * filenameSpanId: '(Opsiyonel) Dosya adını gösterecek <span> elementi IDsi'
-     * }
-     */
-    function setupCustomFileInput(config) {
-        const changeBtn = document.getElementById(config.changeBtnId);
-        const removeBtn = document.getElementById(config.removeBtnId);
-        const realInput = document.getElementById(config.realInputId);
-        const clearCheckbox = document.getElementById(config.clearCheckboxId);
-        const previewImg = config.previewImgId ? document.getElementById(config.previewImgId) : null;
-        const filenameSpan = config.filenameSpanId ? document.getElementById(config.filenameSpanId) : null;
-
-        if (!changeBtn || !removeBtn || !realInput) {
-            // Gerekli elemanlar yoksa fonksiyonu çalıştırma
-            // console.error('Eksik eleman IDsi:', config);
-            return;
-        }
-
-        // "Değiştir" butonu gizli dosya inputunu tetikler
-        changeBtn.addEventListener('click', () => realInput.click());
-
-        // "Kaldır/Sil" butonu dosyayı temizler
-        removeBtn.addEventListener('click', () => {
-            realInput.value = ''; // Dosya seçimini iptal et
-            if (clearCheckbox) {
-                clearCheckbox.checked = true;
-            }
-            if (previewImg) {
-                // Varsayılan resme geri dön
-                previewImg.src = '/static/images/default_profile.png';
-            }
-            if (filenameSpan) {
-                filenameSpan.innerHTML = '<i>Dosya kaldırıldı. Kaydedince silinecek.</i>';
-            }
-            removeBtn.classList.add('d-none');
-        });
-
-        // Yeni bir dosya seçildiğinde arayüzü güncelle
-        realInput.addEventListener('change', function() {
-            if (this.files && this.files.length > 0) {
-                const file = this.files[0];
-                if (filenameSpan) {
-                    filenameSpan.textContent = file.name;
-                }
-                if (previewImg && file.type.startsWith('image/')) {
-                    // Resim önizlemesini güncelle
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        previewImg.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-                
-                removeBtn.classList.remove('d-none');
-                if (clearCheckbox) {
-                    clearCheckbox.checked = false;
-                }
-            }
-        });
-    }
-
-    // 1. Profil Resmini Ayarla
-    setupCustomFileInput({
-        changeBtnId:     'change-pic-btn',
-        removeBtnId:     'remove-pic-btn',
-        realInputId:     'id_profile_resmi',
-        clearCheckboxId: 'profile_resmi-clear_id',
-        previewImgId:    'image-preview',
-        filenameSpanId:  'pic-filename'
-    });
-
-    // 2. Özgeçmiş (PDF) Dosyasını Ayarla
-    setupCustomFileInput({
-        changeBtnId:     'change-resume-btn',
-        removeBtnId:     'remove-resume-btn',
-        realInputId:     'id_resume',
-        clearCheckboxId: 'resume-clear_id',
-        previewImgId:    null, // PDF için resim önizlemesi yok
-        filenameSpanId:  'resume-filename'
-    });
-
-    // Biyografi karakter sayacı
-    const bioInput = document.getElementById('id_biyografi');
-    const bioCharCount = document.getElementById('bio-char-count');
-    if (bioInput && bioCharCount) {
-        const updateBioCount = () => {
-            bioCharCount.textContent = bioInput.value.length + ' karakter';
-        };
-        bioInput.addEventListener('input', updateBioCount);
-        updateBioCount();
-    }
-});
-</script>
 {% endblock %}
-{% endblock %} 
 

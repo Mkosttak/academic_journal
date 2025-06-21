@@ -29,7 +29,7 @@ def article_file_cleanup(sender, instance, **kwargs):
 
 @receiver(post_delete, sender=User)
 def on_delete_user_cleanup(sender, instance, **kwargs):
-    if instance.profile_resmi and instance.profile_resmi.name != 'profile_pics/default.png':
+    if instance.profile_resmi:
         if os.path.isfile(instance.profile_resmi.path):
             os.remove(instance.profile_resmi.path)
     if instance.resume and os.path.isfile(instance.resume.path):
