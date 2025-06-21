@@ -40,9 +40,17 @@
                                 {% for user in kullanicilar %}
                                 <tr>
                                     <td><strong>@{{ user.username }}</strong></td>
-                                    <td class="d-flex align-items-center gap-2">
-                                        <img src="{{ user.profile_resmi.url }}" alt="Profil" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
-                                        <span>{{ user.get_full_name|default:"-" }}</span>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            {% if user.profile_resmi %}
+                                                <img src="{{ user.profile_resmi.url }}" alt="Profil" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
+                                            {% else %}
+                                                <div class="rounded-circle bg-light d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;">
+                                                    <i class="bi bi-person text-secondary"></i>
+                                                </div>
+                                            {% endif %}
+                                            <span>{{ user.get_full_name|default:"-" }}</span>
+                                        </div>
                                     </td>
                                     <td>{{ user.email }}</td>
                                     <td>{% if user.is_editor %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-secondary"></i>{% endif %}</td>

@@ -151,10 +151,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const changePicButton = document.getElementById('change-pic-btn');
     const removePicButton = document.getElementById('remove-pic-btn');
     const imagePreview = document.getElementById('image-preview');
+    const iconPlaceholder = document.getElementById('icon-placeholder');
     const filenameSpan = document.getElementById('pic-filename');
-    const defaultPicUrl = '/static/images/default_profile.png';
-    const clearCheckbox = document.querySelector('input[name="profile_resmi-clear"]');
-
+    
     if (changePicButton && profilePicInput) {
         changePicButton.addEventListener('click', function() {
             profilePicInput.click();
@@ -165,46 +164,41 @@ document.addEventListener('DOMContentLoaded', function() {
         profilePicInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
-                // Ön yüzde resmi göster
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    if (imagePreview) {
+                    if (imagePreview && iconPlaceholder) {
                         imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block'; // Görünür yap
+                        imagePreview.classList.remove('d-none');
+                        iconPlaceholder.classList.add('d-none');
                     }
                 };
                 reader.readAsDataURL(file);
 
-                // Dosya adını ve butonları güncelle
-                if (filenameSpan) {
-                    filenameSpan.textContent = file.name;
-                }
-                if (removePicButton) {
-                    removePicButton.classList.remove('d-none');
-                }
-                // Arka planda "temizle" işaretini kaldır
-                if (clearCheckbox) {
-                    clearCheckbox.checked = false;
-                }
+                if (filenameSpan) filenameSpan.textContent = file.name;
+                if (removePicButton) removePicButton.classList.remove('d-none');
+                
+                const clearCheckbox = document.querySelector('input[name="profile_resmi-clear"]');
+                if (clearCheckbox) clearCheckbox.checked = false;
             }
         });
     }
 
-    if (removePicButton && imagePreview && clearCheckbox) {
+    if (removePicButton && imagePreview && iconPlaceholder) {
         removePicButton.addEventListener('click', function() {
-            // 1. Arka planda, Django'ya 'bu alanı temizle' komutunu ver.
-            clearCheckbox.checked = true;
-            
-            // Dosya seçimini de temizle
-            profilePicInput.value = '';
-
-            // 2. Ön yüzde, resmi varsayılan haline getir ve dosya adını temizle.
-            imagePreview.src = defaultPicUrl;
-            if (filenameSpan) {
-                filenameSpan.textContent = '';
+            const clearCheckbox = document.querySelector('input[name="profile_resmi-clear"]');
+            if (!clearCheckbox) {
+                console.error('Temizle onay kutusu bulunamadı!');
+                return;
             }
 
-            // 3. "Kaldır" butonunu gizle.
+            clearCheckbox.checked = true;
+            if (profilePicInput) profilePicInput.value = '';
+
+            imagePreview.src = ''; 
+            imagePreview.classList.add('d-none');
+            iconPlaceholder.classList.remove('d-none');
+            
+            if (filenameSpan) filenameSpan.textContent = '';
             removePicButton.classList.add('d-none');
         });
     }
