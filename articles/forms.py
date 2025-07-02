@@ -121,6 +121,15 @@ class MakaleForm(YazarFormMixin, forms.ModelForm):
             
         return instance
 
+    def clean_pdf_dosyasi(self):
+        pdf = self.cleaned_data.get('pdf_dosyasi')
+        if pdf:
+            if not pdf.name.lower().endswith('.pdf'):
+                raise forms.ValidationError('Sadece PDF dosyası yükleyebilirsiniz.')
+            if pdf.size > 10 * 1024 * 1024:
+                raise forms.ValidationError('PDF dosyası en fazla 10MB olabilir.')
+        return pdf
+
 # --- EDİTÖR MAKALE FORMU ---
 class EditorMakaleForm(YazarFormMixin, forms.ModelForm):
     class Meta:
@@ -163,3 +172,12 @@ class EditorMakaleForm(YazarFormMixin, forms.ModelForm):
         instance = super().save(commit=True)
         self._save_yazarlar(instance)
         return instance
+
+    def clean_pdf_dosyasi(self):
+        pdf = self.cleaned_data.get('pdf_dosyasi')
+        if pdf:
+            if not pdf.name.lower().endswith('.pdf'):
+                raise forms.ValidationError('Sadece PDF dosyası yükleyebilirsiniz.')
+            if pdf.size > 10 * 1024 * 1024:
+                raise forms.ValidationError('PDF dosyası en fazla 10MB olabilir.')
+        return pdf

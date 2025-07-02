@@ -76,32 +76,4 @@
     </div>
   </div>
 </div>
-<style>
-.glass-card {
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 1.5rem;
-  box-shadow: 0 8px 32px 0 rgba(44,62,80,0.13);
-  border: 1.5px solid #e0e0e0;
-}
-@media (max-width: 991.98px) {
-  .glass-card { border-radius: 1.2rem !important; }
-}
-@media (max-width: 767.98px) {
-  .card-body, .card-header, .card-footer { padding-left: 1rem !important; padding-right: 1rem !important; }
-  .card { border-radius: 1.2rem !important; }
-  .rounded-top-4, .rounded-bottom-4 { border-radius: 1.2rem !important; }
-  .btn { width: 100%; margin-bottom: 0.5rem; }
-  .form-control, .form-check-input { font-size: 1.1rem; }
-  .position-relative.mb-3 { width: 80px !important; }
-  .rounded-circle { width: 80px !important; height: 80px !important; }
-}
-.blink {
-  animation: blinker 1s linear infinite;
-}
-@keyframes blinker {
-  50% { opacity: 0; }
-}
-</style>
 {% endblock %}

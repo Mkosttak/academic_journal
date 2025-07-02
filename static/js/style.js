@@ -202,6 +202,37 @@ document.addEventListener('DOMContentLoaded', function() {
             removePicButton.classList.add('d-none');
         });
     }
+
+    // --- Inline JS from partials/_navbar.html ---
+    let lastScrollTop = 0;
+    const navbar = document.querySelector('.navbar-glass');
+    const scrollThreshold = 50;
+    if (navbar) {
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
+                navbar.classList.add('navbar-hidden');
+                navbar.classList.remove('navbar-visible');
+            } else {
+                navbar.classList.remove('navbar-hidden');
+                navbar.classList.add('navbar-visible');
+            }
+            lastScrollTop = scrollTop;
+        });
+    }
+
+    // --- Inline JS from partials/_messages.html ---
+    const toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    toastElList.forEach(function (toastEl) {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+            const toast = new bootstrap.Toast(toastEl, {
+                animation: true,
+                autohide: true,
+                delay: 5000
+            });
+            toast.show();
+        }
+    });
 });
 
 /*

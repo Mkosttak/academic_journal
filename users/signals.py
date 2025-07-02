@@ -1,4 +1,5 @@
 import os
+import logging
 from django.db.models.signals import pre_save, post_delete, post_save
 from django.dispatch import receiver
 from .models import User
@@ -33,14 +34,14 @@ def on_delete_user_cleanup(sender, instance, **kwargs):
         try:
             if os.path.isfile(instance.profile_resmi.path):
                 os.remove(instance.profile_resmi.path)
-        except Exception:
-            pass
+        except Exception as e:
+            logging.error(f"Profil resmi silinemedi: {e}")
     if instance.resume:
         try:
             if os.path.isfile(instance.resume.path):
                 os.remove(instance.resume.path)
-        except Exception:
-            pass
+        except Exception as e:
+            logging.error(f"Özgeçmiş dosyası silinemedi: {e}")
 
 @receiver(post_delete, sender=Makale)
 def on_delete_article_cleanup(sender, instance, **kwargs):
@@ -48,8 +49,8 @@ def on_delete_article_cleanup(sender, instance, **kwargs):
         try:
             if os.path.isfile(instance.pdf_dosyasi.path):
                 os.remove(instance.pdf_dosyasi.path)
-        except Exception:
-            pass
+        except Exception as e:
+            logging.error(f"Makale PDF dosyası silinemedi: {e}")
 
 @receiver(post_save, sender=User)
 def create_or_update_yazar_profile(sender, instance, created, **kwargs):

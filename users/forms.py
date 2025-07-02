@@ -44,3 +44,21 @@ class CustomUserChangeForm(forms.ModelForm):
         help_texts = {
             'resume': None,
         }
+
+    def clean_profile_resmi(self):
+        img = self.cleaned_data.get('profile_resmi')
+        if img:
+            if not img.content_type.startswith('image/'):
+                raise forms.ValidationError('Sadece resim dosyası yükleyebilirsiniz.')
+            if img.size > 5 * 1024 * 1024:
+                raise forms.ValidationError('Profil resmi en fazla 5MB olabilir.')
+        return img
+
+    def clean_resume(self):
+        resume = self.cleaned_data.get('resume')
+        if resume:
+            if not resume.name.lower().endswith('.pdf'):
+                raise forms.ValidationError('Sadece PDF dosyası yükleyebilirsiniz.')
+            if resume.size > 10 * 1024 * 1024:
+                raise forms.ValidationError('Özgeçmiş dosyası en fazla 10MB olabilir.')
+        return resume
