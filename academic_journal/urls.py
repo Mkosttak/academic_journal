@@ -23,10 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # Kullanıcı işlemleriyle ilgili URL'leri 'users' uygulamasına yönlendir
-    path('users/', include('users.urls')),
+    path('kullanici/', include('users.urls')),
     
     # Makalelerle ilgili URL'leri 'articles' uygulamasına yönlendir
-    path('articles/', include('articles.urls')),
+    path('makaleler/', include('articles.urls')),
     
     # Diğer sayfalar (Anasayfa, Hakkında, İletişim vs.) için 'pages' uygulamasını kullan
     # 'pages' uygulamasındaki URL'leri ana dizinden çağıracağımız için path boş olacak
