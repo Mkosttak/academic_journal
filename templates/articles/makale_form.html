@@ -140,24 +140,8 @@
 window.currentUsername = "{{ request.user.username|escapejs }}";
 window.currentFullName = "{{ request.user.get_full_name|default:request.user.username|escapejs }}";
 window.checkAuthorUrl = "{% url 'check_author' %}";
-
-document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.querySelector('input[type="file"][name="pdf_dosyasi"]');
-    const fileInfo = document.getElementById('pdf-file-info');
-    if (fileInput && fileInfo) {
-        fileInput.addEventListener('change', function() {
-            if (fileInput.files && fileInput.files.length > 0) {
-                const fileName = fileInput.files[0].name;
-                fileInfo.className = 'badge bg-success mb-2';
-                fileInfo.innerHTML = '<i class="bi bi-file-earmark-pdf-fill me-1"></i> Seçilen: ' + fileName;
-            } else {
-                fileInfo.className = 'text-muted';
-                fileInfo.innerHTML = 'Henüz PDF yüklenmedi.';
-            }
-        });
-    }
-});
 </script>
+<script src="{% static 'js/style.js' %}"></script>
 {% endblock %}
 
 <style>

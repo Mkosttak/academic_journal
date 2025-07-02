@@ -135,6 +135,7 @@ window.currentFullName = "{{ request.user.get_full_name|default:request.user.use
 window.checkAuthorUrl = "{% url 'check_author' %}";
 window.csrfToken = "{{ csrf_token }}";
 </script>
+<script src="{% static 'js/style.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}

@@ -30,15 +30,26 @@ def article_file_cleanup(sender, instance, **kwargs):
 @receiver(post_delete, sender=User)
 def on_delete_user_cleanup(sender, instance, **kwargs):
     if instance.profile_resmi:
-        if os.path.isfile(instance.profile_resmi.path):
-            os.remove(instance.profile_resmi.path)
-    if instance.resume and os.path.isfile(instance.resume.path):
-        os.remove(instance.resume.path)
+        try:
+            if os.path.isfile(instance.profile_resmi.path):
+                os.remove(instance.profile_resmi.path)
+        except Exception:
+            pass
+    if instance.resume:
+        try:
+            if os.path.isfile(instance.resume.path):
+                os.remove(instance.resume.path)
+        except Exception:
+            pass
 
 @receiver(post_delete, sender=Makale)
 def on_delete_article_cleanup(sender, instance, **kwargs):
-    if instance.pdf_dosyasi and os.path.isfile(instance.pdf_dosyasi.path):
-        os.remove(instance.pdf_dosyasi.path)
+    if instance.pdf_dosyasi:
+        try:
+            if os.path.isfile(instance.pdf_dosyasi.path):
+                os.remove(instance.pdf_dosyasi.path)
+        except Exception:
+            pass
 
 @receiver(post_save, sender=User)
 def create_or_update_yazar_profile(sender, instance, created, **kwargs):
