@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Makaleyi Sil{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card glass-card border-0 shadow-lg p-4">
+                <div class="text-center mb-3">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 rounded-circle mb-3" style="width:64px; height:64px;">
+                        <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
+                    </div>
+                    <h2 class="mb-2">Silme Onayı</h2>
+                </div>
+                <div class="text-center mb-4">
+                    <p class="fs-5 mb-2"><strong>"{{ object.baslik }}"</strong> başlıklı makaleyi silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger fw-semibold">Bu işlem geri alınamaz!</p>
+                </div>
+                <form method="post" class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                    {% csrf_token %}
+                    <a href="{% url 'makalelerim' %}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">İptal</a>
+                    <button type="submit" class="btn btn-danger btn-lg rounded-pill px-4">Evet, Sil</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.glass-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 1.3rem;
+    box-shadow: 0 8px 32px 0 rgba(44,62,80,0.13);
+}
+@media (max-width: 576px) {
+    .glass-card {
+        padding: 1.2rem !important;
+        border-radius: 1rem;
+    }
+    .btn-lg {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+    }
+}
+</style>
+{% endblock %} 

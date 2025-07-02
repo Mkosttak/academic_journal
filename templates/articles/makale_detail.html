@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}{{ makale.baslik }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'makale_list' %}" class="text-decoration-none">Makaleler</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ makale.baslik }}</li>
+        </ol>
+    </nav>
+
+    {% if makale.admin_notu %}
+    <div class="d-flex align-items-center bg-warning bg-opacity-10 text-warning-emphasis rounded-3 p-3 mt-2 mb-4 small border-start border-warning border-4">
+        <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+        <strong>Editör Notu:</strong> <span class="ms-2">{{ makale.admin_notu }}</span>
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4 p-md-5 position-relative">
+            <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+                <div>
+                    <h1 class="h2 mb-3">{{ makale.baslik }}</h1>
+                    <div class="d-flex align-items-center gap-3 text-muted mb-4 flex-wrap">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar3 me-2"></i>
+                            <span>{{ makale.olusturulma_tarihi|date:"d M Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% if request.user.is_authenticated %}
+                    {% if request.user in makale.yazarlar.all or request.user.is_editor or request.user.is_superuser %}
+                        <div class="dropdown makale-menu-dropdown" style="position: absolute; top: 1.5rem; right: 2rem; z-index: 2;">
+                            <button class="btn btn-light rounded-circle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <li>
+                                    {% if request.user.is_superuser %}
+                                        <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" class="dropdown-item">
+                                            <i class="bi bi-pencil-square me-2"></i>Düzenle (Admin)
+                                        </a>
+                                    {% elif request.user.is_editor %}
+                                        {% if request.user not in makale.yazarlar.all %}
+                                            <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" class="dropdown-item">
+                                                <i class="bi bi-pencil-square me-2"></i>Düzenle (Editör)
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'makale_duzenle' makale.slug %}" class="dropdown-item">
+                                                <i class="bi bi-pencil-square me-2"></i>Düzenle
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'makale_duzenle' makale.slug %}" class="dropdown-item">
+                                            <i class="bi bi-pencil-square me-2"></i>Düzenle
+                                        </a>
+                                    {% endif %}
+                                </li>
+                                {% if request.user.is_superuser %}
+                                <li>
+                                    <a href="#" class="dropdown-item text-danger" onclick="return confirm('Bu makale silinsin mi?');">
+                                        <i class="bi bi-trash me-2"></i>Sil
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <h5 class="d-flex align-items-center mb-3">
+                    <i class="bi bi-person me-2 text-primary"></i>
+                    Yazarlar
+                </h5>
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    {% for yazar in makale.yazarlar.all %}
+                        {% if yazar.user_hesabi %}
+                            <a href="{% url 'kullanici_profili' yazar.user_hesabi.username %}" class="badge bg-primary text-white text-decoration-none px-3 py-2 rounded-pill">
+                                <i class="bi bi-person me-1"></i>
+                                {{ yazar.isim_soyisim }}
+                            </a>
+                        {% else %}
+                            <span class="badge bg-secondary text-white px-3 py-2 rounded-pill">
+                                <i class="bi bi-person me-1"></i>
+                                {{ yazar.isim_soyisim }}
+                            </span>
+                        {% endif %}
+                    {% empty %}
+                        <span class="text-muted">Yazar bilgisi yok</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if makale.get_keywords_list %}
+            <div class="mb-4">
+                <h5 class="d-flex align-items-center mb-3">
+                    <i class="bi bi-key me-2 text-primary"></i>
+                    Anahtar Kelimeler
+                </h5>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for keyword in makale.get_keywords_list %}
+                        <span class="badge bg-info text-white px-3 py-2 rounded-pill">
+                            {{ keyword }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="mb-4">
+                <h5 class="d-flex align-items-center mb-3">
+                    <i class="bi bi-file-text me-2 text-primary"></i>
+                    Açıklama
+                </h5>
+                <div class="card bg-light border-0 rounded-3">
+                    <div class="card-body">
+                        {{ makale.aciklama|linebreaks }}
+                    </div>
+                </div>
+            </div>
+
+            {% if makale.pdf_dosyasi %}
+            <div class="mb-4">
+                <h5 class="d-flex align-items-center mb-3">
+                    <i class="bi bi-file-pdf me-2 text-danger"></i>
+                    PDF Dosyası
+                </h5>
+                <a href="{{ makale.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-danger">
+                    <i class="bi bi-file-pdf me-2"></i>PDF'i Görüntüle
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 1rem;
+}
+.badge {
+    font-weight: 500;
+}
+.dropdown-menu {
+    border-radius: 0.5rem;
+    border: none;
+}
+.dropdown-item {
+    padding: 0.5rem 1rem;
+}
+.dropdown-item:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+.dropdown-item.text-danger:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+</style>
+{% endblock %} 

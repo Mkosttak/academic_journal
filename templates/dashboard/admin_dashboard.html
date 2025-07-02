@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Admin Paneli{% endblock %}
+{% block content %}
+<div class="container-fluid mt-4 dashboard-container">
+    <div class="welcome-section mb-4 text-center">
+        <h2 class="mb-2 fw-bold text-gradient">Admin Paneli</h2>
+        <p class="text-muted mb-4">Site yönetimine hoş geldiniz<span class="fw-semibold">{{ request.user.get_full_name }}</span>.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card users-card">
+                <div class="card-body">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Toplam Kullanıcı</div>
+                        <div class="stat-value">{{ toplam_kullanici }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card articles-card">
+                <div class="card-body">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Toplam Makale</div>
+                        <div class="stat-value">{{ toplam_makale }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card messages-card">
+                <div class="card-body">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-envelope-exclamation"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Cevaplanmamış Mesaj</div>
+                        <div class="stat-value">{{ cevap_bekleyen_mesaj }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card published-card">
+                <div class="card-body">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-journal-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Yayındaki Makale</div>
+                        <div class="stat-value">{{ unread_messages_count }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-12 col-lg-6">
+            <div class="content-card">
+                <div class="card-header">
+                    <span class="header-title"><i class="bi bi-lightning-charge"></i>Hızlı Erişim</span>
+                </div>
+                <div class="card-body">
+                    <div class="quick-access-list">
+                        <a href="{% url 'dashboard:editor_panel' %}" class="quick-access-item">
+                            <i class="bi bi-journals"></i>
+                            <span>Makale Yönetimi</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        <a href="{% url 'dashboard:admin_user_list' %}" class="quick-access-item">
+                            <i class="bi bi-people"></i>
+                            <span>Kullanıcı Yönetimi</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        <a href="{% url 'dashboard:admin_iletisim_list' %}" class="quick-access-item">
+                            <i class="bi bi-envelope"></i>
+                            <span>İletişim Mesajları</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        <a href="{% url 'dashboard:admin_dergisayisi_list' %}" class="quick-access-item">
+                            <i class="bi bi-collection"></i>
+                            <span>Dergi Sayısı Yönetimi</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="content-card">
+                <div class="card-header">
+                    <span class="header-title"><i class="bi bi-journal-text"></i>Son Eklenen Makaleler</span>
+                </div>
+                <div class="card-body">
+                    <div class="recent-list">
+                        {% for makale in son_makaleler %}
+                            <a href="{% url 'makale_detail' makale.slug %}" class="recent-item text-decoration-none">
+                                <div class="recent-info">
+                                    <span class="recent-title">{{ makale.baslik|truncatechars:40 }}</span>
+                                    <span class="recent-time">{{ makale.olusturulma_tarihi|timesince }} önce</span>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <div class="empty-state">
+                                <i class="bi bi-journal-x"></i>
+                                <span>Henüz makale eklenmemiş</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-12 col-lg-6">
+            <div class="content-card">
+                <div class="card-header">
+                    <span class="header-title"><i class="bi bi-person-plus"></i>Son Kayıtlı Kullanıcılar</span>
+                </div>
+                <div class="card-body">
+                    <div class="recent-list">
+                        {% for user in son_kullanicilar %}
+                            <div class="recent-item">
+                                <div class="recent-info">
+                                    <span class="recent-title">{{ user.get_full_name|default:user.username }}</span>
+                                    <span class="recent-time">{{ user.date_joined|timesince }} önce</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="empty-state">
+                                <i class="bi bi-person-x"></i>
+                                <span>Henüz kullanıcı eklenmemiş</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="content-card">
+                <div class="card-header">
+                    <span class="header-title"><i class="bi bi-bar-chart"></i>En Çok Okunan Makaleler</span>
+                </div>
+                <div class="card-body">
+                    <div class="recent-list">
+                        {% for makale in en_cok_okunan_makaleler %}
+                            <a href="{% url 'makale_detail' makale.slug %}" class="recent-item text-decoration-none">
+                                <div class="recent-info">
+                                    <span class="recent-title">{{ makale.baslik|truncatechars:40 }}</span>
+                                    <span class="recent-time"><i class="bi bi-eye me-1"></i>{{ makale.goruntulenme_sayisi }}</span>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <div class="empty-state">
+                                <i class="bi bi-journal-x"></i>
+                                <span>Henüz makale yok</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.welcome-section {
+    margin-bottom: 2rem;
+}
+
+.text-gradient {
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.stat-card .icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.users-card .icon-wrapper {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+}
+
+.articles-card .icon-wrapper {
+    background: linear-gradient(45deg, #2ecc71, #27ae60);
+    color: white;
+}
+
+.messages-card .icon-wrapper {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.published-card .icon-wrapper {
+    background: linear-gradient(45deg, #9b59b6, #8e44ad);
+    color: white;
+}
+
+.stat-info {
+    position: relative;
+    z-index: 1;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.content-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+    background: transparent;
+}
+
+.header-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-title i {
+    color: #3498db;
+}
+
+.quick-access-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.quick-access-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    color: #2c3e50;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.quick-access-item:hover {
+    background: #f8f9fa;
+    color: #3498db;
+    transform: translateX(5px);
+}
+
+.quick-access-item i:first-child {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    color: #3498db;
+}
+
+.quick-access-item i:last-child {
+    margin-left: auto;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.quick-access-item:hover i:last-child {
+    opacity: 1;
+}
+
+.recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.recent-item {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.recent-item:hover {
+    background: #f8f9fa;
+}
+
+.recent-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recent-title {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.recent-time {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: #6c757d;
+    gap: 1rem;
+}
+
+.empty-state i {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+@media (max-width: 767px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .text-gradient {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Ana Sayfa{% endblock %}
+{% block content %}
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-80 py-5">
+    <div class="glass-hero-card p-4 p-md-5 mb-4 w-100" style="max-width: 700px;">
+        <div class="text-center">
+            <h1 class="display-5 fw-bold mb-3">Akademik Dergi Platformuna Hoş Geldiniz</h1>
+            <p class="fs-5 mb-4">Bilginin ve araştırmanın merkezi. En son makaleleri keşfedin, kendi çalışmalarınızı yayınlayın ve akademik dünyaya katkıda bulunun.</p>
+            <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                <a href="{% url 'makale_list' %}" class="btn btn-primary btn-lg rounded-pill px-4">Makaleleri Keşfet</a>
+                <a href="{% url 'kayit_ol' %}" class="btn btn-success btn-lg rounded-pill px-4">Hemen Katıl</a>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.glass-hero-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(44,62,80,0.13);
+}
+@media (max-width: 576px) {
+    .glass-hero-card {
+        padding: 1.2rem !important;
+        border-radius: 1rem;
+    }
+    .display-5 {
+        font-size: 2rem;
+    }
+    .fs-5 {
+        font-size: 1.1rem;
+    }
+    .btn-lg {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+    }
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Kullanıcı Yönetimi{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 col-md-11 col-12">
+            <nav aria-label="breadcrumb" class="mb-4 d-flex justify-content-between align-items-center">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/dashboard/" class="text-decoration-none">Admin Paneli</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Kullanıcı Yönetimi</li>
+                </ol>
+                <form method="get" class="mb-0 d-flex">
+                    <div class="input-group input-group-sm rounded-pill border">
+                        <span class="input-group-text bg-transparent border-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" name="q" class="form-control border-0 shadow-none" placeholder="Kullanıcı adı, isim, soyisim veya e-posta ile ara..." value="{{ request.GET.q|default:'' }}">
+                        <button class="btn btn-primary btn-sm rounded-pill ms-2" type="submit">Ara</button>
+                    </div>
+                </form>
+            </nav>
+            <div class="card shadow rounded-4 border-0">
+                <div class="card-header bg-primary text-white text-center rounded-top-4 d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0"><i class="bi bi-people me-2"></i>Kullanıcı Yönetimi</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı Adı</th>
+                                    <th>İsim Soyisim</th>
+                                    <th>Email</th>
+                                    <th>Editör</th>
+                                    <th>Sayfada Göster</th>
+                                    <th class="text-end">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in kullanicilar %}
+                                <tr>
+                                    <td><strong>@{{ user.username }}</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            {% if user.profile_resmi %}
+                                                <img src="{{ user.profile_resmi.url }}" alt="Profil" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
+                                            {% else %}
+                                                <div class="rounded-circle bg-light d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;">
+                                                    <i class="bi bi-person text-secondary"></i>
+                                                </div>
+                                            {% endif %}
+                                            <span>{{ user.get_full_name|default:"-" }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{% if user.is_editor %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-secondary"></i>{% endif %}</td>
+                                    <td>{% if user.goster_editorler_sayfasinda %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle-fill text-secondary"></i>{% endif %}</td>
+                                    <td class="text-end">
+                                        <a href="{% url 'kullanici_profili' user.username %}" class="btn btn-sm btn-outline-primary rounded-circle me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Profili Görüntüle">
+                                            <i class="bi bi-person-circle fs-6"></i>
+                                        </a>
+                                        <a href="{% url 'dashboard:admin_user_update' user.pk %}" class="btn btn-sm btn-outline-secondary rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Rolleri Düzenle">
+                                            <i class="bi bi-pencil-square fs-6"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center p-5">
+                                        <div class="alert alert-warning text-center rounded-3 shadow-sm border-0 mb-0" role="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>Gösterilecek kullanıcı bulunamadı.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% include 'partials/_pagination.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

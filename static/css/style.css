@@ -1,0 +1,98 @@
+/* static/css/style.css */
+
+/* Genel Stil ve Tipografi */
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8f9fa; /* Hafif gri bir arka plan */
+    transition: background-color 0.3s;
+}
+
+/* Navbar Geliştirmeleri */
+.navbar-dark .navbar-nav .nav-link {
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #ffc107; /* Bootstrap'in warning rengi */
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* Profil resmi için navbar'da daha yumuşak bir görünüm */
+.navbar .dropdown-toggle img {
+    border: 2px solid #6c757d;
+    transition: transform 0.2s;
+}
+.navbar .dropdown-toggle:hover img {
+    transform: scale(1.1);
+}
+
+/* Buton ve Linkler için Hover Efektleri */
+.btn {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Kartlar için küçük animasyonlar ve gölgeler */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none; /* Bootstrap'in varsayılan border'ını kaldıralım */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 16px rgba(0,0,0,0.2);
+}
+
+/* Makale listesindeki linkler için daha belirgin bir stil */
+.card-title a {
+    color: #212529; /* Koyu renk */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.card-title a:hover {
+    color: #0d6efd; /* Bootstrap primary rengi */
+}
+
+/* Admin Dashboard Kartları için Canlı Renkler */
+.bg-primary { background-color: #0d6efd !important; }
+.bg-success { background-color: #198754 !important; }
+.bg-warning { background-color: #ffc107 !important; color: #000 !important; }
+.bg-info { background-color: #0dcaf0 !important; color: #000 !important; }
+
+/* Form elemanları için odaklanma efekti */
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Footer Stili */
+footer {
+    border-top: 3px solid #ffc107;
+}
+
+/* Form Hata Mesajı ve Hatalı Input Stili */
+.form-error-text {
+    border-radius: 0 0 0.6rem 0.6rem;
+    padding: 0.2rem 0.7rem 0.3rem 0.7rem;
+    background: #fff6f6;
+    border-top: 1px solid #f8d7da;
+    margin-bottom: 0.2rem;
+    color: #d32f2f;
+    font-size: 0.97em;
+    font-weight: 500;
+}
+.form-control.is-invalid, .form-control.border-danger {
+    border-color: #d32f2f !important;
+    box-shadow: 0 0 0 0.15rem #ffbdbd, 0 1px 4px rgba(211,47,47,0.08);
+    border-width: 2px !important;
+} 

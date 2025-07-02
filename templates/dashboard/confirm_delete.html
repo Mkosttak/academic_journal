@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Silme Onayı{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9 col-12">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/dashboard/" class="text-decoration-none">Admin Paneli</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Silme Onayı</li>
+                </ol>
+            </nav>
+            <div class="card shadow rounded-4 border-0">
+                <div class="card-header bg-danger text-white rounded-top-4 py-3">
+                    <h4 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Silme Onayı</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <p class="fs-5 mb-3">{{ delete_message|default:"Bu öğeyi silmek istediğinizden emin misiniz?" }}</p>
+                    <div class="alert alert-danger rounded-3 mb-4"><strong>Bu işlem geri alınamaz!</strong></div>
+                    <form method="post" class="d-flex flex-wrap gap-2 justify-content-center">
+                        {% csrf_token %}
+                        <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-secondary rounded-pill px-4 py-2 fw-semibold shadow-sm">İptal</a>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 fw-semibold shadow-sm">Evet, Sil</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

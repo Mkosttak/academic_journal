@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Makale Yönetimi{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 col-md-12 col-12">
+            <nav aria-label="breadcrumb" class="mb-4 d-flex justify-content-between align-items-center">
+                <ol class="breadcrumb mb-0">
+        {% if user.is_superuser %}
+                        <li class="breadcrumb-item"><a href="/dashboard/" class="text-decoration-none">Admin Paneli</a></li>
+        {% else %}
+                        <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Ana Sayfa</a></li>
+        {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page">Makale Yönetimi</li>
+                </ol>
+                <form method="get" class="mb-0 d-flex">
+                    <div class="input-group input-group-sm rounded-pill border">
+                        <span class="input-group-text bg-transparent border-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" name="q" class="form-control border-0 shadow-none" placeholder="Makale ara..." value="{{ request.GET.q|default:'' }}">
+                        <button class="btn btn-primary btn-sm rounded-pill ms-2" type="submit">Ara</button>
+            </div>
+                </form>
+            </nav>
+            <div class="card shadow rounded-4 border-0">
+                <div class="card-header bg-primary text-white text-center rounded-top-4 d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0"><i class="bi bi-journal-text me-2"></i>Makale Yönetimi</h4>
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'dashboard:editor_panel' %}" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm me-2">Tümü</a>
+                        <a href="?status=published" class="btn btn-success btn-sm rounded-pill px-3 shadow-sm me-2">Yayındakiler</a>
+                        <a href="?status=draft" class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm">Taslaklar</a>
+            </div>
+        </div>
+                <div class="card-body p-4">
+                    {% if makaleler %}
+    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                <tr>
+                                    <th scope="col">#</th>
+                    <th scope="col">Başlık</th>
+                    <th scope="col">Yazarlar</th>
+                    <th scope="col">Dergi Sayısı</th>
+                    <th scope="col">Durum</th>
+                                    <th scope="col">Admin Notu</th>
+                                    <th scope="col">Güncelleme Tarihi</th>
+                                    <th scope="col" class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for makale in makaleler %}
+                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                    <td>
+                                        <a href="{% url 'makale_detail' makale.slug %}" class="text-decoration-none fw-medium text-dark" title="{{ makale.baslik }}">
+                                            {{ makale.baslik|truncatechars:35 }}
+                                        </a>
+                    </td>
+                    <td>{{ makale.get_yazarlar_display|truncatechars:20 }}</td>
+                    <td>{{ makale.dergi_sayisi.sayi|default:"-"|truncatechars:15 }}</td>
+                    <td>
+                        {% if makale.goster_makaleler_sayfasinda %}
+                                            <span class="badge bg-success-subtle text-success-emphasis rounded-pill"><i class="bi bi-check-circle-fill me-1"></i>Yayında</span>
+                                        {% else %}
+                                            <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill"><i class="bi bi-hourglass-split me-1"></i>Taslak</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if makale.admin_notu %}
+                                            {% if not makale.admin_notu_okundu %}
+                                                <span class="badge bg-danger-subtle text-danger-emphasis rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ makale.admin_notu|truncatechars:100 }}">
+                                                    <i class="bi bi-exclamation-circle me-1"></i> Yeni Not
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-success-subtle text-success-emphasis rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ makale.admin_notu|truncatechars:100 }}">
+                                                    <i class="bi bi-check2-circle me-1"></i> Okundu
+                                                </span>
+                                            {% endif %}
+                        {% else %}
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">Yok</span>
+                        {% endif %}
+                    </td>
+                                    <td>{{ makale.guncellenme_tarihi|date:"d.m.Y" }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'makale_detail' makale.slug %}" class="btn btn-sm btn-outline-primary rounded-circle me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Görüntüle">
+                                            <i class="bi bi-eye-fill fs-6"></i>
+                                        </a>
+                                        <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" class="btn btn-sm btn-outline-secondary rounded-circle me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Düzenle">
+                                            <i class="bi bi-pencil-fill fs-6"></i>
+                        </a>
+                                        {% if user.is_superuser %}
+                                        <a href="{% url 'makale_sil' makale.slug %}" class="btn btn-sm btn-outline-danger rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Sil">
+                                            <i class="bi bi-trash3 fs-6"></i>
+                        </a>
+                                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+                    {% else %}
+                    <div class="alert alert-warning text-center rounded-3 shadow-sm border-0" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Henüz hiç makale bulunmamaktadır.
+                    </div>
+                    {% endif %}
+                </div>
+    {% include 'partials/_pagination.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script> 

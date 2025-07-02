@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ page_title|default:"Makale Yönetimi" }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-11 col-12">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/dashboard/" class="text-decoration-none">Admin Paneli</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:editor_panel' %}" class="text-decoration-none">Makale Yönetimi</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ page_title|default:"Makale Yönetim" }}</li>
+                </ol>
+            </nav>
+             <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include 'partials/_form_errors.html' with form=form %}
+                <input type="hidden" id="id_yazarlar_json" name="yazarlar_json" value="{{ form.yazarlar_json.value|default:'' }}">
+                <div class="card shadow rounded-4 border-0 mb-4">
+                    <div class="card-header bg-primary text-white rounded-top-4 py-3">
+                        <h4 class="mb-0"><i class="bi bi-journal-text me-2"></i>Makale Detayları</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-semibold">{{ form.baslik.label }}</label>
+                                {{ form.baslik|add_class:'form-control form-control-lg rounded-3 shadow-sm' }}
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-semibold">{{ form.aciklama.label }}</label>
+                                {{ form.aciklama|add_class:'form-control rounded-3 shadow-sm' }}
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-semibold">{{ form.anahtar_kelimeler.label|default:'Anahtar Kelimeler (İsteğe Bağlı)' }}</label>
+                                {{ form.anahtar_kelimeler|add_class:'form-control rounded-3 shadow-sm' }}
+                            </div>
+                            <hr class="my-3">
+                            <div class="mb-3 mt-2">
+                               <label class="form-label fw-bold">{{ form.pdf_dosyasi.label }}</label>
+                                <div class="card p-3 shadow-sm border-0 bg-light d-flex flex-column align-items-center align-items-md-start">
+                                    <div class="d-flex flex-column flex-md-row align-items-center w-100 gap-2">
+                                        <i class="bi bi-file-earmark-pdf-fill text-danger fs-2 me-2"></i>
+                                        <div class="flex-grow-1">
+                               {% if object.pdf_dosyasi %}
+                                                <span class="badge bg-success mb-2">Yüklü: 
+                                                    <a href="{{ object.pdf_dosyasi.url }}" target="_blank" class="text-white text-decoration-underline resume-filename">
+                                                        {% with name=object.pdf_dosyasi.name|cut:'article_pdfs/' %}
+                                                            {% if name|length > 25 %}
+                                                                {{ name|slice:":10" }}...{{ name|slice:"-10:" }}
+                                                            {% else %}
+                                                                {{ name }}
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    </a>
+                                                </span>
+                                                <a href="{{ object.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2"><i class="bi bi-download"></i> İndir</a>
+                                            {% else %}
+                                                <span class="text-muted">Henüz PDF yüklenmedi.</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="w-100 mt-3">
+                                        {{ form.pdf_dosyasi|add_class:'form-control rounded-3 shadow-sm' }}
+                                        <small class="text-muted">Sadece PDF dosyası yükleyiniz.</small>
+                                        {% if form.pdf_dosyasi.errors %}
+                                        <div class="alert alert-danger mt-2 py-1 px-2">{{ form.pdf_dosyasi.errors }}</div>
+                               {% endif %}
+                                    </div>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow rounded-4 border-0 mb-4">
+                    <div class="card-header bg-info text-white rounded-top-4 py-3">
+                        <h4 class="mb-0"><i class="bi bi-people me-2"></i>Yazarlar</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="input-group mb-3">
+                            <input type="text" id="author-input" class="form-control rounded-start-pill" placeholder="Harici yazar için 'İsim Soyisim', kayıtlı yazar için '@kullaniciadi'">
+                            <button class="btn btn-outline-success rounded-end-pill" type="button" id="add-author-btn">Ekle</button>
+                        </div>
+                        <div id="author-error-message" class="text-danger mb-2"></div>
+                        <p class="form-text">Eklenen Yazarlar:</p>
+                        <div id="author-list" class="d-flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+                <div class="card shadow rounded-4 border-0 mb-4">
+                    <div class="card-header bg-secondary text-white rounded-top-4 py-3">
+                        <h4 class="mb-0"><i class="bi bi-gear me-2"></i>Yönetim Paneli</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="{{ form.dergi_sayisi.id_for_label }}">{{ form.dergi_sayisi.label }} <span style="color:red">*</span></label>
+                            <div class="input-group">
+                                {{ form.dergi_sayisi|add_class:'form-control rounded-3 shadow-sm'|attr:'required' }}
+                                <a href="{% url 'dashboard:admin_dergisayisi_create' %}" target="_blank" class="btn btn-outline-success rounded-end-pill ms-2" title="Yeni Dergi Sayısı Ekle">
+                                    <i class="bi bi-plus-circle"></i> Ekle
+                                </a>
+                            </div>
+                       </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">{{ form.admin_notu.label }}</label>
+                            <div class="input-group">
+                                {{ form.admin_notu|add_class:'form-control rounded-3 shadow-sm' }}
+                                <button type="button" class="btn btn-outline-danger ms-2" id="clear-admin-note">
+                                    <i class="bi bi-eraser"></i> Temizle
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            {{ form.goster_makaleler_sayfasinda|add_class:'form-check-input' }}
+                            <label class="form-check-label ms-2" for="{{ form.goster_makaleler_sayfasinda.id_for_label }}">
+                                Makale Yayınlansın mı?
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold shadow-sm">Değişiklikleri Kaydet</button>
+                    <a href="{% url 'dashboard:editor_panel' %}" class="btn btn-secondary rounded-pill px-4 py-2 fw-semibold shadow-sm">İptal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+window.currentUsername = "{{ request.user.username|escapejs }}";
+window.currentFullName = "{{ request.user.get_full_name|default:request.user.username|escapejs }}";
+window.checkAuthorUrl = "{% url 'check_author' %}";
+window.csrfToken = "{{ csrf_token }}";
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-control-lg, .form-control.shadow-sm {
+    font-size: 1.25rem;
+    border-radius: 1.5rem !important;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15), 0 2px 12px 0 rgba(0,0,0,0.08);
+    border-color: #86b7fe;
+    background: #fff;
+}
+</style>
+{% endblock %} 

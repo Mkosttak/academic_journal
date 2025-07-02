@@ -1,0 +1,425 @@
+{% load static %}
+{% load form_tags %}
+
+<nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-glass shadow-sm">
+    <div class="container position-relative">
+        <!-- Mobile/tablet special header (visible on lg and below) -->
+        <div class="d-flex d-lg-none w-100 align-items-center justify-content-between position-relative" style="min-height:56px;">
+            <!-- Hamburger (left) -->
+            <button class="navbar-toggler border-0 rounded-circle p-2 ms-1" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav"
+                    aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+            <!-- Logo (center) -->
+            <a class="navbar-brand d-flex align-items-center mx-auto" href="{% url 'anasayfa' %}">
+                <i class="bi bi-journal-text fs-4 me-2 text-primary"></i>
+                <span>Akademik Dergi</span>
+            </a>
+            <!-- Profile/Buttons (right) -->
+            <div class="d-flex align-items-center gap-2 me-1">
+                {% if user.is_authenticated %}
+                    <a class="d-flex align-items-center" href="#" data-bs-toggle="dropdown" aria-expanded="false" id="userDropdownMobile">
+                        {% if user.profile_resmi %}
+                            <img src="{{ user.profile_resmi.url }}" class="rounded-circle" width="32" height="32" alt="{{ user.get_full_name|default:user.username }}" style="object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;">
+                                <i class="bi bi-person text-primary"></i>
+                            </div>
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-4 p-2 mt-2" aria-labelledby="userDropdownMobile">
+                        <li><a class="dropdown-item rounded-3" href="{% url 'my_profil' %}"><i class="bi bi-person-circle me-2"></i>Profilim</a></li>
+                        <li><a class="dropdown-item rounded-3" href="{% url 'makalelerim' %}"><i class="bi bi-journal-text me-2"></i>Makalelerim</a></li>
+                        <li><a class="dropdown-item rounded-3" href="{% url 'parola_degistir' %}"><i class="bi bi-key me-2"></i>Parola Güncelle</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger rounded-3"><i class="bi bi-box-arrow-right me-2"></i>Çıkış Yap</button>
+                            </form>
+                        </li>
+                    </ul>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary rounded-pill px-3 me-1 d-none d-lg-inline-flex align-items-center"><i class="bi bi-box-arrow-in-right me-1"></i> Giriş Yap</a>
+                    <a href="{% url 'kayit_ol' %}" class="btn btn-primary rounded-pill px-3 d-none d-lg-inline-flex align-items-center"><i class="bi bi-person-plus me-1"></i> Kayıt Ol</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary rounded-pill px-3 me-1 d-inline-flex d-lg-none align-items-center"><i class="bi bi-box-arrow-in-right me-1"></i></a>
+                    <a href="{% url 'kayit_ol' %}" class="btn btn-primary rounded-pill px-3 d-inline-flex d-lg-none align-items-center"><i class="bi bi-person-plus me-1"></i></a>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    {% if unread_notes_count and unread_notes_count > 0 %}
+                    <a href="{% url 'makalelerim' %}" class="nav-link px-2 d-lg-none position-relative" title="Yeni Admin Notu Olan Makaleler">
+                        <i class="bi bi-chat-dots fs-5 text-danger"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white small-badge">{{ unread_notes_count }}</span>
+                    </a>
+                    {% endif %}
+                    {% if user.is_superuser or user.is_editor %}
+                        {% if draft_articles_count and draft_articles_count > 0 %}
+                        <a href="{% url 'dashboard:editor_panel' %}" class="nav-link px-2 d-lg-none position-relative" title="Taslak Makaleler">
+                            <i class="bi bi-file-earmark-text fs-5 text-danger"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white small-badge">{{ draft_articles_count }}</span>
+                        </a>
+                        {% endif %}
+                        {% if user.is_superuser and unread_messages_count and unread_messages_count > 0 %}
+                        <a href="{% url 'dashboard:admin_iletisim_list' %}" class="nav-link px-2 d-lg-none position-relative" title="Cevaplanmamış İletişim Mesajları">
+                            <i class="bi bi-exclamation-circle fs-5 text-danger"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white small-badge">{{ unread_messages_count }}</span>
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <!-- Desktop logo and app name (only visible on lg and up) -->
+        <a class="navbar-brand d-none d-lg-flex align-items-center me-3" href="{% url 'anasayfa' %}">
+            <i class="bi bi-journal-text fs-4 me-2 text-primary"></i>
+            <span>Akademik Dergi</span>
+        </a>
+        <!-- Collapse menu: always contains nav and profile/buttons, toggled by hamburger on mobile, always visible on desktop -->
+        <div class="collapse navbar-collapse justify-content-between mobile-glass-menu" id="navbarNav">
+            <!-- Mobile menu header (logo + close button) -->
+            <div class="d-lg-none d-flex align-items-center justify-content-between px-3 pt-3 pb-2 mb-2 border-bottom">
+                <a class="navbar-brand d-flex align-items-center" href="{% url 'anasayfa' %}">
+                    <i class="bi bi-journal-text fs-4 me-2 text-primary"></i>
+                    <span>Akademik Dergi</span>
+                </a>
+                <button type="button" class="btn-close fs-3" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Menüyü Kapat"></button>
+            </div>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1 gap-2 mobile-menu-list">
+                <li class="nav-item">
+                    <a href="{% url 'anasayfa' %}" class="nav-link {% if request.resolver_match.url_name == 'anasayfa' %}active fw-bold{% endif %}">
+                        <i class="bi bi-house-door me-1"></i>Ana Sayfa
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'makale_list' %}" class="nav-link {% if request.resolver_match.url_name == 'makale_list' %}active fw-bold{% endif %}">
+                        <i class="bi bi-newspaper me-1"></i>Makaleler
+                    </a>
+                </li>
+
+                {% if user.is_authenticated and not user.is_superuser %}
+                    <li class="nav-item">
+                    <a href="{% url 'makale_ekle' %}" class="nav-link {% if request.resolver_match.url_name == 'makale_ekle' %}active fw-bold{% endif %}">
+                        <i class="bi bi-plus-circle me-1"></i>Makale Ekle
+                        </a>
+                    </li>
+                    {% endif %}
+
+                <li class="nav-item">
+                    <a href="{% url 'editorler' %}" class="nav-link {% if request.resolver_match.url_name == 'editorler' %}active fw-bold{% endif %}">
+                        <i class="bi bi-people me-1"></i>Editörler
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'hakkinda' %}" class="nav-link {% if request.resolver_match.url_name == 'hakkinda' %}active fw-bold{% endif %}">
+                        <i class="bi bi-info-circle me-1"></i>Hakkımızda
+                    </a>
+                </li>
+                        <li class="nav-item">
+                    <a href="{% url 'iletisim' %}" class="nav-link {% if request.resolver_match.url_name == 'iletisim' %}active fw-bold{% endif %}">
+                        <i class="bi bi-envelope me-1"></i>İletişim
+                            </a>
+                        </li>
+
+                {% if user.is_authenticated %}
+                    {% if user.is_editor and not user.is_superuser %}
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard:editor_panel' %}" class="nav-link nav-link-red {% if request.resolver_match.url_name == 'editor_panel' %}active fw-bold{% endif %}">
+                            <i class="bi bi-pencil-square me-1"></i>Editör Makaleleri
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% if user.is_superuser %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle nav-link-red" href="#" id="adminDropdown"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-gear me-1"></i>Admin İşlemleri
+                        </a>
+                        <ul class="dropdown-menu shadow-sm rounded-4 p-2" aria-labelledby="adminDropdown">
+                            <li><a href="{% url 'dashboard:admin_dashboard' %}" class="dropdown-item rounded-3">
+                                <i class="bi bi-speedometer2 me-2"></i>Admin Paneli
+                            </a></li>
+                            <li><a href="{% url 'dashboard:editor_panel' %}" class="dropdown-item rounded-3">
+                                <i class="bi bi-journal-text me-2"></i>Makale Yönetimi
+                            </a></li>
+                            <li><a href="{% url 'dashboard:admin_user_list' %}" class="dropdown-item rounded-3">
+                                <i class="bi bi-person-gear me-2"></i>Kullanıcı Yönetimi
+                            </a></li>
+                            <li><a href="{% url 'dashboard:admin_iletisim_list' %}" class="dropdown-item rounded-3">
+                                <i class="bi bi-envelope-fill me-2"></i>İletişim Yönetimi
+                            </a></li>
+                            <li><a href="{% url 'dashboard:admin_dergisayisi_list' %}" class="dropdown-item rounded-3">
+                                <i class="bi bi-book me-2"></i>Dergi Sayısı Yönetimi
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav align-items-center gap-lg-1 gap-2 d-none d-lg-flex">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdownDesktop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.profile_resmi %}
+                                <img src="{{ user.profile_resmi.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name|default:user.username }}" style="object-fit: cover;">
+                            {% else %}
+                                <div class="rounded-circle bg-primary bg-opacity-10 d-flex justify-content-center align-items-center me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-person text-primary"></i>
+                                </div>
+                            {% endif %}
+                            <span class="fw-semibold me-1">
+                                {% if user.is_superuser %}
+                                    ADMİN
+                                {% else %}
+                            {{ user.get_full_name|default:user.username }}
+                                {% endif %}
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-4 p-2 mt-2" aria-labelledby="userDropdownDesktop">
+                            <li><a class="dropdown-item rounded-3" href="{% url 'my_profil' %}"><i class="bi bi-person-circle me-2"></i>Profilim</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'makalelerim' %}"><i class="bi bi-journal-text me-2"></i>Makalelerim</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'parola_degistir' %}"><i class="bi bi-key me-2"></i>Parola Güncelle</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger rounded-3"><i class="bi bi-box-arrow-right me-2"></i>Çıkış Yap</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary rounded-pill px-3 me-1 d-none d-lg-inline-flex align-items-center"><i class="bi bi-box-arrow-in-right me-1"></i> Giriş Yap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'kayit_ol' %}" class="btn btn-primary rounded-pill px-3 d-none d-lg-inline-flex align-items-center"><i class="bi bi-person-plus me-1"></i> Kayıt Ol</a>
+                    </li>
+                {% endif %}
+                <!-- Hızlı erişim ikonları -->
+                {% if user.is_authenticated %}
+                    {% if unread_notes_count and unread_notes_count > 0 %}
+                    <li class="nav-item position-relative me-2">
+                        <a href="{% url 'makalelerim' %}" class="nav-link px-2" title="Yeni Admin Notu Olan Makaleler">
+                            <i class="bi bi-chat-dots fs-5 text-danger"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white small-badge">{{ unread_notes_count }}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if user.is_superuser or user.is_editor %}
+                        {% if draft_articles_count and draft_articles_count > 0 %}
+                        <li class="nav-item position-relative me-2">
+                            <a href="{% url 'dashboard:editor_panel' %}" class="nav-link px-2" title="Taslak Makaleler">
+                                <i class="bi bi-file-earmark-text fs-5 text-danger"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white small-badge">{{ draft_articles_count }}</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if user.is_superuser and unread_messages_count and unread_messages_count > 0 %}
+                        <li class="nav-item position-relative me-2">
+                            <a href="{% url 'dashboard:admin_iletisim_list' %}" class="nav-link px-2" title="Cevaplanmamış İletişim Mesajları">
+                                <i class="bi bi-exclamation-circle fs-5 text-danger"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white small-badge">{{ unread_messages_count }}</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav> 
+
+<style>
+.navbar-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1.5px solid rgba(44, 62, 80, 0.07);
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    border-radius: 0 0 1.2rem 1.2rem;
+    margin: 0 1rem;
+    width: calc(100% - 2rem);
+    box-shadow: 0 4px 24px 0 rgba(44,62,80,0.07);
+}
+
+.navbar-glass.navbar-hidden {
+    transform: translateY(-100%);
+}
+
+.navbar-glass.navbar-visible {
+    transform: translateY(0);
+}
+
+.nav-link-red {
+    color: #dc3545 !important;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s ease;
+}
+
+.nav-link-red:hover {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545 !important;
+}
+
+.nav-link-red.active, .nav-link-red:focus, .nav-link-red.show {
+    background: transparent !important;
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+/* Admin dropdown kırmızı hover/active/focus */
+.dropdown-menu .dropdown-item.nav-link-red,
+.dropdown-menu .dropdown-item.nav-link-red:active,
+.dropdown-menu .dropdown-item.nav-link-red:focus,
+.dropdown-menu .dropdown-item.nav-link-red:hover {
+    background: rgba(220, 53, 69, 0.13) !important;
+    color: #dc3545 !important;
+}
+
+/* Sadece admin dropdown içindeki tüm itemlar için kırmızı hover */
+.dropdown-menu[aria-labelledby="adminDropdown"] .dropdown-item:hover,
+.dropdown-menu[aria-labelledby="adminDropdown"] .dropdown-item:focus,
+.dropdown-menu[aria-labelledby="adminDropdown"] .dropdown-item:active {
+    background: rgba(220, 53, 69, 0.13) !important;
+    color: #dc3545 !important;
+}
+
+.navbar-nav .nav-link {
+    font-size: 0.98rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: 0.7rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.navbar-nav .nav-link.active, .navbar-nav .nav-link:focus {
+    background: #eaf3fb;
+    color: #2563eb !important;
+    font-weight: 600;
+}
+
+.navbar-nav .nav-link:hover {
+    background: #f3f7fa;
+    color: #2563eb !important;
+}
+
+.navbar-nav .dropdown-menu {
+    border-radius: 1rem;
+    min-width: 220px;
+    box-shadow: 0 4px 24px 0 rgba(44,62,80,0.09);
+    border: none;
+    padding: 0.5rem 0.2rem;
+}
+
+.navbar-nav .dropdown-item {
+    border-radius: 0.7rem;
+    font-size: 1.04rem;
+    padding: 0.6rem 1.1rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.navbar-nav .dropdown-item:active, .navbar-nav .dropdown-item:focus, .navbar-nav .dropdown-item:hover {
+    background: #eaf3fb;
+    color: #2563eb;
+}
+
+.navbar-nav .btn {
+    font-size: 1.08rem;
+    padding: 0.6rem 1.3rem;
+    border-radius: 2rem !important;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.06);
+    margin-right: 0.5rem;
+}
+
+.navbar-nav .btn:last-child {
+    margin-right: 0;
+}
+
+.navbar-nav .position-relative {
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 991.98px) {
+    .mobile-glass-menu {
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 1.2rem;
+        box-shadow: 0 8px 32px 0 rgba(44,62,80,0.13);
+        margin: 0.7rem 0.5rem;
+        padding-bottom: 1.2rem;
+        animation: glassMenuFadeIn 0.35s cubic-bezier(.4,0,.2,1);
+        min-width: 0;
+    }
+    @keyframes glassMenuFadeIn {
+        from { opacity: 0; transform: translateY(-16px) scale(0.98); }
+        to { opacity: 1; transform: none; }
+    }
+    .mobile-menu-list {
+        padding: 0 1.2rem;
+    }
+    .mobile-menu-list .nav-link {
+        font-size: 1.18rem;
+        padding: 1rem 0.7rem;
+        border-radius: 0.9rem;
+        margin-bottom: 0.3rem;
+        text-align: left;
+    }
+    .mobile-menu-list .nav-link.active, .mobile-menu-list .nav-link:focus {
+        background: #eaf3fb;
+        color: #2563eb !important;
+        font-weight: 600;
+    }
+    .mobile-menu-list .nav-link:hover {
+        background: #f3f7fa;
+        color: #2563eb !important;
+    }
+    .mobile-glass-menu .btn-close {
+        background: none;
+        font-size: 2rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+    .mobile-glass-menu .btn-close:hover {
+        opacity: 1;
+    }
+}
+@media (min-width: 992px) {
+    .d-lg-none { display: none !important; }
+    .d-lg-flex { display: flex !important; }
+}
+
+body {
+    padding-top: 80px;
+}
+
+.small-badge {
+  font-size: 0.75rem;
+  padding: 0.25em 0.45em;
+  z-index: 2;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let lastScrollTop = 0;
+    const navbar = document.querySelector('.navbar-glass');
+    const scrollThreshold = 50;
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
+            navbar.classList.add('navbar-hidden');
+            navbar.classList.remove('navbar-visible');
+        } else {
+            navbar.classList.remove('navbar-hidden');
+            navbar.classList.add('navbar-visible');
+        }
+        lastScrollTop = scrollTop;
+    });
+});
+</script> 
+</script> 

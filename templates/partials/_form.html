@@ -1,0 +1,73 @@
+{% load form_tags %}
+
+{# Formun genele yayılan, bir alana ait olmayan hataları (non-field errors) en üste basalım #}
+{% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in form.non_field_errors %}
+            <p class="mb-0">{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{# Formdaki tüm görünür alanlar için döngü başlat #}
+{% for field in form.visible_fields %}
+    {% if field.name != 'pdf_dosyasi' %}
+        <div class="mb-3">
+            
+            {# Eğer alan bir checkbox/switch ise, farklı bir HTML yapısı kullan #}
+            {% if field|is_checkbox %}
+                <div class="form-check form-switch">
+                    {% if field.errors %}
+                        {{ field|add_class:'form-check-input border border-danger' }}
+                    {% else %}
+                        {{ field|add_class:'form-check-input' }}
+                    {% endif %}
+                    <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                </div>
+
+            {# Diğer tüm alanlar (metin, e-posta, dosya vb.) için bu yapıyı kullan #}
+            {% else %}
+                <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                
+                {# Alanın widget türüne göre doğru CSS sınıfını ekleyelim #}
+                {% if field.field.widget.input_type == 'file' %}
+                    {{ field|add_class:'form-control' }}
+                {% elif field.field.widget.input_type == 'select' %}
+                    {{ field|add_class:'form-select' }}
+                {% else %}
+                    {% if field.errors %}
+                        {{ field|add_class:'form-control is-invalid border border-danger rounded-3 shadow-sm' }}
+                        <div class="form-error-text mt-1" style="color:#d32f2f; font-size:0.97em; font-weight:500;">
+                            {% for error in field.errors %}
+                                <span>{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ field|add_class:'form-control rounded-3 shadow-sm' }}
+                    {% endif %}
+                {% endif %}
+
+            {% endif %}
+
+            {# Eğer alana ait bir yardım metni varsa, onu göster #}
+            {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+
+        </div>
+    {% endif %}
+{% endfor %}
+
+<style>
+.form-error-text {
+    border-radius: 0 0 0.6rem 0.6rem;
+    padding: 0.2rem 0.7rem 0.3rem 0.7rem;
+    background: #fff6f6;
+    border-top: 1px solid #f8d7da;
+    margin-bottom: 0.2rem;
+}
+.form-control.is-invalid {
+    box-shadow: 0 0 0 0.15rem #ffbdbd, 0 1px 4px rgba(211,47,47,0.08);
+    border-width: 2px !important;
+}
+</style> 

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Kayıt Ol{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="register-glass-card">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold register-gradient mb-2" style="font-size:2rem;">Yeni Hesap Oluştur</h2>
+                    <p class="text-muted mb-0" style="font-size:1.05rem;">Akademik dergiye katılmak için bilgilerinizi doldurun.</p>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="modern-form-fields">
+                        {% include 'partials/_form.html' with form=form %}
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm register-btn">
+                            <i class="bi bi-person-plus me-2"></i>Kayıt Ol
+                        </button>
+                    </div>
+                </form>
+                <hr>
+                <p class="text-center mb-0">Zaten hesabınız var mı? <a href="{% url 'login' %}"><strong>Giriş Yapın</strong></a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.register-glass-card {
+    background: rgba(255,255,255,0.8);
+    border-radius: 1.3rem;
+    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.10);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 2.2rem 2rem 2rem 2rem;
+    margin-top: 1.5rem;
+}
+.register-gradient {
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.modern-form-fields .form-control {
+    border-radius: 1.2rem;
+    font-size: 1.08rem;
+    padding: 0.7rem 1.2rem;
+    box-shadow: 0 1px 4px rgba(44,62,80,0.04);
+    border: 1px solid #e0eafc;
+    background: rgba(255,255,255,0.95);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modern-form-fields .form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px #3498db33, 0 1px 4px rgba(44,62,80,0.08);
+    background: #fff;
+}
+.modern-form-fields .form-label {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.3rem;
+}
+.register-btn {
+    padding: 0.7rem 0;
+    font-size: 1.13rem;
+    letter-spacing: 0.01em;
+}
+@media (max-width: 767px) {
+    .register-glass-card {
+        padding: 1.1rem 0.5rem 1rem 0.5rem;
+        border-radius: 1rem;
+    }
+    .modern-form-fields .form-control {
+        font-size: 0.98rem;
+        padding: 0.55rem 0.8rem;
+    }
+    .register-btn {
+        font-size: 1rem;
+        padding: 0.55rem 0;
+    }
+}
+</style>
+{% endblock %} 

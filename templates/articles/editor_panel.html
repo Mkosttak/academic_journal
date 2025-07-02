@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Editör Paneli - Makale Yönetimi{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <h2>Editör Paneli - Makale Yönetimi</h2>
+    <hr>
+    
+    <div class="d-flex justify-content-start mb-3">
+        <a href="{% url 'dashboard:editor_panel' %}" class="btn btn-outline-secondary me-2">Tümü</a>
+        <a href="?status=published" class="btn btn-outline-success me-2">Yayındakiler</a>
+        <a href="?status=draft" class="btn btn-outline-warning me-2">Taslaklar</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Başlık</th>
+                    <th>Yazarlar</th>
+                    <th>Dergi Sayısı</th>
+                    <th>Durum</th>
+                    <th>Oluşturulma Tarihi</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for makale in makaleler %}
+                <tr>
+                    <td>{{ makale.baslik }}</td>
+                    <td>{{ makale.get_yazarlar_display }}</td>
+                    <td>{{ makale.dergi_sayisi.sayi|default:"-" }}</td>
+                    <td>
+                        {% if makale.goster_makaleler_sayfasinda %}
+                            <span class="badge bg-success">Yayında</span>
+                        {% else %}
+                            <span class="badge bg-warning">Taslak</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ makale.olusturulma_tarihi|date:"d M Y, H:i" }}</td>
+                    <td>
+                        <a href="{% url 'makale_detail' makale.slug %}" class="btn btn-sm btn-info" title="Görüntüle"><i class="bi bi-eye"></i></a>
+                        <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" %}" class="btn btn-sm btn-primary" title="Düzenle"><i class="bi bi-pencil-square"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Gösterilecek makale bulunamadı.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include 'partials/_pagination.html' %}
+
+</div>
+{% endblock %} 

@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Kullanıcıyı Düzenle - {{ object.get_full_name|default:object.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 col-md-11 col-12">
+            <nav aria-label="breadcrumb" class="mb-4 d-flex justify-content-between align-items-center">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/dashboard/" class="text-decoration-none">Admin Paneli</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:admin_user_list' %}" class="text-decoration-none">Kullanıcı Yönetimi</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Kullanıcıyı Düzenle</li>
+                </ol>
+            </nav>
+            <div class="card shadow rounded-4 border-0">
+                <div class="card-header bg-primary text-white text-center rounded-top-4 d-flex justify-content-between align-items-center py-3 px-4">
+                    <h4 class="mb-0 w-100"><i class="bi bi-person-gear me-2"></i>Kullanıcıyı Düzenle</h4>
+                </div>
+                <form method="post" enctype="multipart/form-data" class="p-0">
+                    {% csrf_token %}
+                    <div class="card-body p-4">
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger mb-4">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+                        <div class="row g-4 flex-wrap">
+                            <div class="col-md-4 col-12 d-flex flex-column align-items-center justify-content-start">
+                                <div class="position-relative mb-3" style="width: 150px;">
+                                    {% if object.profile_resmi %}
+                                        <img id="image-preview" src="{{ object.profile_resmi.url }}" class="rounded-circle shadow border border-3 border-white" alt="Profil Resmi" style="width: 150px; height: 150px; object-fit: cover;">
+                                        <div id="icon-placeholder" class="rounded-circle d-none" style="width: 150px; height: 150px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-person-fill text-secondary" style="font-size: 5rem;"></i>
+                                        </div>
+                                    {% else %}
+                                        <img id="image-preview" src="" class="rounded-circle d-none" alt="Profil Resmi" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
+                                        <div id="icon-placeholder" class="rounded-circle" style="width: 150px; height: 150px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-person-fill text-secondary" style="font-size: 5rem;"></i>
+                                        </div>
+                                    {% endif %}
+                                    <label for="{{ form.profile_resmi.id_for_label }}" class="position-absolute bottom-0 start-50 translate-middle-x badge bg-primary text-white shadow px-3 py-2" style="cursor:pointer; opacity:0.92; font-size:1rem; border-radius: 1.5rem;">
+                                        <i class="bi bi-camera me-1"></i> Değiştir
+                                    </label>
+                                    {{ form.profile_resmi|add_class:'d-none' }}
+                                </div>
+                                <div class="mb-3 w-100">
+                                    <label for="{{ form.resume.id_for_label }}" class="form-label fw-bold mt-2">{{ form.resume.label }}</label>
+                                    <div class="card p-3 shadow-sm border-0 bg-light d-flex flex-column align-items-center align-items-md-start">
+                                        <div class="d-flex flex-column flex-md-row align-items-center w-100 gap-2">
+                                            <i class="bi bi-file-earmark-person-fill text-primary fs-2 me-2"></i>
+                                            <div class="flex-grow-1">
+                                                {% if object.resume %}
+                                                    <span class="badge bg-success mb-2">Yüklü: 
+                                                        <a href="{{ object.resume.url }}" target="_blank" class="text-white text-decoration-underline resume-filename">
+                                                            {% with name=object.resume.name|cut:'resumes/' %}
+                                                                {% if name|length > 25 %}
+                                                                    {{ name|slice:":10" }}...{{ name|slice:"-10:" }}
+                                                                {% else %}
+                                                                    {{ name }}
+                                                                {% endif %}
+                                                            {% endwith %}
+                                                        </a>
+                                                    </span>
+                                                    <a href="{{ object.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2"><i class="bi bi-download"></i> İndir</a>
+                                                {% else %}
+                                                    <span class="text-muted">Henüz özgeçmiş yüklenmedi.</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="w-100 mt-3">
+                                            {{ form.resume|add_class:'form-control rounded-3 shadow-sm' }}
+                                            <small class="text-muted">Sadece PDF dosyası yükleyiniz.</small>
+                                            {% if form.resume.errors %}
+                                            <div class="alert alert-danger mt-2 py-1 px-2">{{ form.resume.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-12">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">{{ form.username.label }}</label>
+                                        <div class="input-group position-relative">
+                                            <span class="input-group-text bg-light border-0"><i class="bi bi-person"></i></span>
+                                            {{ form.username|add_class:'form-control form-control-lg rounded-3 shadow-sm bg-light text-secondary border-0 user-noneditable'|attr:'readonly:readonly' }}
+                                            <span class="position-absolute top-50 end-0 translate-middle-y badge bg-secondary me-2">Değiştirilemez</span>
+                                        </div>
+                                        {% if form.username.errors %}
+                                        <div class="alert alert-danger py-2 px-3 mt-2 mb-0" style="font-size:0.95em;">
+                                            {% for error in form.username.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">{{ form.first_name.label }}</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-0"><i class="bi bi-person-badge"></i></span>
+                                            {{ form.first_name|add_class:'form-control form-control-lg rounded-3 shadow-sm' }}
+                                        </div>
+                                        {% if form.first_name.errors %}
+                                        <div class="text-danger small mt-1">{{ form.first_name.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">{{ form.last_name.label }}</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-0"><i class="bi bi-person-badge-fill"></i></span>
+                                            {{ form.last_name|add_class:'form-control form-control-lg rounded-3 shadow-sm' }}
+                                        </div>
+                                        {% if form.last_name.errors %}
+                                        <div class="text-danger small mt-1">{{ form.last_name.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">{{ form.email.label }}</label>
+                                    <div class="input-group position-relative">
+                                        <span class="input-group-text bg-light border-0"><i class="bi bi-envelope"></i></span>
+                                        {{ form.email|add_class:'form-control form-control-lg rounded-3 shadow-sm bg-light text-secondary border-0 user-noneditable'|attr:'readonly:readonly' }}
+                                        <span class="position-absolute top-50 end-0 translate-middle-y badge bg-secondary me-2">Değiştirilemez</span>
+                                    </div>
+                                    {% if form.email.errors %}
+                                    <div class="text-danger small mt-1">{{ form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.biyografi.id_for_label }}" class="form-label fw-semibold">{{ form.biyografi.label }}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0"><i class="bi bi-card-text"></i></span>
+                                        {{ form.biyografi|add_class:'form-control rounded-3 shadow-sm' }}
+                                    </div>
+                                    {% if form.biyografi.errors %}
+                                    <div class="text-danger small mt-1">{{ form.biyografi.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="row g-3 mt-2 align-items-center">
+                                    <div class="col-md-6 col-12">
+                                        <div class="d-flex align-items-center gap-2">
+                                            {{ form.is_editor|add_class:'form-check-input ms-0' }}
+                                            <label class="form-check-label ms-2 mb-0" for="{{ form.is_editor.id_for_label }}">Editör Yetkisi Verilsin Mi?</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12 mt-2 mt-md-0">
+                                        <div class="d-flex align-items-center gap-2">
+                                            {{ form.goster_editorler_sayfasinda|add_class:'form-check-input ms-0' }}
+                                            <label class="form-check-label ms-2 mb-0" for="{{ form.goster_editorler_sayfasinda.id_for_label }}">Editörler Sayfasında Görüntülensin Mi?</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end bg-light border-0 rounded-bottom-4 d-flex flex-wrap gap-2 justify-content-end px-4 py-3">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-semibold shadow-sm">Değişiklikleri Kaydet</button>
+                        <a href="{% url 'dashboard:admin_user_list' %}" class="btn btn-secondary rounded-pill px-4 py-2 fw-semibold shadow-sm">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+@media (max-width: 767.98px) {
+    .card-body, .card-header, .card-footer { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .card { border-radius: 1.5rem !important; }
+    .rounded-top-4, .rounded-bottom-4 { border-radius: 1.5rem !important; }
+    .btn { width: 100%; margin-bottom: 0.5rem; }
+    .form-control, .form-check-input { font-size: 1.1rem; }
+    .position-relative.mb-3 { width: 120px !important; }
+    #image-preview { width: 120px !important; height: 120px !important; }
+    .row.g-3.mt-2.align-items-center > .col-md-6 { margin-bottom: 0.5rem; }
+    .d-flex.align-items-center.gap-2 { flex-direction: row !important; align-items: flex-start !important; }
+    .form-check-label { font-size: 1rem; }
+}
+.resume-filename {
+    max-width: 180px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
+}
+.user-noneditable {
+    background: #f1f1f1 !important;
+    color: #888 !important;
+    pointer-events: none;
+    opacity: 0.85;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Profil resmi önizleme
+    const profilePicInput = document.getElementById('{{ form.profile_resmi.id_for_label }}');
+    const imagePreview = document.getElementById('image-preview');
+    if (profilePicInput) {
+        profilePicInput.addEventListener('change', function(event) {
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+    }
+
+    // Switch değişikliklerinde onay penceresi
+    const isEditorSwitch = document.getElementById('{{ form.is_editor.id_for_label }}');
+    const showOnEditorsPageSwitch = document.getElementById('{{ form.goster_editorler_sayfasinda.id_for_label }}');
+    if (isEditorSwitch) {
+        let prev = isEditorSwitch.checked;
+        isEditorSwitch.addEventListener('change', function(e) {
+            const confirmed = confirm('Bu kullanıcının editör yetkisini değiştirmek üzeresiniz. Emin misiniz?');
+            if (!confirmed) {
+                isEditorSwitch.checked = prev;
+            } else {
+                prev = isEditorSwitch.checked;
+            }
+        });
+    }
+    if (showOnEditorsPageSwitch) {
+        let prev = showOnEditorsPageSwitch.checked;
+        showOnEditorsPageSwitch.addEventListener('change', function(e) {
+            const confirmed = confirm('Bu kullanıcının editörler sayfasında görünüp görünmeyeceğini değiştirmek üzeresiniz. Emin misiniz?');
+            if (!confirmed) {
+                showOnEditorsPageSwitch.checked = prev;
+            } else {
+                prev = showOnEditorsPageSwitch.checked;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

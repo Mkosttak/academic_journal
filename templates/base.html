@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Akademik Dergi{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8fafc 0%, #f4f6fb 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            color: #222;
+            transition: background 0.3s;
+        }
+        main.container, main.modern-main {
+            /* background: rgba(255,255,255,0.95); */
+            /* border-radius: 1.2rem; */
+            /* box-shadow: 0 4px 24px 0 rgba(44,62,80,0.07); */
+            padding: 2.2rem 2.2rem 2rem 2.2rem;
+            margin-top: 2.2rem;
+            margin-bottom: 2.2rem;
+            min-height: 60vh;
+        }
+        @media (max-width: 991px) {
+            main.container, main.modern-main {
+                padding: 1.2rem 0.7rem 1rem 0.7rem;
+                margin-top: 1.2rem;
+                margin-bottom: 1.2rem;
+                /* border-radius: 0.7rem; */
+            }
+        }
+        .modern-card, .card {
+            border-radius: 1.1rem !important;
+            box-shadow: 0 2px 12px 0 rgba(44,62,80,0.06) !important;
+            border: none !important;
+        }
+        .modern-shadow {
+            box-shadow: 0 4px 24px 0 rgba(44,62,80,0.09) !important;
+        }
+        .modern-btn, .btn {
+            border-radius: 2rem !important;
+            font-weight: 500;
+            transition: box-shadow 0.2s, background 0.2s;
+        }
+        .modern-btn:active, .btn:active {
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10) !important;
+        }
+        #btn-back-to-top {
+            position: fixed;
+            bottom: 18px;
+            right: 18px;
+            display: none;
+            z-index: 1000;
+            border-radius: 50%;
+            padding: 0.7rem 0.8rem;
+            font-size: 1.7rem;
+            background: #fff;
+            color: #3498db;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+            border: 1.5px solid #e3eaf3;
+            transition: background 0.2s, color 0.2s;
+        }
+        #btn-back-to-top:hover {
+            background: #3498db;
+            color: #fff;
+        }
+        @media (max-width: 575px) {
+            #btn-back-to-top {
+                bottom: 12px;
+                right: 12px;
+                font-size: 1.25rem;
+                padding: 0.5rem 0.55rem;
+            }
+            main.container, main.modern-main {
+                padding: 0.5rem 0.1rem 0.5rem 0.1rem;
+            }
+        }
+        /* Yumuşak fade-in efekti */
+        body { opacity: 0; transition: opacity 0.5s; }
+    </style>
+</head>
+<body>
+
+    {% include 'partials/_navbar.html' %}
+
+    {% include 'partials/_messages.html' %}
+
+    <main class="container modern-main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {# Başa Dön Butonu #}
+    <a id="btn-back-to-top" class="btn" title="Başa Dön"><i class="bi bi-arrow-up-circle-fill"></i></a>
+
+    {# Footer include burada olmalı #}
+    {% include 'partials/_footer.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {# Önce extra_js bloğunu yükle, sonra style.js'i yükle #}
+    {% block extra_js %}{% endblock %}
+    <script src="{% static 'js/style.js' %}"></script>
+
+    <script>
+        // Sayfa yüklendiğinde yumuşak bir giriş efekti
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.style.opacity = 0;
+            let opacity = 0;
+            const fadeInInterval = setInterval(function() {
+                if (opacity < 1) {
+                    opacity += 0.05;
+                    document.body.style.opacity = opacity;
+                } else {
+                    clearInterval(fadeInInterval);
+                }
+            }, 20);
+        });
+
+        // "Başa Dön" Butonu Mantığı
+        let mybutton = document.getElementById("btn-back-to-top");
+
+        window.onscroll = function () {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        mybutton.addEventListener("click", backToTop);
+
+        function backToTop() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+</body>
+</html> 

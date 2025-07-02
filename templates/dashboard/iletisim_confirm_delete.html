@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Mesajı Sil{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9 col-12">
+            <div class="alert alert-danger shadow rounded-4 p-4">
+                <h4 class="mb-3"><i class="bi bi-exclamation-triangle me-2"></i>Mesajı silmek üzeresiniz!</h4>
+                <p><strong>Gönderen:</strong> {{ object.isim_soyisim }}</p>
+                <p><strong>E-posta:</strong> {{ object.email }}</p>
+                <p><strong>Konu:</strong> {{ object.konu }}</p>
+                <p><strong>Mesaj:</strong> {{ object.mesaj|linebreaksbr }}</p>
+                <form method="post">{% csrf_token %}
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">Evet, Sil</button>
+                    <a href="{% url 'dashboard:admin_iletisim_list' %}" class="btn btn-secondary rounded-pill px-4 ms-2">Vazgeç</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
