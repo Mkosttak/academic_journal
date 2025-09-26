@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, CreateView, ListView
 from django.urls import reverse_lazy
-from django.db.models import Q
 from .forms import IletisimModelForm
 from users.models import User
 from django.contrib import messages
@@ -10,9 +9,6 @@ from django.contrib import messages
 
 class AnasayfaView(TemplateView):
     template_name = 'pages/anasayfa.html'
-
-class HakkindaView(TemplateView):
-    template_name = 'pages/hakkinda.html'
 
 class IletisimView(CreateView):
     form_class = IletisimModelForm
@@ -35,12 +31,4 @@ class EditorlerListView(ListView):
 
     def get_queryset(self):
         # Sadece editör yetkisi olan ve Editörler sayfasında görünmesi istenen kullanıcıları listele
-        queryset = User.objects.filter(is_editor=True, goster_editorler_sayfasinda=True)
-        
-        # Arama kutusundan gelen 'q' parametresine göre filtrele
-        query = self.request.GET.get('q')
-        if query:
-            queryset = queryset.filter(
-                Q(first_name__icontains=query) | Q(last_name__icontains=query)
-            )
-        return queryset
+        return User.objects.filter(is_editor=True, goster_editorler_sayfasinda=True)

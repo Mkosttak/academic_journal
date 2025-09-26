@@ -13,7 +13,7 @@
         </button>
             <!-- Logo (center) -->
             <a class="navbar-brand d-flex align-items-center mx-auto" href="{% url 'anasayfa' %}">
-                <i class="bi bi-journal-text fs-4 me-2 text-primary"></i>
+                <img src="{% static 'images/logos/logo.png' %}" alt="Akademik Dergi" height="28" class="me-2">
                 <span>Akademik Dergi</span>
             </a>
             <!-- Profile/Buttons (right) -->
@@ -72,7 +72,7 @@
         </div>
         <!-- Desktop logo and app name (only visible on lg and up) -->
         <a class="navbar-brand d-none d-lg-flex align-items-center me-3" href="{% url 'anasayfa' %}">
-            <i class="bi bi-journal-text fs-4 me-2 text-primary"></i>
+            <img src="{% static 'images/logos/logo.png' %}" alt="Akademik Dergi" height="32" class="me-2">
             <span>Akademik Dergi</span>
         </a>
         <!-- Collapse menu: always contains nav and profile/buttons, toggled by hamburger on mobile, always visible on desktop -->
@@ -80,7 +80,7 @@
             <!-- Mobile menu header (logo + close button) -->
             <div class="d-lg-none d-flex align-items-center justify-content-between px-3 pt-3 pb-2 mb-2 border-bottom">
                 <a class="navbar-brand d-flex align-items-center" href="{% url 'anasayfa' %}">
-                    <i class="bi bi-journal-text fs-4 me-2 text-primary"></i>
+                    <img src="{% static 'images/logos/logo.png' %}" alt="Akademik Dergi" height="28" class="me-2">
                     <span>Akademik Dergi</span>
                 </a>
                 <button type="button" class="btn-close fs-3" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Menüyü Kapat"></button>
@@ -97,13 +97,11 @@
                     </a>
                 </li>
 
-                {% if user.is_authenticated and not user.is_superuser %}
-                    <li class="nav-item">
-                    <a href="{% url 'makale_ekle' %}" class="nav-link {% if request.resolver_match.url_name == 'makale_ekle' %}active fw-bold{% endif %}">
+                <li class="nav-item">
+                    <a href="{% url 'makale_ekle_redirect' %}" class="nav-link {% if request.resolver_match.url_name == 'makale_ekle' or request.resolver_match.url_name == 'makale_ekle_redirect' %}active fw-bold{% endif %}">
                         <i class="bi bi-plus-circle me-1"></i>Makale Ekle
-                        </a>
-                    </li>
-                    {% endif %}
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{% url 'editorler' %}" class="nav-link {% if request.resolver_match.url_name == 'editorler' %}active fw-bold{% endif %}">
@@ -111,15 +109,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'hakkinda' %}" class="nav-link {% if request.resolver_match.url_name == 'hakkinda' %}active fw-bold{% endif %}">
-                        <i class="bi bi-info-circle me-1"></i>Hakkımızda
-                    </a>
-                </li>
-                        <li class="nav-item">
                     <a href="{% url 'iletisim' %}" class="nav-link {% if request.resolver_match.url_name == 'iletisim' %}active fw-bold{% endif %}">
                         <i class="bi bi-envelope me-1"></i>İletişim
-                            </a>
-                        </li>
+                    </a>
+                </li>
 
                 {% if user.is_authenticated %}
                     {% if user.is_editor and not user.is_superuser %}

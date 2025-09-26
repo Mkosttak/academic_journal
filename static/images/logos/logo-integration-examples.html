@@ -1,0 +1,95 @@
+<!-- LOGO ENTEGRASYONU ÖRNEKLERİ -->
+<!-- Bu dosyayı silebilirsiniz, sadece referans amaçlı -->
+
+<!-- 1. BASE.HTML'e FAVICON EKLEME -->
+<!-- templates/base.html dosyasının <head> bölümüne ekleyin: -->
+
+<!-- Favicon linkler -->
+<link rel="icon" type="image/x-icon" href="{% static 'images/logos/favicon.ico' %}">
+<link rel="icon" type="image/png" href="{% static 'images/logos/favicon.png' %}">
+<link rel="apple-touch-icon" href="{% static 'images/logos/favicon.png' %}">
+
+<!-- 2. NAVBAR'a LOGO EKLEME -->
+<!-- templates/partials/_navbar.html dosyasında: -->
+
+<!-- Mevcut icon yerine logo kullanın -->
+<!-- ÖNCESİ: -->
+<i class="bi bi-journal-text fs-4 me-2 text-primary"></i>
+
+<!-- SONRASI: -->
+<img src="{% static 'images/logos/logo-small.png' %}" alt="Logo" height="32" class="me-2">
+
+<!-- TAM ÖRNEKLERİ: -->
+
+<!-- Mobile navbar logo (15-18 satırları arası): -->
+<a class="navbar-brand d-flex align-items-center mx-auto" href="{% url 'anasayfa' %}">
+    <img src="{% static 'images/logos/logo-small.png' %}" alt="Akademik Dergi" height="32" class="me-2">
+    <span>Akademik Dergi</span>
+</a>
+
+<!-- Desktop navbar logo (74-77 satırları arası): -->
+<a class="navbar-brand d-none d-lg-flex align-items-center me-3" href="{% url 'anasayfa' %}">
+    <img src="{% static 'images/logos/logo.png' %}" alt="Akademik Dergi" height="40" class="me-2">
+    <span>Akademik Dergi</span>
+</a>
+
+<!-- Mobile menu header logo (82-85 satırları arası): -->
+<a class="navbar-brand d-flex align-items-center" href="{% url 'anasayfa' %}">
+    <img src="{% static 'images/logos/logo-small.png' %}" alt="Akademik Dergi" height="32" class="me-2">
+    <span>Akademik Dergi</span>
+</a>
+
+<!-- 3. ANASAYFA'YA BÜYÜK LOGO EKLEME -->
+<!-- Ana sayfa template'inde: -->
+<div class="hero-section text-center">
+    <img src="{% static 'images/logos/logo-large.png' %}" alt="Akademik Dergi" class="mb-4" style="max-width: 400px;">
+    <h1>Akademik Dergi'ye Hoş Geldiniz</h1>
+</div>
+
+<!-- 4. FOOTER'A LOGO EKLEME -->
+<!-- Footer template'inde: -->
+<div class="footer-logo text-center mb-3">
+    <img src="{% static 'images/logos/logo-white.png' %}" alt="Akademik Dergi" height="50">
+</div>
+
+<!-- 5. CSS İLE LOGO STİLLEME -->
+/* static/css/style.css dosyasına ekleyebilirsiniz: */
+.navbar-brand img {
+    transition: transform 0.2s ease;
+}
+
+.navbar-brand:hover img {
+    transform: scale(1.05);
+}
+
+.logo-responsive {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand img {
+        height: 28px !important;
+    }
+}
+
+<!-- 6. KOYU/AÇIK TEMA DESTEĞI -->
+<!-- Tema değiştirme sisteminiz varsa: -->
+<img src="{% static 'images/logos/logo.png' %}" alt="Logo" class="logo-light">
+<img src="{% static 'images/logos/logo-white.png' %}" alt="Logo" class="logo-dark" style="display: none;">
+
+<script>
+// Tema değiştiğinde logoyu değiştir
+function toggleTheme() {
+    const lightLogo = document.querySelector('.logo-light');
+    const darkLogo = document.querySelector('.logo-dark');
+    
+    if (document.body.classList.contains('dark-theme')) {
+        lightLogo.style.display = 'none';
+        darkLogo.style.display = 'block';
+    } else {
+        lightLogo.style.display = 'block';
+        darkLogo.style.display = 'none';
+    }
+}
+</script>

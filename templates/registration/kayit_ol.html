@@ -11,6 +11,11 @@
         </div>
         <form method="post" novalidate>
             {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form.non_field_errors.0 }}
+                </div>
+            {% endif %}
             <div class="modern-form-fields">
                 <div class="mb-3">
                     <label for="id_username" class="form-label">Kullanıcı adı</label>
@@ -47,7 +52,22 @@
                     <label for="id_password1" class="form-label">Parola</label>
                     <input type="password" name="password1" class="form-control" id="id_password1" required>
                     {% if form.password1.errors %}
-                {% include 'partials/_form.html' with form=form %}
+                        <div class="form-error-text mt-1">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                    {% if form.password1.help_text %}
+                        <div class="form-text">{{ form.password1.help_text }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_password2" class="form-label">Parola Tekrarı</label>
+                    <input type="password" name="password2" class="form-control" id="id_password2" required>
+                    {% if form.password2.errors %}
+                        <div class="form-error-text mt-1">{{ form.password2.errors.0 }}</div>
+                    {% endif %}
+                    {% if form.password2.help_text %}
+                        <div class="form-text">{{ form.password2.help_text }}</div>
+                    {% endif %}
+                </div>
             </div>
             <div class="d-grid mt-4">
                 <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm register-btn">

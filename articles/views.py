@@ -12,8 +12,30 @@ from django.contrib.auth.decorators import login_required
 from users.models import User
 import re
 from django.contrib import messages
+from django.views import View
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here.
+
+class MakaleEkleRedirectView(View):
+    """
+    Makale Ekle butonuna tıklandığında giriş yapmamış kullanıcıları 
+    login sayfasına yönlendirir ve mesaj gösterir.
+    """
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('makale_ekle')
+        else:
+            messages.info(
+                request, 
+                '📝 Makale eklemek için önce giriş yapmanız gerekmektedir. '
+                'Giriş yaptıktan sonra direkt makale ekleme sayfasına yönlendirileceksiniz.'
+            )
+            # next parametresi ile giriş sonrası makale ekleme sayfasına yönlendir
+            from django.urls import reverse
+            login_url = reverse('login') + '?next=' + reverse('makale_ekle')
+            return redirect(login_url)
 
 class MakaleListView(ListView):
     model = Makale
