@@ -47,7 +47,7 @@ class CustomUserChangeForm(forms.ModelForm):
 
     def clean_profile_resmi(self):
         img = self.cleaned_data.get('profile_resmi')
-        if img:
+        if img and hasattr(img, 'content_type'):
             if not img.content_type.startswith('image/'):
                 raise forms.ValidationError('Sadece resim dosyası yükleyebilirsiniz.')
             if img.size > 5 * 1024 * 1024:

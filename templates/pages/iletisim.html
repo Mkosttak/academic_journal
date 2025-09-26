@@ -1,83 +1,47 @@
 {% extends "base.html" %}
 {% block title %}İletişim{% endblock %}
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-7 col-md-9">
-            <div class="iletisim-glass-card">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold iletisim-gradient mb-2" style="font-size:2.1rem;">Bizimle İletişime Geçin</h2>
-                    <p class="text-muted mb-0" style="font-size:1.1rem;">Her türlü soru, öneri ve iş birliği teklifleriniz için aşağıdaki formu doldurabilirsiniz.</p>
-                </div>
-                    <form method="post">
-                        {% csrf_token %}
-                    <div class="modern-form-fields">
-                        {% include 'partials/_form.html' with form=form %}
-                    </div>
-                        <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm iletisim-btn">
-                            <i class="bi bi-send me-2"></i>Mesajı Gönder
-                        </button>
-                        </div>
-                    </form>
-            </div>
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-80 py-5">
+    <div class="glass-card w-100 mx-auto my-5 p-4 p-md-5" style="max-width: 700px;">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold iletisim-gradient mb-2 fs-2-1rem">Bizimle İletişime Geçin</h2>
+            <p class="text-muted mb-0 fs-1-1rem">Her türlü soru, öneri ve iş birliği teklifleriniz için aşağıdaki formu doldurabilirsiniz.</p>
         </div>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="modern-form-fields">
+                <div class="mb-3">
+                    <label for="id_adsoyad" class="form-label">İsim Soyisim</label>
+                    <input type="text" name="adsoyad" class="form-control" id="id_adsoyad" required value="{{ form.adsoyad.value|default:'' }}">
+                    {% if form.adsoyad.errors %}
+                        <div class="form-error-text mt-1">{{ form.adsoyad.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">E-posta</label>
+                    <input type="email" name="email" class="form-control" id="id_email" required value="{{ form.email.value|default:'' }}">
+                    {% if form.email.errors %}
+                        <div class="form-error-text mt-1">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_konu" class="form-label">Konu</label>
+                    <input type="text" name="konu" class="form-control" id="id_konu" required value="{{ form.konu.value|default:'' }}">
+                    {% if form.konu.errors %}
+                        <div class="form-error-text mt-1">{{ form.konu.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_mesaj" class="form-label">Mesaj</label>
+                    <textarea name="mesaj" class="form-control" id="id_mesaj" rows="5" required>{{ form.mesaj.value|default:'' }}</textarea>
+                    {% if form.mesaj.errors %}
+                        <div class="form-error-text mt-1">{{ form.mesaj.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-gradient btn-lg w-100 mt-3">Gönder</button>
+            </div>
+        </form>
     </div>
 </div>
 
-<style>
-.iletisim-glass-card {
-    background: rgba(255,255,255,0.7);
-    border-radius: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.10);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.18);
-    padding: 2.5rem 2rem 2rem 2rem;
-    margin-top: 1.5rem;
-}
-.iletisim-gradient {
-    background: linear-gradient(45deg, #2c3e50, #3498db);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-.modern-form-fields .form-control {
-    border-radius: 1.2rem;
-    font-size: 1.08rem;
-    padding: 0.7rem 1.2rem;
-    box-shadow: 0 1px 4px rgba(44,62,80,0.04);
-    border: 1px solid #e0eafc;
-    background: rgba(255,255,255,0.95);
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-.modern-form-fields .form-control:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 2px #3498db33, 0 1px 4px rgba(44,62,80,0.08);
-    background: #fff;
-}
-.modern-form-fields .form-label {
-    font-weight: 500;
-    color: #2c3e50;
-    margin-bottom: 0.3rem;
-}
-.iletisim-btn {
-    padding: 0.7rem 0;
-    font-size: 1.13rem;
-    letter-spacing: 0.01em;
-}
-@media (max-width: 767px) {
-    .iletisim-glass-card {
-        padding: 1.2rem 0.5rem 1rem 0.5rem;
-        border-radius: 1rem;
-    }
-    .modern-form-fields .form-control {
-        font-size: 0.98rem;
-        padding: 0.55rem 0.8rem;
-    }
-    .iletisim-btn {
-        font-size: 1rem;
-        padding: 0.55rem 0;
-    }
-}
-</style>
 {% endblock %} 

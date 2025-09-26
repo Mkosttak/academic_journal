@@ -3,28 +3,34 @@
 {% block title %}Giriş Yap{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-7">
-            <div class="login-glass-card">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold login-gradient mb-2" style="font-size:2rem;">Giriş Yap</h2>
-                    <p class="text-muted mb-0" style="font-size:1.05rem;">Hesabınıza erişmek için bilgilerinizi girin.</p>
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-80 py-5">
+    <div class="glass-card w-100 mx-auto my-5 p-4 p-md-5" style="max-width: 500px;">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold login-gradient mb-2 fs-2rem">Giriş Yap</h2>
+            <p class="text-muted mb-0 fs-1-05rem">Hesabınıza erişmek için bilgilerinizi girin.</p>
+        </div>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="modern-form-fields">
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Kullanıcı adı</label>
+                    <input type="text" name="username" class="form-control" id="id_username" required value="{{ form.username.value|default:'' }}">
+                    {% if form.username.errors %}
+                        <div class="form-error-text mt-1">{{ form.username.errors.0 }}</div>
+                    {% endif %}
                 </div>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="modern-form-fields">
-                        {% include 'partials/_form.html' with form=form %}
-                    </div>
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm login-btn">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap
-                        </button>
-                    </div>
-                </form>
-                <hr>
-                <p class="text-center mb-0">Hesabınız yok mu? <a href="{% url 'kayit_ol' %}"><strong>Kayıt Olun</strong></a></p>
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Parola</label>
+                    <input type="password" name="password" class="form-control" id="id_password" required>
+                    {% if form.password.errors %}
+                        <div class="form-error-text mt-1">{{ form.password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-gradient btn-lg w-100 mt-3"><i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap</button>
             </div>
+        </form>
+        <div class="text-center mt-3">
+            <span>Hesabınız yok mu? <a href="{% url 'kayit_ol' %}">Kayıt Olun</a></span>
         </div>
     </div>
 </div>

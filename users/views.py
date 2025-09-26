@@ -98,5 +98,11 @@ class ProfilDuzenleView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def form_valid(self, form):
+        # Özgeçmiş kaldırma flag'i kontrolü
+        if self.request.POST.get('remove_resume') == '1':
+            if self.object.resume:
+                self.object.resume.delete(save=False)
+                self.object.resume = None
+                self.object.save()
         messages.success(self.request, 'Profil bilgileriniz başarıyla güncellendi.')
         return super().form_valid(form)

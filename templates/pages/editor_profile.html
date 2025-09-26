@@ -11,10 +11,10 @@
                     <div class="row align-items-center mb-4 pb-4 border-bottom">
                         <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-4 mb-md-0">
                             {% if profil_kullanici.profile_resmi %}
-                                <img src="{{ profil_kullanici.profile_resmi.url }}" class="rounded-circle shadow-sm img-fluid" width="180" height="180" alt="{{ profil_kullanici.get_full_name }}" style="object-fit: cover; border: 4px solid #fff;">
+                                <img src="{{ profil_kullanici.profile_resmi.url }}" class="rounded-circle shadow-sm img-fluid profile-img-cover border-4-white" width="180" height="180" alt="{{ profil_kullanici.get_full_name }}" style="object-fit: cover; border: 4px solid #fff;">
                             {% else %}
-                                <div class="profile-image-placeholder rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center bg-secondary text-white" style="width: 180px; height: 180px; border: 4px solid #fff;">
-                                    <i class="bi bi-person-fill" style="font-size: 6rem;"></i>
+                                <div class="profile-image-placeholder rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center bg-secondary text-white profile-img-180 border-4-white">
+                                    <i class="bi bi-person-fill icon-6rem"></i>
                                 </div>
                             {% endif %}
                         </div>
@@ -26,7 +26,7 @@
                                 </div>
                             {% endif %}
                             {% if profil_kullanici.resume %}
-                                <a href="{{ profil_kullanici.resume.url }}" target="_blank" class="btn btn-primary rounded-pill px-4 py-2 mb-3 align-self-start" style="margin-top: 0.5rem; max-width: 250px;">
+                                <a href="{{ profil_kullanici.resume.url }}" target="_blank" class="btn btn-primary rounded-pill px-4 py-2 mb-3 align-self-start mt-0-5rem maxw-250px">
                                     <i class="bi bi-file-earmark-person me-2"></i> Özgeçmişi Görüntüle
                                 </a>
                             {% endif %}
@@ -60,44 +60,5 @@
     </div>
 </div>
 
-<style>
-.modern-card {
-    border-radius: 1rem;
-    overflow: hidden;
-}
-.profile-info-box {
-    background: #f5f6fa;
-    border-radius: 0.75rem;
-    border: 1px solid #f0f1f5;
-    display: block;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 1rem 1.5rem;
-    min-height: unset;
-}
-.author-bio-box {
-    background: none;
-    border: none;
-    padding: 0;
-    color: #495057;
-    font-size: 1.05rem;
-    display: block;
-}
-.article-list-item {
-    border-bottom: 1px solid #eee;
-}
-.article-list-item:last-child {
-    border-bottom: none;
-}
-.article-list-item:hover {
-    background-color: #f8f9fa;
-}
-.article-list-item h5 {
-    color: #343a40;
-}
-.article-list-item:hover h5 {
-    color: #0d6efd;
-}
-</style>
+
 {% endblock %} 

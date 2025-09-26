@@ -4,54 +4,34 @@
 <div class="container-fluid py-4 editors-page">
     <div class="container">
         <div class="welcome-section text-center mb-4">
-            <h2 class="fw-bold text-gradient mb-2" style="font-size:2.1rem;">Editör Kadromuz</h2>
-            <p class="text-muted mb-0" style="font-size:1.1rem;">Akademik dergimizin değerli editörleri ile tanışın</p>
+            <h2 class="fw-bold text-gradient mb-2 fs-2-1rem">Editör Kadromuz</h2>
+            <p class="text-muted mb-0 fs-1-1rem">Akademik dergimizin değerli editörleri ile tanışın</p>
         </div>
 
         <div class="search-section mb-4">
             <div class="search-glass-card">
-                <form method="get" class="row g-2 align-items-center m-0">
-            <div class="col-md-10">
-                        <div class="search-input-wrapper">
-                            <span class="search-icon">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" name="q" class="form-control search-input" 
-                                   placeholder="Editör ismine göre ara..." value="{{ request.GET.q }}">
-                        </div>
+                <form method="get" class="search-form d-flex w-100 align-items-center gap-2" style="margin:0;">
+                    <div class="search-input-wrapper flex-grow-1">
+                        <span class="search-icon">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" name="q" class="form-control search-input" 
+                               placeholder="Editör ismine göre ara..." value="{{ request.GET.q }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm rounded-pill ms-2 search-btn-icon">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
             </div>
-            <div class="col-md-2 d-grid">
-                        <button type="submit" class="btn btn-primary btn-sm rounded-pill">
-                            <i class="bi bi-search me-2"></i>Ara
-                        </button>
-            </div>
-        </form>
-            </div>
-    </div>
+        </div>
 
         <div class="row g-3">
         {% for editor in editorler %}
             <div class="col-lg-4 col-md-6">
-                <div class="editor-card">
-                    <div class="editor-image">
-                        {% if editor.profile_resmi %}
-                            <img src="{{ editor.profile_resmi.url }}" alt="{{ editor.get_full_name }}" 
-                                 class="rounded-circle" width="90" height="90">
-                        {% else %}
-                            <div class="no-image rounded-circle">
-                                <i class="bi bi-person"></i>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="editor-info">
-                        <h3 class="editor-name">{{ editor.get_full_name }}</h3>
-                        {% if editor.biyografi %}
-                            <p class="editor-bio">{{ editor.biyografi|truncatewords:20 }}</p>
-                        {% endif %}
-                        <a href="{% url 'kullanici_profili' editor.username %}" class="btn btn-outline-primary btn-sm rounded-pill">
-                            <i class="bi bi-person-lines-fill me-2"></i>Profili Görüntüle
-                        </a>
-                    </div>
+                <div class="editor-card glass-card text-center mb-4">
+                    <img src="{{ editor.profile_resmi.url }}" class="editor-card__image profile-pic mb-3" alt="{{ editor.get_full_name }}">
+                    <h5 class="editor-card__name">{{ editor.get_full_name }}</h5>
+                    <a href="{% url 'kullanici_profili' editor.username %}" class="btn btn-outline-primary btn-sm">Profili Görüntüle</a>
                 </div>
             </div>
             {% empty %}
@@ -73,211 +53,5 @@
     </div>
 </div>
 
-<style>
-.editors-page {
-    background: #f8f9fa;
-    min-height: 100vh;
-    padding-top: 1.5rem !important;
-    padding-bottom: 1.5rem !important;
-}
 
-.text-gradient {
-    background: linear-gradient(45deg, #2c3e50, #3498db);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.editor-card {
-    background: white;
-    border-radius: 0.8rem;
-    padding: 1.1rem 1rem 1rem 1rem;
-    text-align: center;
-    transition: all 0.3s ease;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    display: flex;
-    flex-direction: column;
-}
-
-.editor-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-}
-
-.editor-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(45deg, #3498db, #2ecc71);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.editor-card:hover::before {
-    opacity: 1;
-}
-
-.editor-image {
-    margin-bottom: 1rem;
-}
-
-.editor-image img {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-}
-
-.editor-card:hover .editor-image img {
-    transform: scale(1.04);
-}
-
-.no-image {
-    width: 90px;
-    height: 90px;
-    background: #f8f9fa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    font-size: 2rem;
-    color: #6c757d;
-}
-
-.editor-info {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.editor-name {
-    font-size: 1.08rem;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 0.7rem;
-}
-
-.editor-bio {
-    color: #6c757d;
-    font-size: 0.89rem;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-    min-height: 3.2em;
-    flex: 1;
-}
-
-.btn-outline-primary {
-    border-width: 1.5px;
-    font-weight: 500;
-    padding: 0.35rem 0.9rem;
-    font-size: 0.92rem;
-    transition: all 0.2s ease;
-    margin-top: auto;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.btn-outline-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-
-.empty-state {
-    background: white;
-    border-radius: 0.8rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-
-.empty-state i {
-    opacity: 0.5;
-    font-size: 2.2rem !important;
-}
-
-.search-glass-card {
-    background: rgba(255,255,255,0.6);
-    border-radius: 1rem;
-    box-shadow: 0 4px 16px 0 rgba(31,38,135,0.07);
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
-    border: 1px solid rgba(255,255,255,0.15);
-    padding: 1.1rem 1rem;
-    margin-bottom: 1.2rem;
-}
-
-.search-input-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-.search-icon {
-    position: absolute;
-    left: 13px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
-    font-size: 1.05rem;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.search-input {
-    padding-left: 38px !important;
-    border-radius: 1.2rem !important;
-    border: none;
-    background: rgba(255,255,255,0.85);
-    box-shadow: 0 1px 4px rgba(44,62,80,0.04);
-    font-size: 1rem;
-    height: 38px;
-    transition: box-shadow 0.2s, border-color 0.2s;
-}
-
-.search-input:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px #3498db33, 0 1px 4px rgba(44,62,80,0.08);
-    border: 1px solid #3498db;
-    background: rgba(255,255,255,0.95);
-}
-
-.search-input::placeholder {
-    color: #b0b8c1;
-    font-size: 0.97rem;
-    opacity: 1;
-}
-
-@media (max-width: 767px) {
-    .editors-page {
-        padding: 1rem 0.3rem !important;
-    }
-    .editor-card {
-        padding: 0.8rem 0.6rem 0.7rem 0.6rem;
-    }
-    .editor-image img, .no-image {
-        width: 65px !important;
-        height: 65px !important;
-        font-size: 1.3rem !important;
-    }
-    .editor-name {
-        font-size: 0.98rem;
-    }
-    .search-glass-card {
-        padding: 0.7rem 0.2rem;
-    }
-    .search-input {
-        height: 32px;
-        font-size: 0.93rem;
-    }
-    .search-icon {
-        left: 8px;
-        font-size: 0.95rem;
-    }
-}
-</style>
 {% endblock %} 

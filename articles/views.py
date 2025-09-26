@@ -34,8 +34,7 @@ class MakaleListView(ListView):
         if query:
             queryset = queryset.filter(
                 Q(baslik__icontains=query) |
-                Q(yazarlar__first_name__icontains=query) |
-                Q(yazarlar__last_name__icontains=query) |
+                Q(yazarlar__isim_soyisim__icontains=query) |
                 Q(anahtar_kelimeler__icontains=query)
             ).distinct()
             

@@ -2,13 +2,15 @@
 {% block title %}{{ makale.baslik }}{% endblock %}
 {% block content %}
 <div class="container py-4">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'makale_list' %}" class="text-decoration-none">Makaleler</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ makale.baslik }}</li>
-        </ol>
-    </nav>
+    <div class="d-none d-md-block">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'makale_list' %}">Makaleler</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ makale.baslik }}</li>
+            </ol>
+        </nav>
+    </div>
 
     {% if makale.admin_notu %}
     <div class="d-flex align-items-center bg-warning bg-opacity-10 text-warning-emphasis rounded-3 p-3 mt-2 mb-4 small border-start border-warning border-4">
@@ -137,25 +139,5 @@
     </div>
 </div>
 
-<style>
-.card {
-    border-radius: 1rem;
-}
-.badge {
-    font-weight: 500;
-}
-.dropdown-menu {
-    border-radius: 0.5rem;
-    border: none;
-}
-.dropdown-item {
-    padding: 0.5rem 1rem;
-}
-.dropdown-item:hover {
-    background-color: rgba(13, 110, 253, 0.1);
-}
-.dropdown-item.text-danger:hover {
-    background-color: rgba(220, 53, 69, 0.1);
-}
-</style>
+
 {% endblock %} 

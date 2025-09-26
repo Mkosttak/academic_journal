@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class IletisimFormu(models.Model):
-    isim_soyisim = models.CharField(max_length=150, verbose_name="İsim Soyisim")
+    isim_soyisim = models.CharField(max_length=150, verbose_name="İsim Soyisim", blank=False, null=False)
     email = models.EmailField(verbose_name="E-posta")
     konu = models.CharField(max_length=200, verbose_name="Konu")
     mesaj = models.TextField(verbose_name="Mesaj")
