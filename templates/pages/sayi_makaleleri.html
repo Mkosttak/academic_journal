@@ -3,63 +3,6 @@
 {% block title %}{{ dergi_sayisi.get_tarih_format }} - Makaleler{% endblock %}
 {% block extra_css %}
 <style>
-    .sayi-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        margin: -2.2rem -2.2rem 2rem -2.2rem;
-        padding: 3rem 2.2rem 2rem 2.2rem;
-        border-radius: 0 0 2rem 2rem;
-        color: white;
-    }
-    
-    .sayi-hero {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    
-    .sayi-hero h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-    
-    .sayi-meta {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        flex-wrap: wrap;
-        margin-bottom: 1.5rem;
-    }
-    
-    .sayi-meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255,255,255,0.1);
-        padding: 0.5rem 1rem;
-        border-radius: 2rem;
-        font-size: 1rem;
-    }
-    
-    .breadcrumb-custom {
-        background: rgba(255,255,255,0.1);
-        padding: 0.75rem 1.5rem;
-        border-radius: 2rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .breadcrumb-custom .breadcrumb {
-        margin-bottom: 0;
-        justify-content: center;
-    }
-    
-    .breadcrumb-custom .breadcrumb-item a {
-        color: white;
-        text-decoration: none;
-    }
-    
-    .breadcrumb-custom .breadcrumb-item.active {
-        color: rgba(255,255,255,0.8);
-    }
     
     .makale-card {
         background: white;
@@ -187,6 +130,178 @@
         border-left: 4px solid #10b981;
     }
     
+    /* Main Layout */
+    .main-layout {
+        display: flex;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    /* Sol Sidebar */
+    .dergi-sidebar {
+        width: 280px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+    }
+    
+    .sidebar-content {
+        background: white;
+        border-radius: 1.2rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+    }
+    
+    /* Sidebar Kapak */
+    .sidebar-kapak {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .sidebar-kapak-img {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        border-radius: 0.8rem;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar-kapak-img:hover {
+        transform: scale(1.02);
+    }
+    
+    .sidebar-kapak-placeholder {
+        width: 200px;
+        height: 280px;
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        border: 2px dashed #cbd5e0;
+        border-radius: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        margin: 0 auto;
+    }
+    
+    .sidebar-kapak-placeholder i {
+        font-size: 3rem;
+        opacity: 0.7;
+    }
+    
+    /* Sidebar Bilgiler */
+    .sidebar-info {
+        text-align: center;
+    }
+    
+    .sidebar-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        line-height: 1.3;
+    }
+    
+    .sidebar-stats {
+        margin-bottom: 1.5rem;
+    }
+    
+    .sidebar-stat {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        background: #f8fafc;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        color: #4a5568;
+        font-weight: 500;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .sidebar-stat i {
+        color: #667eea;
+        font-size: 0.9rem;
+    }
+    
+    .sidebar-action .btn {
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        transition: all 0.3s ease;
+        padding: 0.6rem 1.2rem;
+    }
+    
+    .sidebar-action .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+    
+    /* İçerik Alanı */
+    .content-area {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .main-layout {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 0 0.5rem;
+        }
+        
+        .dergi-sidebar {
+            width: 100%;
+            position: static;
+            order: -1;
+        }
+        
+        .sidebar-content {
+            padding: 1rem;
+        }
+        
+        .sidebar-kapak {
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-kapak-img {
+            max-width: 150px;
+        }
+        
+        .sidebar-kapak-placeholder {
+            width: 150px;
+            height: 210px;
+        }
+        
+        .sidebar-kapak-placeholder i {
+            font-size: 2rem;
+        }
+        
+        .sidebar-title {
+            font-size: 1.1rem;
+        }
+        
+        .sidebar-subtitle {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-stat {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
+        
+        .sidebar-action .btn {
+            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
+        }
+    }
+    
     .empty-state {
         text-align: center;
         padding: 4rem 2rem;
@@ -210,98 +325,57 @@
         color: #718096;
     }
     
-    @media (max-width: 768px) {
-        .sayi-header {
-            margin: -1.2rem -0.7rem 1rem -0.7rem;
-            padding: 2rem 1rem 1.5rem 1rem;
-            border-radius: 0 0 1rem 1rem;
-        }
-        
-        .sayi-hero h1 {
-            font-size: 2rem;
-        }
-        
-        .sayi-meta {
-            gap: 1rem;
-        }
-        
-        .sayi-meta-item {
-            font-size: 0.9rem;
-            padding: 0.4rem 0.8rem;
-        }
-        
-        .makale-header {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .makale-icon {
-            align-self: flex-start;
-        }
-        
-        .makale-footer {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-        
-        .makale-meta {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-    }
     
-    @media (max-width: 575px) {
-        .sayi-header {
-            margin: -0.5rem -0.1rem 1rem -0.1rem;
-            padding: 1.5rem 0.5rem 1rem 0.5rem;
-        }
-        
-        .makale-card {
-            padding: 1rem;
-        }
-        
-        .sayi-meta {
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="sayi-header">
-    <div class="breadcrumb-custom">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'anasayfa' %}">Ana Sayfa</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'sayilar' %}">Sayılar</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ dergi_sayisi.get_cilt_sayi_format }}</li>
-            </ol>
-        </nav>
-    </div>
-    
-    <div class="sayi-hero">
-        <h1><i class="bi bi-journal-bookmark me-3"></i>{{ dergi_sayisi.get_tarih_format }} - {{ dergi_sayisi.get_cilt_sayi_format }}</h1>
-        <div class="sayi-meta">
-            <div class="sayi-meta-item">
-                <i class="bi bi-calendar3"></i>
-                <span>{{ dergi_sayisi.yayinlanma_tarihi|date:"d" }} {{ dergi_sayisi.get_ay_display }} {{ dergi_sayisi.yil }}</span>
+
+<div class="main-layout">
+    <!-- Sol Sidebar: Kapak ve Bilgiler -->
+    <div class="dergi-sidebar">
+        <div class="sidebar-content">
+            <!-- Kapak Görseli -->
+            <div class="sidebar-kapak">
+                {% if dergi_sayisi.kapak_gorseli %}
+                    <img src="{{ dergi_sayisi.get_kapak_url }}" alt="{{ dergi_sayisi.get_tarih_format }}" class="sidebar-kapak-img">
+                {% else %}
+                    <div class="sidebar-kapak-placeholder">
+                        <i class="bi bi-journal-bookmark"></i>
+                    </div>
+                {% endif %}
             </div>
-            <div class="sayi-meta-item">
-                <i class="bi bi-file-text"></i>
-                <span>{{ makaleler|length }} makale</span>
-            </div>
-            <div class="sayi-meta-item">
-                <i class="bi bi-collection"></i>
-                <span>{{ dergi_sayisi.get_cilt_sayi_format }}</span>
+            
+            <!-- Dergi Bilgileri -->
+            <div class="sidebar-info">
+                <h5 class="sidebar-title">{{ dergi_sayisi.get_tarih_format }}</h5>
+                
+                <div class="sidebar-stats">
+                    <div class="sidebar-stat">
+                        <i class="bi bi-file-text"></i>
+                        <span>{{ makaleler|length }} makale</span>
+                    </div>
+                    {% if dergi_icerikleri %}
+                        <div class="sidebar-stat">
+                            <i class="bi bi-file-earmark-richtext"></i>
+                            <span>{{ dergi_icerikleri|length }} içerik</span>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                {% if dergi_sayisi.pdf_dosyasi %}
+                    <div class="sidebar-action">
+                        <a href="{{ dergi_sayisi.pdf_dosyasi.url }}" download class="btn btn-primary btn-sm w-100 rounded-pill">
+                            <i class="bi bi-download me-1"></i>PDF İndir
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
-</div>
 
-<div class="container-fluid px-0">
+    <!-- Sağ İçerik Alanı -->
+    <div class="content-area">
     {% if makaleler %}
         {% for makale in makaleler %}
             <div class="makale-card">
@@ -427,5 +501,6 @@
             </a>
         </div>
     {% endif %}
-</div>
+    </div> <!-- content-area -->
+</div> <!-- main-layout -->
 {% endblock %}
