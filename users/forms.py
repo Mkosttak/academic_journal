@@ -18,6 +18,9 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
+        help_texts = {
+            'username': None,
+        }
 
 class CustomUserChangeForm(forms.ModelForm):
     # Parolayı bu formda gösterme

@@ -1,82 +1,460 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Kayıt Ol{% endblock %}
 
 {% block content %}
-<div class="container d-flex flex-column align-items-center justify-content-center min-vh-80 py-5">
-    <div class="glass-card w-100 mx-auto my-5 p-4 p-md-5" style="max-width: 500px;">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold register-gradient mb-2 fs-2rem">Yeni Hesap Oluştur</h2>
-            <p class="text-muted mb-0 fs-1-05rem">Akademik dergiye katılmak için bilgilerinizi doldurun.</p>
+<div class="auth-container">
+    <div class="container d-flex align-items-center justify-content-center min-vh-100 py-5">
+        <div class="auth-wrapper">
+            <!-- Logo Bölümü -->
+            <div class="auth-logo-section">
+                <div class="logo-container">
+                    <img src="{% static 'images/logos/logo.png' %}" alt="Akademik Dergi" class="main-logo">
+                    <div class="logo-text">
+                        <h1 class="logo-title">Akademik Dergi</h1>
+                        <p class="logo-subtitle">Bilginin ve Araştırmanın Merkezi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Bölümü -->
+            <div class="auth-form-section">
+                <div class="auth-card register-card">
+                    <!-- Form Başlığı -->
+                    <div class="form-header">
+                        <h2 class="form-title">Hesap Oluştur</h2>
+                        <p class="form-subtitle">Akademik dergiye katılmak için bilgilerinizi doldurun</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form method="post" novalidate class="auth-form">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <!-- Kullanıcı Adı -->
+                            <div class="col-12 mb-3">
+                                <label for="id_username" class="form-label">
+                                    <i class="bi bi-person me-2"></i>Kullanıcı Adı
+                                </label>
+                                <input type="text" name="username" class="form-control auth-input" id="id_username" 
+                                       required value="{{ form.username.value|default:'' }}" 
+                                       placeholder="Kullanıcı adınızı girin">
+                                {% if form.username.errors %}
+                                    <div class="form-error">{{ form.username.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.username.help_text %}
+                                    <div class="form-help">{{ form.username.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- İsim ve Soyisim -->
+                            <div class="col-md-6 mb-3">
+                                <label for="id_first_name" class="form-label">
+                                    <i class="bi bi-person-badge me-2"></i>İsim
+                                </label>
+                                <input type="text" name="first_name" class="form-control auth-input" id="id_first_name" 
+                                       required value="{{ form.first_name.value|default:'' }}" 
+                                       placeholder="Adınız">
+                                {% if form.first_name.errors %}
+                                    <div class="form-error">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_last_name" class="form-label">
+                                    <i class="bi bi-person-badge me-2"></i>Soyisim
+                                </label>
+                                <input type="text" name="last_name" class="form-control auth-input" id="id_last_name" 
+                                       required value="{{ form.last_name.value|default:'' }}" 
+                                       placeholder="Soyadınız">
+                                {% if form.last_name.errors %}
+                                    <div class="form-error">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- E-posta -->
+                            <div class="col-12 mb-3">
+                                <label for="id_email" class="form-label">
+                                    <i class="bi bi-envelope me-2"></i>E-posta Adresi
+                                </label>
+                                <input type="email" name="email" class="form-control auth-input" id="id_email" 
+                                       required value="{{ form.email.value|default:'' }}" 
+                                       placeholder="ornek@email.com">
+                                {% if form.email.errors %}
+                                    <div class="form-error">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Parola -->
+                            <div class="col-12 mb-3">
+                                <label for="id_password1" class="form-label">
+                                    <i class="bi bi-lock me-2"></i>Parola
+                                </label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" name="password1" class="form-control auth-input" id="id_password1" 
+                                           required placeholder="Parolanızı girin">
+                                    <button type="button" class="password-toggle" onclick="togglePassword('id_password1')">
+                                        <i class="bi bi-eye" id="eye-icon-id_password1"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="form-error">{{ form.password1.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.password1.help_text %}
+                                    <div class="form-help">{{ form.password1.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Parola Tekrarı -->
+                            <div class="col-12 mb-3">
+                                <label for="id_password2" class="form-label">
+                                    <i class="bi bi-lock-fill me-2"></i>Parola Tekrarı
+                                </label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" name="password2" class="form-control auth-input" id="id_password2" 
+                                           required placeholder="Parolanızı tekrar girin">
+                                    <button type="button" class="password-toggle" onclick="togglePassword('id_password2')">
+                                        <i class="bi bi-eye" id="eye-icon-id_password2"></i>
+                                    </button>
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="form-error">{{ form.password2.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.password2.help_text %}
+                                    <div class="form-help">{{ form.password2.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Kayıt Butonu -->
+                        <button type="submit" class="btn auth-btn">
+                            <i class="bi bi-person-plus me-2"></i>
+                            Hesap Oluştur
+                        </button>
+                    </form>
+
+                    <!-- Alt Linkler -->
+                    <div class="auth-footer">
+                        <p class="auth-link-text">
+                            Zaten hesabınız var mı? 
+                            <a href="{% url 'login' %}" class="auth-link">Giriş Yapın</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <form method="post" novalidate>
-            {% csrf_token %}
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ form.non_field_errors.0 }}
-                </div>
-            {% endif %}
-            <div class="modern-form-fields">
-                <div class="mb-3">
-                    <label for="id_username" class="form-label">Kullanıcı adı</label>
-                    <input type="text" name="username" class="form-control" id="id_username" required value="{{ form.username.value|default:'' }}">
-                    {% if form.username.errors %}
-                        <div class="form-error-text mt-1">{{ form.username.errors.0 }}</div>
-                    {% endif %}
-                    {% if form.username.help_text %}
-                        <div class="form-text">{{ form.username.help_text }}</div>
-                    {% endif %}
-                </div>
-                <div class="mb-3">
-                    <label for="id_first_name" class="form-label">İsim</label>
-                    <input type="text" name="first_name" class="form-control" id="id_first_name" required value="{{ form.first_name.value|default:'' }}">
-                    {% if form.first_name.errors %}
-                        <div class="form-error-text mt-1">{{ form.first_name.errors.0 }}</div>
-                    {% endif %}
-                </div>
-                <div class="mb-3">
-                    <label for="id_last_name" class="form-label">Soyisim</label>
-                    <input type="text" name="last_name" class="form-control" id="id_last_name" required value="{{ form.last_name.value|default:'' }}">
-                    {% if form.last_name.errors %}
-                        <div class="form-error-text mt-1">{{ form.last_name.errors.0 }}</div>
-                    {% endif %}
-                </div>
-                <div class="mb-3">
-                    <label for="id_email" class="form-label">E-posta Adresi</label>
-                    <input type="email" name="email" class="form-control" id="id_email" required value="{{ form.email.value|default:'' }}">
-                    {% if form.email.errors %}
-                        <div class="form-error-text mt-1">{{ form.email.errors.0 }}</div>
-                    {% endif %}
-                </div>
-                <div class="mb-3">
-                    <label for="id_password1" class="form-label">Parola</label>
-                    <input type="password" name="password1" class="form-control" id="id_password1" required>
-                    {% if form.password1.errors %}
-                        <div class="form-error-text mt-1">{{ form.password1.errors.0 }}</div>
-                    {% endif %}
-                    {% if form.password1.help_text %}
-                        <div class="form-text">{{ form.password1.help_text }}</div>
-                    {% endif %}
-                </div>
-                <div class="mb-3">
-                    <label for="id_password2" class="form-label">Parola Tekrarı</label>
-                    <input type="password" name="password2" class="form-control" id="id_password2" required>
-                    {% if form.password2.errors %}
-                        <div class="form-error-text mt-1">{{ form.password2.errors.0 }}</div>
-                    {% endif %}
-                    {% if form.password2.help_text %}
-                        <div class="form-text">{{ form.password2.help_text }}</div>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm register-btn">
-                    <i class="bi bi-person-plus me-2"></i>Kayıt Ol
-                </button>
-            </div>
-        </form>
-        <hr>
-        <p class="text-center mb-0">Zaten hesabınız var mı? <a href="{% url 'login' %}"><strong>Giriş Yapın</strong></a></p>
     </div>
 </div>
-{% endblock %} 
+
+<style>
+.auth-container {
+    min-height: 100vh;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    max-width: 1200px;
+    width: 100%;
+    padding: 2rem;
+}
+
+/* Logo Bölümü */
+.auth-logo-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-container {
+    text-align: center;
+    max-width: 400px;
+}
+
+.main-logo {
+    height: 180px;
+    width: auto;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.logo-title {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.logo-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+/* Form Bölümü */
+.auth-form-section {
+    flex: 1;
+    max-width: 700px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.register-card {
+    max-width: 800px;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.form-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.auth-form {
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.75rem;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.auth-input {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    width: 100%;
+}
+
+.auth-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    background: white;
+    outline: none;
+}
+
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+    padding: 0.5rem;
+}
+
+.password-toggle:hover {
+    color: #667eea;
+}
+
+.auth-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    cursor: pointer;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.auth-footer {
+    text-align: center;
+}
+
+.auth-link-text {
+    color: #6c757d;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.auth-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: #764ba2;
+}
+
+.form-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-error::before {
+    content: "⚠";
+    margin-right: 0.5rem;
+}
+
+.form-help {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-help::before {
+    content: "ℹ";
+    margin-right: 0.5rem;
+}
+
+.alert {
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 992px) {
+    .auth-wrapper {
+        flex-direction: column;
+        gap: 3rem;
+        text-align: center;
+    }
+    
+    .auth-logo-section {
+        order: 1;
+    }
+    
+    .auth-form-section {
+        order: 2;
+        max-width: 100%;
+    }
+    
+    .logo-title {
+        font-size: 2.5rem;
+    }
+    
+    .main-logo {
+        height: 140px;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-wrapper {
+        padding: 1rem;
+        gap: 2rem;
+    }
+    
+    .auth-card {
+        padding: 2rem;
+    }
+    
+    .logo-title {
+        font-size: 2rem;
+    }
+    
+    .main-logo {
+        height: 120px;
+    }
+    
+    .form-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+    
+    .logo-title {
+        font-size: 1.8rem;
+    }
+    
+    .main-logo {
+        height: 110px;
+    }
+    
+    .form-title {
+        font-size: 1.6rem;
+    }
+}
+</style>
+
+<script>
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const eyeIcon = document.getElementById('eye-icon-' + inputId);
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        eyeIcon.className = 'bi bi-eye-slash';
+    } else {
+        input.type = 'password';
+        eyeIcon.className = 'bi bi-eye';
+    }
+}
+</script>
+{% endblock %}
