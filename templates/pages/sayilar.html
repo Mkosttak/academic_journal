@@ -7,25 +7,9 @@
     .main-container {
         max-width: 1400px;
         margin: 0 auto;
-        padding: 2rem 1rem;
+        padding: 1rem;
     }
 
-    .page-header {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    .page-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #2d3748;
-        margin-bottom: 0.5rem;
-    }
-
-    .page-subtitle {
-        font-size: 1.1rem;
-        color: #64748b;
-    }
 
     .content-layout {
         display: flex;
@@ -40,7 +24,7 @@
         position: sticky;
         top: 2rem;
     }
-
+    
     .sidebar-card {
         background: white;
         border-radius: 1rem;
@@ -48,7 +32,7 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         border: 1px solid #e2e8f0;
     }
-
+    
     .sidebar-title {
         font-size: 1.3rem;
         font-weight: 700;
@@ -58,13 +42,13 @@
         align-items: center;
         gap: 0.5rem;
     }
-
+    
     .year-filters {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
     }
-
+    
     .year-filter-item {
         display: flex;
         align-items: center;
@@ -78,21 +62,21 @@
         border: 1px solid transparent;
         background: #f8fafc;
     }
-
+    
     .year-filter-item:hover {
         background: #eff6ff;
         color: #3b82f6;
         text-decoration: none;
         transform: translateX(3px);
     }
-
+    
     .year-filter-item.active {
         background: #3b82f6;
         color: white;
         border-color: #3b82f6;
         box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
-
+    
     .year-count {
         font-size: 0.8rem;
         background: rgba(255, 255, 255, 0.2);
@@ -100,49 +84,34 @@
         border-radius: 12px;
         font-weight: 600;
     }
-
+    
     .year-filter-item.active .year-count {
         background: rgba(255, 255, 255, 0.3);
     }
-
+    
     .year-filter-item:not(.active) .year-count {
         background: #e2e8f0;
         color: #64748b;
     }
-
+    
     /* Ana İçerik Alanı */
     .main-content {
         flex: 1;
         min-width: 0;
     }
-
-    .content-header {
-        margin-bottom: 2rem;
-    }
-
-    .content-title {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #2d3748;
-        margin-bottom: 0.5rem;
-    }
-
-    .content-subtitle {
-        color: #64748b;
-        font-size: 1rem;
-    }
+    
 
     /* Dergi Kartları */
     .journals-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-        gap: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .journal-card {
         background: white;
-        border-radius: 1rem;
-        padding: 1.5rem;
+        border-radius: 0.8rem;
+        padding: 1rem;
         box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         border: 1px solid #e2e8f0;
         transition: all 0.3s ease;
@@ -151,6 +120,7 @@
         display: block;
         position: relative;
         overflow: hidden;
+        cursor: pointer;
     }
 
     .journal-card::before {
@@ -180,14 +150,15 @@
     .journal-content {
         display: flex;
         align-items: center;
-        gap: 1.5rem;
-        margin-bottom: 1rem;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0;
     }
 
     .journal-cover {
-        width: 120px;
-        height: 150px;
-        border-radius: 0.8rem;
+        width: 100px;
+        height: 125px;
+        border-radius: 0.4rem;
         overflow: hidden;
         flex-shrink: 0;
         background: linear-gradient(135deg, #f0f9ff, #f8fafc);
@@ -203,9 +174,12 @@
     .journal-cover img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+        object-position: center;
         display: block;
-        border-radius: 0.8rem;
+        border-radius: 0.4rem;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
     }
 
     .journal-cover.no-image::before {
@@ -221,13 +195,16 @@
 
     .journal-info {
         flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .journal-title {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         font-weight: 700;
         color: #2d3748;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0;
         line-height: 1.3;
     }
 
@@ -239,12 +216,9 @@
 
     .journal-actions {
         display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
-        margin-top: 1rem;
+        gap: 0.5rem;
     }
 
-    /* Yeni buton stilleri (78 dosyasına benzer) */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -277,7 +251,13 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    .btn-outline-secondary:hover { background:#f9fafb; transform: translateY(-1px); border-color:#9ca3af; }
+    .btn-outline-secondary:hover { 
+        background: #dc2626 !important; 
+        color: white !important;
+        transform: translateY(-1px); 
+        border-color: #dc2626 !important;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    }
 
     /* Boş Durum */
     .empty-state {
@@ -331,225 +311,64 @@
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
     }
-
-    /* Animasyonlar */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes slideInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    .journal-card {
-        animation: fadeInUp 0.5s ease forwards;
-    }
-
-    .journal-card:nth-child(1) { animation-delay: 0.1s; opacity: 0; }
-    .journal-card:nth-child(2) { animation-delay: 0.2s; opacity: 0; }
-    .journal-card:nth-child(3) { animation-delay: 0.3s; opacity: 0; }
-    .journal-card:nth-child(4) { animation-delay: 0.4s; opacity: 0; }
-    .journal-card:nth-child(n+5) { animation-delay: 0.5s; opacity: 0; }
-
-    /* Responsive Tasarım */
-    @media (max-width: 1024px) {
-        .content-layout {
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .sidebar {
-            width: 100%;
-            position: static;
-        }
-
-        .journals-grid {
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .main-container {
-            padding: 1rem 0.5rem;
-        }
-
-        .page-title {
-            font-size: 2rem;
-        }
-
-        .journals-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .journal-card {
-            padding: 1rem;
-        }
-
-        .journal-content {
-            flex-direction: column;
-            text-align: center;
-            gap: 1rem;
-        }
-
-        .journal-cover {
-            width: 100px;
-            height: 125px;
-        }
-
-        .journal-actions {
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .year-filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 0.5rem;
-        }
-
-        .year-filter-item {
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-        }
-
-        .journal-cover {
-            width: 80px;
-            height: 100px;
-        }
-
-        .journal-title {
-            font-size: 1.2rem;
-        }
-
-        .journal-actions {
-            gap: 0.5rem;
-        }
-
-        .btn-inspect,
-        .btn-download {
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-        }
-    }
-
-    /* Focus states for accessibility */
-    .year-filter-item:focus,
-    .journal-card:focus,
-    .btn-inspect:focus,
-    .btn-download:focus,
-    .btn-back:focus {
-        outline: 2px solid #3b82f6;
-        outline-offset: 2px;
-    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="main-container">
-    <!-- Sayfa Başlığı -->
-    <div class="page-header">
-        <h1 class="page-title">Dergi Arşivi</h1>
-        <p class="page-subtitle">Tüm dergi sayılarını keşfedin ve inceleyin</p>
-    </div>
 
     <div class="content-layout">
-        <!-- Sol Sidebar - Yıl Filtreleri -->
         <div class="sidebar">
             <div class="sidebar-card">
                 <h3 class="sidebar-title">
                     <i class="bi bi-funnel"></i>
                     Yıl Filtreleri
                 </h3>
-
                 <div class="year-filters">
-                    <a href="{% url 'sayilar' %}" class="year-filter-item {% if not secili_yil %}active{% endif %}">
-                        <span>Tüm Yıllar</span>
-                        <span class="year-count">{{ tum_dergiler.count }}</span>
-                    </a>
-                    {% for yil, yilik_sayilar in yillar.items %}
-                        <a href="?yil={{ yil }}" class="year-filter-item {% if secili_yil == yil %}active{% endif %}">
-                            <span>{{ yil }}</span>
-                            <span class="year-count">{{ yilik_sayilar|length }}</span>
+                        <a href="{% url 'sayilar' %}" class="year-filter-item {% if not secili_yil %}active{% endif %}">
+                            <span>Tüm Yıllar</span>
+                            <span class="year-count">{{ tum_dergiler.count }}</span>
                         </a>
-                    {% empty %}
+                        {% for yil, yilik_sayilar in yillar.items %}
+                            <a href="?yil={{ yil }}" class="year-filter-item {% if secili_yil == yil %}active{% endif %}">
+                                <span>{{ yil }}</span>
+                                <span class="year-count">{{ yilik_sayilar|length }}</span>
+                            </a>
+                        {% empty %}
                         <div class="year-filter-item" style="opacity: 0.5; pointer-events: none;">
-                            <span>Henüz sayı yok</span>
-                            <span class="year-count">0</span>
-                        </div>
-                    {% endfor %}
-                </div>
+                                <span>Henüz sayı yok</span>
+                                <span class="year-count">0</span>
+                            </div>
+                        {% endfor %}
             </div>
         </div>
+    </div>
 
-        <!-- Ana İçerik Alanı -->
         <div class="main-content">
-            <!-- İçerik Başlığı -->
-            <div class="content-header">
-                <h2 class="content-title">
-                    {% if secili_yil %}
-                        {{ secili_yil }} Yılı Dergi Sayıları
-                    {% else %}
-                        Tüm Dergi Sayıları
-                    {% endif %}
-                </h2>
-                <p class="content-subtitle">
-                    {% if secili_yil %}
-                        {{ secili_yil }} yılında yayınlanan {{ tum_dergiler.count }} dergi sayısı
-                    {% else %}
-                        Toplamda {{ tum_dergiler.count }} dergi sayısı mevcut
-                    {% endif %}
-                </p>
-            </div>
 
-            <!-- Dergi Sayıları Grid -->
-            {% if tum_dergiler %}
+                {% if tum_dergiler %}
                 <div class="journals-grid">
                     {% for dergi in tum_dergiler %}
-                        <div class="journal-card">
+                        <div class="journal-card" onclick="window.location.href='{% url 'sayi_makaleleri' dergi.pk %}'">
                             <div class="journal-content">
-                                <!-- Sol tarafta kapak görseli -->
                                 <div class="journal-cover {% if not dergi.kapak_gorseli %}no-image{% endif %}">
                                     {% if dergi.kapak_gorseli %}
                                         <img src="{{ dergi.get_kapak_url }}" alt="{{ dergi.get_tarih_format }}" loading="lazy">
                                     {% endif %}
                                 </div>
-
-                                <!-- Sağ tarafta dergi bilgileri -->
                                 <div class="journal-info">
                                     <h3 class="journal-title">{{ dergi.get_tarih_format }}</h3>
-                                    <p class="journal-subtitle">{{ dergi.get_cilt_sayi_format }}</p>
+                                    <div class="journal-actions">
+                                        <a href="{% url 'sayi_makaleleri' dergi.pk %}" class="btn btn-primary btn-sm rounded-pill" title="İncele">
+                                            <i class="bi bi-eye me-1"></i>İncele
+                                        </a>
+                                        {% if dergi.pdf_dosyasi %}
+                                            <a href="{{ dergi.pdf_dosyasi.url }}" download class="btn btn-outline-secondary btn-sm rounded-pill" title="PDF İndir" onclick="event.stopPropagation();">
+                                                <i class="bi bi-download me-1"></i>İndir
+                                            </a>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                            </div>
-
-                            <!-- Alt tarafta butonlar (78 stilinde) -->
-                            <div class="journal-actions">
-                                <a href="{% url 'sayi_makaleleri' dergi.pk %}" class="btn btn-primary btn-sm rounded-pill" title="İncele">
-                                    <i class="bi bi-eye me-1"></i>İncele
-                                </a>
-                                {% if dergi.pdf_dosyasi %}
-                                    <a href="{{ dergi.pdf_dosyasi.url }}" download class="btn btn-outline-secondary btn-sm rounded-pill" title="PDF İndir">
-                                        <i class="bi bi-download me-1"></i>İndir
-                                    </a>
-                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
@@ -559,24 +378,24 @@
                     <i class="bi bi-journal-x"></i>
                     <h3>
                         {% if secili_yil %}
-                            {{ secili_yil }} yılında dergi sayısı bulunamadı
+                                {{ secili_yil }} yılında dergi sayısı bulunamadı
                         {% else %}
-                            Henüz dergi sayısı yayınlanmamış
+                                Henüz dergi sayısı yayınlanmamış
                         {% endif %}
                     </h3>
                     <p>
+                            {% if secili_yil %}
+                                {{ secili_yil }} yılında yayınlanmış dergi sayısı bulunmuyor. Diğer yılları kontrol edebilirsiniz.
+                            {% else %}
+                                Yeni dergi sayıları yayınlandığında burada görünecektir.
+                            {% endif %}
+                        </p>
                         {% if secili_yil %}
-                            {{ secili_yil }} yılında yayınlanmış dergi sayısı bulunmuyor. Diğer yılları kontrol edebilirsiniz.
-                        {% else %}
-                            Yeni dergi sayıları yayınlandığında burada görünecektir.
-                        {% endif %}
-                    </p>
-                    {% if secili_yil %}
                         <a href="{% url 'sayilar' %}" class="btn-back">
-                            <i class="bi bi-arrow-left"></i>
-                            Tüm Sayıları Göster
-                        </a>
-                    {% endif %}
+                                <i class="bi bi-arrow-left"></i>
+                                Tüm Sayıları Göster
+                            </a>
+                        {% endif %}
                 </div>
             {% endif %}
         </div>
