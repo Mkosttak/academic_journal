@@ -13,17 +13,76 @@ def unique_file_path(instance, filename, subfolder):
 def article_pdf_path(instance, filename):
     return unique_file_path(instance, filename, 'article_pdfs')
 
+def journal_cover_path(instance, filename):
+    return unique_file_path(instance, filename, 'journal_covers')
+
+def journal_pdf_path(instance, filename):
+    return unique_file_path(instance, filename, 'journal_pdfs')
+
 class DergiSayisi(models.Model):
-    sayi = models.CharField(max_length=100, unique=True, verbose_name="Dergi Sayısı/Adı")
+    AYLAR = [
+        (1, 'Ocak'), (2, 'Şubat'), (3, 'Mart'), (4, 'Nisan'),
+        (5, 'Mayıs'), (6, 'Haziran'), (7, 'Temmuz'), (8, 'Ağustos'),
+        (9, 'Eylül'), (10, 'Ekim'), (11, 'Kasım'), (12, 'Aralık')
+    ]
+    
+    YAYINLANMA_SECENEKLERI = [
+        ('yayinlanmasin', 'Yayınlanmasın'),
+        ('simdi', 'Şimdi Yayınlansın')
+    ]
+    
+    yil = models.PositiveIntegerField(verbose_name="Yıl", help_text="Örn: 2025", default=2025)
+    ay = models.PositiveSmallIntegerField(choices=AYLAR, verbose_name="Ay", default=1)
+    cilt = models.PositiveIntegerField(verbose_name="Cilt", help_text="Örn: 1", default=1)
+    sayi_no = models.PositiveIntegerField(verbose_name="Sayı No", help_text="Örn: 1", default=1)
+    kapak_gorseli = models.ImageField(upload_to=journal_cover_path, verbose_name="Kapak Görseli", null=True, blank=True, help_text="Yüklenmezse varsayılan kapak kullanılır")
+    pdf_dosyasi = models.FileField(upload_to=journal_pdf_path, verbose_name="Dergi PDF Dosyası", null=True, blank=True, help_text="Derginin tam halini içeren PDF dosyası (isteğe bağlı)")
+    yayinlandi_mi = models.BooleanField(default=False, verbose_name="Yayınlandı mı?")
+    yayinlanma_secimi = models.CharField(max_length=20, choices=YAYINLANMA_SECENEKLERI, default='yayinlanmasin', verbose_name="Yayınlanma Seçimi")
     olusturulma_tarihi = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Dergi Sayısı"
         verbose_name_plural = "Dergi Sayıları"
-        ordering = ['-olusturulma_tarihi']
+        ordering = ['-yil', '-ay', '-sayi_no']
+        unique_together = ['yil', 'ay', 'sayi_no']  # Aynı yıl, ay ve sayı no'ya sahip iki dergi olamaz
 
+    def save(self, *args, **kwargs):
+        from django.utils import timezone
+        
+        # Eğer yayınlanmasın seçeneği seçilmişse yayınlanmadı olarak işaretle
+        if self.yayinlanma_secimi == 'yayinlanmasin':
+            self.yayinlandi_mi = False
+            self.zamanli_yayinlanma_tarihi = None
+        
+        # Eğer şimdi seçeneği seçilmişse direkt yayınla
+        elif self.yayinlanma_secimi == 'simdi':
+            self.yayinlandi_mi = True
+            self.zamanli_yayinlanma_tarihi = None
+        
+        # "İleri tarih" seçeneği kaldırıldı
+        
+        super().save(*args, **kwargs)
+    
     def __str__(self):
-        return self.sayi
+        return f"{self.yil} - {self.get_ay_display()}, Cilt {self.cilt} Sayı {self.sayi_no}"
+    
+    def get_tarih_format(self):
+        return f"{self.yil} - {self.get_ay_display()}"
+    
+    def get_cilt_sayi_format(self):
+        return f"Cilt {self.cilt}, Sayı {self.sayi_no}"
+        
+    def get_kapak_url(self):
+        """Kapak görseli varsa onun URL'ini, yoksa varsayılan kapak URL'ini döndürür"""
+        if self.kapak_gorseli:
+            return self.kapak_gorseli.url
+        return '/static/images/default-journal-cover.svg'  # Varsayılan kapak
+        
+    @property 
+    def makale_sayisi(self):
+        """Bu dergi sayısındaki makale sayısını döndürür"""
+        return self.makaleler.filter(goster_makaleler_sayfasinda=True).count()
 
 # --- YENİ MODEL: YAZAR ---
 class Yazar(models.Model):

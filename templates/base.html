@@ -87,6 +87,57 @@
         }
         /* Yumuşak fade-in efekti */
         body { opacity: 0; transition: opacity 0.5s; }
+        
+        /* Search Modal Styles */
+        #searchModal .modal-content {
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        #searchModal .input-group-text {
+            border: 1px solid #dee2e6;
+            background: #f8f9fa;
+        }
+        
+        #searchModal .form-control {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem 1rem;
+        }
+        
+        #searchModal .form-control:focus {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        
+        
+        /* Search button hover effects */
+        .navbar .btn[data-bs-target="#searchModal"] {
+            transition: all 0.2s ease;
+            border: 1px solid var(--bs-primary);
+        }
+        
+        .navbar .btn[data-bs-target="#searchModal"]:hover {
+            background: var(--bs-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* Mobile responsive adjustments for search modal */
+        @media (max-width: 768px) {
+            #searchModal .modal-dialog {
+                margin: 1rem;
+            }
+            
+            #searchModal .input-group-lg {
+                flex-direction: column;
+            }
+            
+            #searchModal .input-group-lg .btn {
+                margin-top: 0.5rem;
+                margin-left: 0 !important;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -113,6 +164,41 @@
     <script src="{% static 'js/style.js' %}"></script>
 
     <script>
+        // Search Modal Enhancement
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchModal = document.getElementById('searchModal');
+            const searchInput = document.getElementById('searchInput');
+            
+            // Focus on search input when modal opens
+            if (searchModal && searchInput) {
+                searchModal.addEventListener('shown.bs.modal', function () {
+                    searchInput.focus();
+                });
+                
+                // Submit form on Enter key
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.closest('form').submit();
+                    }
+                });
+                
+                // Add keyboard shortcut (Ctrl+K or Cmd+K) to open search
+                document.addEventListener('keydown', function(e) {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                        e.preventDefault();
+                        const modal = new bootstrap.Modal(searchModal);
+                        modal.show();
+                    }
+                });
+                
+                // Add search animation
+                searchInput.addEventListener('input', function() {
+                    this.style.borderColor = this.value ? 'var(--bs-primary)' : '';
+                });
+            }
+        });
+        
         // Sayfa yüklendiğinde yumuşak bir giriş efekti
         document.addEventListener("DOMContentLoaded", function() {
             document.body.style.opacity = 0;

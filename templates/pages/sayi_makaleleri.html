@@ -1,0 +1,392 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ dergi_sayisi.get_tarih_format }} - Makaleler{% endblock %}
+{% block extra_css %}
+<style>
+    .sayi-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: -2.2rem -2.2rem 2rem -2.2rem;
+        padding: 3rem 2.2rem 2rem 2.2rem;
+        border-radius: 0 0 2rem 2rem;
+        color: white;
+    }
+    
+    .sayi-hero {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .sayi-hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .sayi-meta {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+    
+    .sayi-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255,255,255,0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 1rem;
+    }
+    
+    .breadcrumb-custom {
+        background: rgba(255,255,255,0.1);
+        padding: 0.75rem 1.5rem;
+        border-radius: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .breadcrumb-custom .breadcrumb {
+        margin-bottom: 0;
+        justify-content: center;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a {
+        color: white;
+        text-decoration: none;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item.active {
+        color: rgba(255,255,255,0.8);
+    }
+    
+    .makale-card {
+        background: white;
+        border-radius: 1.2rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+    
+    .makale-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    
+    .makale-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .makale-icon {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        margin-top: 0.2rem;
+    }
+    
+    .makale-title {
+        flex: 1;
+    }
+    
+    .makale-title h3 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+    
+    .makale-title h3 a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .makale-title h3 a:hover {
+        color: #667eea;
+    }
+    
+    .makale-yazarlar {
+        color: #64748b;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .makale-aciklama {
+        color: #4a5568;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    
+    .makale-keywords {
+        margin-bottom: 1rem;
+    }
+    
+    .keyword-tag {
+        display: inline-block;
+        background: #e0e7ff;
+        color: #5850ec;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.85rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .makale-footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+        flex-wrap: wrap;
+    }
+    
+    .makale-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: #64748b;
+        flex: 1;
+    }
+    
+    .makale-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+    
+    .makale-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .makale-actions .btn-outline-secondary:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 1.2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #cbd5e0;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state h3 {
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+    
+    .empty-state p {
+        color: #718096;
+    }
+    
+    @media (max-width: 768px) {
+        .sayi-header {
+            margin: -1.2rem -0.7rem 1rem -0.7rem;
+            padding: 2rem 1rem 1.5rem 1rem;
+            border-radius: 0 0 1rem 1rem;
+        }
+        
+        .sayi-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .sayi-meta {
+            gap: 1rem;
+        }
+        
+        .sayi-meta-item {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+        }
+        
+        .makale-header {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .makale-icon {
+            align-self: flex-start;
+        }
+        
+        .makale-footer {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .makale-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+    
+    @media (max-width: 575px) {
+        .sayi-header {
+            margin: -0.5rem -0.1rem 1rem -0.1rem;
+            padding: 1.5rem 0.5rem 1rem 0.5rem;
+        }
+        
+        .makale-card {
+            padding: 1rem;
+        }
+        
+        .sayi-meta {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sayi-header">
+    <div class="breadcrumb-custom">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'anasayfa' %}">Ana Sayfa</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'sayilar' %}">Sayılar</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ dergi_sayisi.get_cilt_sayi_format }}</li>
+            </ol>
+        </nav>
+    </div>
+    
+    <div class="sayi-hero">
+        <h1><i class="bi bi-journal-bookmark me-3"></i>{{ dergi_sayisi.get_tarih_format }} - {{ dergi_sayisi.get_cilt_sayi_format }}</h1>
+        <div class="sayi-meta">
+            <div class="sayi-meta-item">
+                <i class="bi bi-calendar3"></i>
+                <span>{{ dergi_sayisi.yayinlanma_tarihi|date:"d" }} {{ dergi_sayisi.get_ay_display }} {{ dergi_sayisi.yil }}</span>
+            </div>
+            <div class="sayi-meta-item">
+                <i class="bi bi-file-text"></i>
+                <span>{{ makaleler|length }} makale</span>
+            </div>
+            <div class="sayi-meta-item">
+                <i class="bi bi-collection"></i>
+                <span>{{ dergi_sayisi.get_cilt_sayi_format }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid px-0">
+    {% if makaleler %}
+        {% for makale in makaleler %}
+            <div class="makale-card">
+                <div class="makale-header">
+                    <div class="makale-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <div class="makale-title">
+                        <h3>
+                            <a href="{% url 'makale_detail' makale.slug %}">{{ makale.baslik }}</a>
+                        </h3>
+                        <div class="makale-yazarlar">
+                            <i class="bi bi-person me-1"></i>{{ makale.get_yazarlar_display }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="makale-aciklama">
+                    {{ makale.aciklama|truncatewords:30 }}
+                </div>
+                
+                {% if makale.get_keywords_list %}
+                    <div class="makale-keywords">
+                        {% for keyword in makale.get_keywords_list %}
+                            <span class="keyword-tag">{{ keyword }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="makale-footer">
+                    <div class="makale-actions">
+                        <a href="{% url 'makale_detail' makale.slug %}" class="btn btn-primary btn-sm rounded-pill">
+                            <i class="bi bi-eye me-1"></i>İncele
+                        </a>
+                        {% if makale.pdf_dosyasi %}
+                            <a href="{{ makale.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+        {% if is_paginated %}
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Sayfa navigasyonu">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link rounded-pill me-2" href="?page=1" aria-label="İlk Sayfa">
+                                    <i class="bi bi-chevron-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link rounded-pill me-2" href="?page={{ page_obj.previous_page_number }}" aria-label="Önceki">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        <li class="page-item active">
+                            <span class="page-link rounded-pill mx-1">{{ page_obj.number }}</span>
+                        </li>
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link rounded-pill ms-2" href="?page={{ page_obj.next_page_number }}" aria-label="Sonraki">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link rounded-pill ms-2" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Son Sayfa">
+                                    <i class="bi bi-chevron-double-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-file-earmark-x"></i>
+            <h3>Bu Sayıda Makale Bulunamadı</h3>
+            <p>{{ dergi_sayisi.get_cilt_sayi_format }} sayısında henüz yayınlanmış makale bulunmamaktadır.</p>
+            <a href="{% url 'sayilar' %}" class="btn btn-primary rounded-pill mt-3">
+                <i class="bi bi-arrow-left me-2"></i>Sayılara Dön
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

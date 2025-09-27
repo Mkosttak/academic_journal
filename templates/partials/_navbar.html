@@ -18,6 +18,10 @@
             </a>
             <!-- Profile/Buttons (right) -->
             <div class="d-flex align-items-center gap-2 me-1">
+                <!-- Search Button (Mobile) -->
+                <button type="button" class="btn btn-outline-primary rounded-circle p-2 d-lg-none" data-bs-toggle="modal" data-bs-target="#searchModal" title="Ara">
+                    <i class="bi bi-search"></i>
+                </button>
                 {% if user.is_authenticated %}
                     <a class="d-flex align-items-center" href="#" data-bs-toggle="dropdown" aria-expanded="false" id="userDropdownMobile">
                         {% if user.profile_resmi %}
@@ -98,6 +102,12 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="{% url 'sayilar' %}" class="nav-link {% if request.resolver_match.url_name == 'sayilar' or request.resolver_match.url_name == 'sayi_makaleleri' %}active fw-bold{% endif %}">
+                        <i class="bi bi-collection me-1"></i>Sayılar
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="{% url 'makale_ekle_redirect' %}" class="nav-link {% if request.resolver_match.url_name == 'makale_ekle' or request.resolver_match.url_name == 'makale_ekle_redirect' %}active fw-bold{% endif %}">
                         <i class="bi bi-plus-circle me-1"></i>Makale Ekle
                     </a>
@@ -151,6 +161,12 @@
                 {% endif %}
             </ul>
             <ul class="navbar-nav align-items-center gap-lg-1 gap-2 d-none d-lg-flex">
+                <!-- Search Button (Desktop) -->
+                <li class="nav-item me-2">
+                    <button type="button" class="btn btn-outline-primary rounded-circle p-2" data-bs-toggle="modal" data-bs-target="#searchModal" title="Ara">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdownDesktop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -222,4 +238,46 @@
             </ul>
         </div>
     </div>
-</nav> 
+</nav>
+
+<!-- Search Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-2">
+                <h5 class="modal-title fw-bold" id="searchModalLabel">
+                    <i class="bi bi-search me-2 text-primary"></i>Arama
+                    <small class="text-muted ms-2 fw-normal d-none d-md-inline">
+                        <kbd class="small">Ctrl</kbd> + <kbd class="small">K</kbd>
+                    </small>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <form method="get" action="{% url 'makale_list' %}" class="mb-4">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light border-end-0 rounded-start-pill">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" name="q" class="form-control border-start-0 rounded-end-pill shadow-none" 
+                               placeholder="Makale başlığı, yazar adı veya anahtar kelime..." 
+                               autocomplete="off" id="searchInput">
+                        <button type="submit" class="btn btn-primary rounded-pill ms-2 px-4">
+                            <i class="bi bi-search me-1"></i>Ara
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Search tips -->
+                <div class="mt-4 p-3 bg-light rounded-3">
+                    <h6 class="text-muted mb-2 fw-semibold">
+                        <i class="bi bi-lightbulb me-1"></i>Arama İpuçları
+                    </h6>
+                    <small class="text-muted d-block mb-1">• Makale başlığına göre arama yapabilirsiniz</small>
+                    <small class="text-muted d-block mb-1">• Yazar adıyla ilgili makaleleri bulabilirsiniz</small>
+                    <small class="text-muted d-block">• Anahtar kelimelerle konuya göre arama yapabilirsiniz</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

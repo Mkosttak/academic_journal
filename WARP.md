@@ -106,6 +106,20 @@ python manage.py shell
 - Responsive design with mobile-first approach
 - Static files organized in `/static/` directory
 - Media uploads handled through `/media/` directory
+- Key templates:
+  - `templates/pages/sayilar.html`: Issue archive page with sidebar navigation
+  - `templates/pages/anasayfa.html`: Homepage with hero section
+  - `templates/articles/makalelerim.html`: Author's article management page
+  - `templates/dashboard/makale_yonetim_list.html`: Editor dashboard
+
+### UI Architecture Patterns
+- Glass morphism design with `.glass-hero-card` components
+- Sidebar navigation with sticky positioning and year-based filtering
+- Card-based layouts for content display (articles, issues, statistics)
+- Badge system for status indicators (Yayında/Taslak, Full Access)
+- Responsive grid layouts with Bootstrap's flexbox utilities
+- Custom CSS animations and hover effects
+- Bootstrap Icons integration throughout the interface
 
 ### URL Architecture
 ```

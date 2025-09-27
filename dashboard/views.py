@@ -175,7 +175,9 @@ class AdminDergiSayisiDeleteView(AdminRequiredMixin, DeleteView):
     success_url = reverse_lazy('dashboard:admin_dergisayisi_list')
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['delete_message'] = f"'{self.object.sayi}' isimli dergi sayısını silmek üzeresiniz."
+        context['delete_message'] = (
+            f"{self.object.get_tarih_format()} - {self.object.get_cilt_sayi_format()} dergi sayısını silmek üzeresiniz."
+        )
         return context
 
 class AdminIletisimSilView(AdminRequiredMixin, DeleteView):

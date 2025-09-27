@@ -30,5 +30,18 @@ class MakaleAdmin(admin.ModelAdmin):
 
 @admin.register(DergiSayisi)
 class DergiSayisiAdmin(admin.ModelAdmin):
-    list_display = ('sayi', 'olusturulma_tarihi')
-    search_fields = ('sayi',)
+    list_display = ('get_tarih_format', 'get_cilt_sayi_format', 'yayinlanma_secimi', 'yayinlandi_mi')
+    search_fields = ('yil', 'cilt', 'sayi_no')
+    list_filter = ('yil', 'ay', 'cilt', 'yayinlandi_mi', 'yayinlanma_secimi')
+    readonly_fields = ('yayinlandi_mi',)
+    ordering = ['-yil', '-ay', '-sayi_no']
+    
+    fieldsets = (
+        ('Dergi Bilgileri', {
+            'fields': ('yil', 'ay', 'cilt', 'sayi_no', 'kapak_gorseli')
+        }),
+        ('Yayınlanma', {
+            'fields': ('yayinlanma_secimi', 'yayinlandi_mi'),
+            'classes': ('collapse',)
+        })
+    )

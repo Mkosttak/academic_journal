@@ -651,3 +651,206 @@ select.form-select {
     margin-left: auto;
     margin-right: auto;
 }
+
+/* === AKADEMİK DERGİ - ISSUE ARCHIVE STİLLERİ === */
+/* Academic dergi sitesi tarzında profesyonel issue archive stilleri */
+
+.academic-issue-archive {
+    background: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.archive-layout {
+    display: flex;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Issue Archive Sidebar */
+.archive-sidebar-academic {
+    width: 280px;
+    background: #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    height: fit-content;
+    position: sticky;
+    top: 120px;
+}
+
+.archive-header-academic {
+    background: #6c757d;
+    color: white;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+}
+
+.year-links-academic {
+    padding: 1rem 0;
+}
+
+.year-link-academic {
+    display: block;
+    padding: 0.6rem 1.5rem;
+    color: #495057;
+    text-decoration: none;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.year-link-academic:hover {
+    background: #dee2e6;
+    color: #212529;
+    border-left-color: #007bff;
+    text-decoration: none;
+}
+
+.year-link-academic.active {
+    background: #007bff;
+    color: white;
+    border-left-color: #0056b3;
+}
+
+/* Issues Content Area */
+.issues-content-academic {
+    flex: 1;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 2rem;
+}
+
+.issue-card-academic {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.issue-card-academic:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+    border-color: #007bff;
+    text-decoration: none;
+    color: inherit;
+}
+
+.issue-cover-academic {
+    width: 120px;
+    height: 160px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.issue-cover-academic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.issue-details-academic {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.issue-access-academic {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #28a745;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.issue-title-academic {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.issue-info-academic {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.issue-meta-academic {
+    margin-top: auto;
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .archive-layout {
+        flex-direction: column;
+    }
+    
+    .archive-sidebar-academic {
+        width: 100%;
+        position: static;
+    }
+    
+    .year-links-academic {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+    
+    .year-link-academic {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        border-left: 1px solid #dee2e6 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .issue-card-academic {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .issue-cover-academic {
+        width: 100px;
+        height: 133px;
+        align-self: center;
+    }
+    
+    .archive-layout {
+        padding: 1rem 0.5rem;
+    }
+    
+    .issues-content-academic {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 575px) {
+    .issue-cover-academic {
+        width: 80px;
+        height: 107px;
+    }
+    
+    .issue-card-academic {
+        padding: 1rem;
+    }
+}

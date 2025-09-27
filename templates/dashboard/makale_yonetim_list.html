@@ -60,7 +60,7 @@
                                         </a>
                     </td>
                     <td>{{ makale.get_yazarlar_display|truncatechars:20 }}</td>
-                    <td>{{ makale.dergi_sayisi.sayi|default:"-"|truncatechars:15 }}</td>
+                    <td>{{ makale.dergi_sayisi.get_cilt_sayi_format|default:"-"|truncatechars:15 }}</td>
                     <td>
                         {% if makale.goster_makaleler_sayfasinda %}
                                             <span class="badge bg-success-subtle text-success-emphasis rounded-pill"><i class="bi bi-check-circle-fill me-1"></i>Yayında</span>

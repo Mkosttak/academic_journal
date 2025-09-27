@@ -30,7 +30,7 @@
                 <tr>
                     <td>{{ makale.baslik }}</td>
                     <td>{{ makale.get_yazarlar_display }}</td>
-                    <td>{{ makale.dergi_sayisi.sayi|default:"-" }}</td>
+                    <td>{{ makale.dergi_sayisi.get_cilt_sayi_format|default:"-" }}</td>
                     <td>
                         {% if makale.goster_makaleler_sayfasinda %}
                             <span class="badge bg-success">Yayında</span>

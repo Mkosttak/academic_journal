@@ -19,7 +19,11 @@
                     <ul class="list-group list-group-flush">
                         {% for dergi in dergi_sayilari %}
                         <li class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-md-center py-3 gap-2">
-                            <span class="fw-semibold fs-5">{{ dergi.sayi }}</span>
+                            <div>
+                                <span class="fw-semibold fs-5">{{ dergi.get_tarih_format }} - {{ dergi.get_cilt_sayi_format }}</span>
+                                <br>
+                                <small class="text-muted">{{ dergi.get_cilt_sayi_format }} | {{ dergi.yayinlanma_tarihi|date:"d M Y" }}</small>
+                            </div>
                             <span class="d-flex gap-2">
                                 <a href="{% url 'dashboard:admin_dergisayisi_update' dergi.pk %}" class="btn btn-sm btn-primary rounded-pill px-3">Düzenle</a>
                                 <a href="{% url 'dashboard:admin_dergisayisi_delete' dergi.pk %}" class="btn btn-sm btn-danger rounded-pill px-3">Sil</a>

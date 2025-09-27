@@ -19,7 +19,7 @@
                 <select id="dergi-select" name="dergi" class="form-select form-select-sm rounded-pill">
                     <option value="">Tüm Dergi Sayıları</option>
                     {% for dergi in dergi_sayilari %}
-                    <option value="{{ dergi.id }}" {% if request.GET.dergi == dergi.id|stringformat:"s" %}selected{% endif %}>{{ dergi.sayi }}</option>
+                    <option value="{{ dergi.id }}" {% if request.GET.dergi == dergi.id|stringformat:"s" %}selected{% endif %}>{{ dergi.get_cilt_sayi_format }}</option>
                     {% endfor %}
                 </select>
                 <span class="custom-dropdown-icon position-absolute top-50 end-0 translate-middle-y pe-3" style="pointer-events:none; z-index: 10;">

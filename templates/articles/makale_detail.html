@@ -2,15 +2,6 @@
 {% block title %}{{ makale.baslik }}{% endblock %}
 {% block content %}
 <div class="container py-4">
-    <div class="d-none d-md-block">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-3">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'makale_list' %}">Makaleler</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ makale.baslik }}</li>
-            </ol>
-        </nav>
-    </div>
 
     {% if makale.admin_notu %}
     <div class="d-flex align-items-center bg-warning bg-opacity-10 text-warning-emphasis rounded-3 p-3 mt-2 mb-4 small border-start border-warning border-4">
@@ -24,12 +15,6 @@
             <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
                 <div>
                     <h1 class="h2 mb-3">{{ makale.baslik }}</h1>
-                    <div class="d-flex align-items-center gap-3 text-muted mb-4 flex-wrap">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-calendar3 me-2"></i>
-                            <span>{{ makale.olusturulma_tarihi|date:"d M Y" }}</span>
-                        </div>
-                    </div>
                 </div>
                 {% if request.user.is_authenticated %}
                     {% if request.user in makale.yazarlar.all or request.user.is_editor or request.user.is_superuser %}
@@ -125,16 +110,13 @@
             </div>
 
             {% if makale.pdf_dosyasi %}
-            <div class="mb-4">
-                <h5 class="d-flex align-items-center mb-3">
-                    <i class="bi bi-file-pdf me-2 text-danger"></i>
-                    PDF Dosyası
-                </h5>
-                <a href="{{ makale.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-danger">
-                    <i class="bi bi-file-pdf me-2"></i>PDF'i Görüntüle
+            <div class="text-center mt-4 pt-4 border-top">
+                <a href="{{ makale.pdf_dosyasi.url }}" target="_blank" class="btn btn-danger rounded-pill px-4 py-2 shadow-sm">
+                    <i class="bi bi-file-earmark-pdf-fill me-2"></i>PDF'i Görüntüle
                 </a>
             </div>
             {% endif %}
+
         </div>
     </div>
 </div>
