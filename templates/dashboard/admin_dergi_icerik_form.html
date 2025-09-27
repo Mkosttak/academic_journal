@@ -68,26 +68,59 @@
 
                             <!-- PDF Dosyası -->
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ form.pdf_dosyasi.label }}</label>
-                                <div class="card p-3 bg-light">
-                                    {% if object.pdf_dosyasi %}
-                                        <div class="mb-2">
-                                            <span class="badge bg-success">
-                                                <i class="bi bi-file-earmark-pdf me-1"></i>Mevcut PDF
-                                            </span>
-                                            <a href="{{ object.pdf_dosyasi.url }}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">
-                                                <i class="bi bi-eye"></i> Görüntüle
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                    {{ form.pdf_dosyasi|add_class:'form-control' }}
-                                    {% if form.pdf_dosyasi.help_text %}
-                                        <div class="form-text">{{ form.pdf_dosyasi.help_text }}</div>
-                                    {% endif %}
-                                    {% if form.pdf_dosyasi.errors %}
-                                        <div class="text-danger">{{ form.pdf_dosyasi.errors }}</div>
-                                    {% endif %}
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-file-earmark-pdf text-primary me-2"></i>
+                                    <label class="form-label fw-bold mb-0">{{ form.pdf_dosyasi.label }}</label>
                                 </div>
+                                <div class="modern-pdf-upload-wrapper" id="pdf-wrapper">
+                                    <div class="pdf-upload-area" id="pdf-upload-area">
+                                        <div class="pdf-icon-container">
+                                            <i class="bi bi-file-earmark-pdf-fill pdf-main-icon"></i>
+                                        </div>
+                                        <div class="pdf-content">
+                                            <div id="pdf-filename" class="pdf-filename">
+                                                {% if object.pdf_dosyasi and object.pdf_dosyasi.url %}
+                                                    <a href="{{ object.pdf_dosyasi.url }}" target="_blank" class="pdf-link">
+                                                        <i class="bi bi-download me-1"></i>
+                                                        {% with name=object.pdf_dosyasi.name|cut:'content_pdfs/' %}
+                                                            {% if name|length > 30 %}
+                                                                {{ name|slice:"0:15" }}...{{ name|slice:"-15:" }}
+                                                            {% else %}
+                                                                {{ name }}
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="pdf-placeholder">
+                                                        <i class="bi bi-cloud-upload me-2"></i>İçerik PDF dosyanızı yükleyin
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="pdf-info">
+                                                <small class="text-muted">PDF formatında, maksimum 10MB</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pdf-actions">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="change-pdf-btn">
+                                            <i class="bi bi-upload me-1"></i>{% if object.pdf_dosyasi %}Değiştir{% else %}Yükle{% endif %}
+                                        </button>
+                                        {% if object.pdf_dosyasi %}
+                                            <button type="button" class="btn btn-outline-danger btn-sm" id="remove-pdf-btn">
+                                                <i class="bi bi-trash me-1"></i>Kaldır
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="d-none">
+                                    {{ form.pdf_dosyasi }}
+                                </div>
+                                {% if form.pdf_dosyasi.help_text %}
+                                    <div class="form-text">{{ form.pdf_dosyasi.help_text }}</div>
+                                {% endif %}
+                                {% if form.pdf_dosyasi.errors %}
+                                    <div class="text-danger">{{ form.pdf_dosyasi.errors }}</div>
+                                {% endif %}
                             </div>
 
                             <!-- Yayında mı -->
@@ -138,4 +171,98 @@
         border-color: #0d6efd;
     }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // PDF Upload Functionality
+    const changePdfBtn = document.getElementById('change-pdf-btn');
+    const removePdfBtn = document.getElementById('remove-pdf-btn');
+    const pdfInput = document.getElementById('id_pdf_dosyasi');
+    const pdfFilename = document.getElementById('pdf-filename');
+    const pdfUploadArea = document.getElementById('pdf-upload-area');
+    const pdfActions = document.querySelector('.pdf-actions');
+
+    if (changePdfBtn && pdfInput) {
+        changePdfBtn.addEventListener('click', function() {
+            pdfInput.click();
+        });
+    }
+
+    if (pdfInput) {
+        pdfInput.addEventListener('change', function() {
+            const fileName = this.files.length > 0 ? this.files[0].name : "";
+            
+            if (fileName) {
+                // Show file name
+                pdfFilename.innerHTML = '<a href="#" class="pdf-link"><i class="bi bi-download me-1"></i>' + fileName + '</a>';
+                
+                // Show remove button if not already visible
+                if (!removePdfBtn) {
+                    const newRemoveBtn = document.createElement('button');
+                    newRemoveBtn.type = 'button';
+                    newRemoveBtn.className = 'btn btn-outline-danger btn-sm';
+                    newRemoveBtn.id = 'remove-pdf-btn';
+                    newRemoveBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Kaldır';
+                    pdfActions.appendChild(newRemoveBtn);
+                    
+                    newRemoveBtn.addEventListener('click', function() {
+                        pdfInput.value = '';
+                        pdfFilename.innerHTML = '<span class="pdf-placeholder"><i class="bi bi-cloud-upload me-2"></i>İçerik PDF dosyanızı yükleyin</span>';
+                        this.remove();
+                    });
+                }
+            } else {
+                pdfFilename.innerHTML = '<span class="pdf-placeholder"><i class="bi bi-cloud-upload me-2"></i>İçerik PDF dosyanızı yükleyin</span>';
+            }
+        });
+    }
+
+    if (removePdfBtn) {
+        removePdfBtn.addEventListener('click', function() {
+            pdfInput.value = '';
+            pdfFilename.innerHTML = '<span class="pdf-placeholder"><i class="bi bi-cloud-upload me-2"></i>İçerik PDF dosyanızı yükleyin</span>';
+            this.remove();
+        });
+    }
+
+    // Drag and drop functionality
+    if (pdfUploadArea) {
+        pdfUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#007bff';
+            this.style.backgroundColor = 'rgba(0, 123, 255, 0.05)';
+        });
+
+        pdfUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#e0eafc';
+            this.style.backgroundColor = 'transparent';
+        });
+
+        pdfUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#e0eafc';
+            this.style.backgroundColor = 'transparent';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type === 'application/pdf') {
+                    // Create a new FileList
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    pdfInput.files = dataTransfer.files;
+                    
+                    // Trigger change event
+                    pdfInput.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    alert('Lütfen sadece PDF dosyası yükleyin.');
+                }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

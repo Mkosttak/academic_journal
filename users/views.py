@@ -67,7 +67,6 @@ class MyProfilView(LoginRequiredMixin, DetailView):
             makaleler = []
         context['last_articles'] = makaleler[:3]
         context['published_count'] = makaleler.filter(goster_makaleler_sayfasinda=True).count() if hasattr(makaleler, 'filter') else 0
-        context['total_views'] = makaleler.aggregate(total=Sum('goruntulenme_sayisi'))['total'] if hasattr(makaleler, 'aggregate') else 0
         return context
 
 class ProfilView(DetailView):

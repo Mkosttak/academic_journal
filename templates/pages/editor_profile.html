@@ -5,72 +5,167 @@
 {% block content %}
 <div class="container py-5 animate__animated animate__fadeIn">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card modern-card shadow-lg slide-up">
-                <div class="card-body p-lg-5">
-                    <div class="row align-items-center mb-4 pb-4 border-bottom">
-                        <div class="col-md-4 d-flex justify-content-center justify-content-md-start mb-4 mb-md-0">
-                            {% if profil_kullanici.profile_resmi %}
-                                <img src="{{ profil_kullanici.profile_resmi.url }}" class="rounded-circle shadow-sm img-fluid profile-img-cover border-4-white" width="180" height="180" alt="{{ profil_kullanici.get_full_name }}" style="object-fit: cover; border: 4px solid #fff;">
-                            {% else %}
-                                <div class="profile-image-placeholder rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center bg-secondary text-white profile-img-180 border-4-white">
-                                    <i class="bi bi-person-fill icon-6rem"></i>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-8 d-flex flex-column align-items-start">
-                            <h2 class="fw-bold display-5 mb-2 text-start">{{ profil_kullanici.get_full_name|default:profil_kullanici.username }}</h2>
-                            {% if profil_kullanici.email_paylasim_izni %}
-                                <div class="mb-3 p-2 bg-light rounded d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-envelope me-2 text-primary"></i>
-                                        <span class="fw-medium text-dark" id="email-text">{{ profil_kullanici.email }}</span>
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="copyEmail()" title="E-posta adresini kopyala">
-                                        <i class="bi bi-copy"></i>
-                                    </button>
-                                </div>
-                            {% endif %}
-                            {% if profil_kullanici.biyografi %}
-                                <div class="profile-info-box mb-3 p-4 text-start w-100">
-                                    <p class="author-bio-box text-muted mb-0">{{ profil_kullanici.biyografi|linebreaks }}</p>
-                                </div>
-                            {% endif %}
-                            {% if profil_kullanici.resume and profil_kullanici.ozgecmis_paylasim_izni %}
-                                <a href="{{ profil_kullanici.resume.url }}" target="_blank" class="btn btn-primary rounded-pill px-4 py-2 mb-3 align-self-start mt-0-5rem maxw-250px">
-                                    <i class="bi bi-file-earmark-person me-2"></i> Özgeçmişi Görüntüle
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <h3 class="fw-bold mb-4"><i class="bi bi-journal-richtext me-2"></i>Yayınlanan Makaleleri</h3>
-                        {% if makaleler %}
-                            <div class="list-group list-group-flush">
-                                {% for makale in makaleler %}
-                                    <a href="{% url 'makale_detail' makale.slug %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 px-0 article-list-item">
-                                        <div>
-                                            <h5 class="mb-1 fw-semibold">{{ makale.baslik }}</h5>
-                                            <small class="text-muted">Yayınlanma Tarihi: {{ makale.olusturulma_tarihi|date:"d F Y" }}</small>
-                                        </div>
-                                        <i class="bi bi-chevron-right text-primary"></i>
-                                    </a>
-                                {% endfor %}
+        <div class="col-lg-9">
+            <div class="profile-card shadow-lg border-0 rounded-4 p-4 p-lg-5">
+                <div class="row align-items-center border-bottom pb-4 mb-4">
+                    <div class="col-md-4 text-center mb-4 mb-md-0">
+                        {% if profil_kullanici.profile_resmi %}
+                            <div class="avatar-wrapper mx-auto">
+                                <img src="{{ profil_kullanici.profile_resmi.url }}" class="profile-avatar" alt="{{ profil_kullanici.get_full_name }}">
                             </div>
                         {% else %}
-                            <div class="text-center py-5">
-                                <i class="bi bi-journal-x fs-1 text-muted mb-3"></i>
-                                <p class="text-muted fs-5">Bu yazar henüz hiç makale yayınlamamış.</p>
+                            <div class="avatar-wrapper mx-auto bg-secondary text-white d-flex align-items-center justify-content-center">
+                                <i class="bi bi-person-fill fs-1"></i>
                             </div>
                         {% endif %}
                     </div>
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-3">{{ profil_kullanici.get_full_name|default:profil_kullanici.username }}</h2>
+                        
+                        {% if profil_kullanici.email_paylasim_izni %}
+                            <div class="email-box d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-envelope me-2 text-primary"></i>
+                                    <span id="email-text">{{ profil_kullanici.email }}</span>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-light border" onclick="copyEmail()" title="E-posta adresini kopyala">
+                                    <i class="bi bi-copy"></i>
+                                </button>
+                            </div>
+                        {% endif %}
+                        
+                        {% if profil_kullanici.biyografi %}
+                            <div class="bio-box mb-3">
+                                <p class="mb-0 text-muted">{{ profil_kullanici.biyografi|linebreaks }}</p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if profil_kullanici.resume and profil_kullanici.ozgecmis_paylasim_izni %}
+                            <div class="resume-section mt-3">
+                                <a href="{{ profil_kullanici.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-file-earmark-person me-1"></i> Özgeçmiş
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="fw-bold mb-4"><i class="bi bi-journal-richtext me-2"></i>Yayınlanan Makaleler</h3>
+                    {% if makaleler %}
+                        <div class="article-list">
+                            {% for makale in makaleler %}
+                                <a href="{% url 'makale_detail' makale.slug %}" class="article-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1 fw-semibold">{{ makale.baslik }}</h5>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar3 me-1"></i>
+                                            {% if makale.dergi_sayisi %}
+                                                {{ makale.dergi_sayisi.yil }} - {{ makale.dergi_sayisi.get_ay_display }}
+                                            {% else %}
+                                                Tarih bilgisi mevcut değil
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <i class="bi bi-chevron-right text-primary"></i>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-journal-x fs-1 text-muted mb-3"></i>
+                            <p class="text-muted fs-5">Bu yazar henüz hiç makale yayınlamamış.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+.profile-card {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    backdrop-filter: blur(6px);
+}
+
+.avatar-wrapper {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: 4px solid #fff;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.email-box {
+    background: #f8f9fa;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+}
+
+.bio-box {
+    background: #f9fafc;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    border-left: 4px solid #0d6efd;
+}
+
+.resume-section {
+    display: inline-block;
+}
+
+.resume-section .btn {
+    border-radius: 20px;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.resume-section .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.article-list {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.article-item {
+    background: #fff;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e9ecef;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.article-item:last-child {
+    border-bottom: none;
+}
+
+.article-item:hover {
+    background: #f1f5ff;
+    transform: translateX(3px);
+}
+
+.modern-toast .icon-wrapper {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
 {% endblock %}
 
 {% block extra_js %}
@@ -81,8 +176,9 @@ function copyEmail() {
     // Modern clipboard API kullan
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(emailText).then(function() {
-            showCopySuccess();
+            showToast('E-posta adresi kopyalandı!', 'success');
         }).catch(function(err) {
+            console.error('Kopyalama hatası: ', err);
             fallbackCopyTextToClipboard(emailText);
         });
     } else {
@@ -94,10 +190,11 @@ function copyEmail() {
 function fallbackCopyTextToClipboard(text) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
+    
+    // Ekranın dışında konumlandır
     textArea.style.top = "0";
     textArea.style.left = "0";
     textArea.style.position = "fixed";
-    textArea.style.opacity = "0";
     
     document.body.appendChild(textArea);
     textArea.focus();
@@ -106,82 +203,61 @@ function fallbackCopyTextToClipboard(text) {
     try {
         const successful = document.execCommand('copy');
         if (successful) {
-            showCopySuccess();
+            showToast('E-posta adresi kopyalandı!', 'success');
         } else {
-            showCopyError();
+            showToast('Kopyalama başarısız!', 'error');
         }
     } catch (err) {
-        showCopyError();
+        console.error('Fallback kopyalama hatası: ', err);
+        showToast('Kopyalama başarısız!', 'error');
     }
     
     document.body.removeChild(textArea);
 }
 
-function showCopySuccess() {
-    // Mevcut toast sistemine uygun mesaj göster
-    const toastContainer = document.querySelector('.modern-toast-container') || createToastContainer();
+function showToast(message, type) {
+    // Toast bildirimi göster - sitenin mevcut mesaj sistemi ile uyumlu
+    const toastContainer = document.querySelector('.toast-container') || createToastContainer();
     
-    const toast = document.createElement('div');
-    toast.className = 'toast shadow fade show custom-toast border-0 rounded-4 mb-3 animate__animated animate__fadeInDown modern-toast';
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-    toast.setAttribute('aria-atomic', 'true');
-    toast.setAttribute('data-bs-delay', '3000');
+    const toastId = 'toast-' + Date.now();
+    const iconClass = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+    const iconBgClass = type === 'success' ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger';
     
-    toast.innerHTML = `
-        <div class="d-flex align-items-center p-3">
-            <div class="icon-wrapper bg-success bg-opacity-10 text-success me-3">
-                <i class="bi bi-check-circle-fill fs-4"></i>
+    const toastHtml = `
+        <div id="${toastId}" class="toast shadow fade show custom-toast border-0 rounded-4 mb-3 animate__animated animate__fadeInDown modern-toast" 
+             role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex align-items-center p-3">
+                <div class="icon-wrapper ${iconBgClass} me-3">
+                    <i class="bi ${iconClass} fs-4"></i>
+                </div>
+                <div class="flex-grow-1 modern-toast-text">${message}</div>
+                <button type="button" class="btn-close ms-3 modern-toast-close" data-bs-dismiss="toast" aria-label="Kapat"></button>
             </div>
-            <div class="flex-grow-1 modern-toast-text">E-posta adresi panoya kopyalandı!</div>
-            <button type="button" class="btn-close ms-3 modern-toast-close" data-bs-dismiss="toast" aria-label="Kapat"></button>
         </div>
     `;
     
-    toastContainer.appendChild(toast);
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
     
-    // 3 saniye sonra kaldır
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.remove();
-        }
-    }, 3000);
-}
-
-function showCopyError() {
-    const toastContainer = document.querySelector('.modern-toast-container') || createToastContainer();
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: 5000
+    });
     
-    const toast = document.createElement('div');
-    toast.className = 'toast shadow fade show custom-toast border-0 rounded-4 mb-3 animate__animated animate__fadeInDown modern-toast';
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-    toast.setAttribute('aria-atomic', 'true');
-    toast.setAttribute('data-bs-delay', '5000');
+    toast.show();
     
-    toast.innerHTML = `
-        <div class="d-flex align-items-center p-3">
-            <div class="icon-wrapper bg-danger bg-opacity-10 text-danger me-3">
-                <i class="bi bi-exclamation-triangle-fill fs-4"></i>
-            </div>
-            <div class="flex-grow-1 modern-toast-text">E-posta adresi kopyalanamadı. Lütfen manuel olarak kopyalayın.</div>
-            <button type="button" class="btn-close ms-3 modern-toast-close" data-bs-dismiss="toast" aria-label="Kapat"></button>
-        </div>
-    `;
-    
-    toastContainer.appendChild(toast);
-    
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.remove();
-        }
-    }, 5000);
+    // Toast kapatıldığında DOM'dan kaldır
+    toastElement.addEventListener('hidden.bs.toast', function() {
+        toastElement.remove();
+    });
 }
 
 function createToastContainer() {
     const container = document.createElement('div');
     container.className = 'toast-container position-fixed top-0 start-50 translate-middle-x modern-toast-container';
+    container.style.zIndex = '1080';
     document.body.appendChild(container);
     return container;
 }
 </script>
-{% endblock %} 
+{% endblock %}

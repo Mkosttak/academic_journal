@@ -76,8 +76,57 @@
 
                         {# Kapak Görseli #}
                         <div class="mb-3">
-                            <label for="{{ form.kapak_gorseli.id_for_label }}" class="form-label fw-semibold">{{ form.kapak_gorseli.label }}</label>
-                            {{ form.kapak_gorseli|add_class:'form-control' }}
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-image text-primary me-2"></i>
+                                <label class="form-label fw-semibold mb-0">{{ form.kapak_gorseli.label }}</label>
+                            </div>
+                            <div class="modern-image-upload-wrapper" id="image-wrapper">
+                                <div class="image-upload-area" id="image-upload-area">
+                                    <div class="image-icon-container" id="image-icon-container">
+                                        {% if object.kapak_gorseli and object.kapak_gorseli.url %}
+                                            <img src="{{ object.kapak_gorseli.url }}" alt="Kapak Görseli" class="image-preview">
+                                        {% else %}
+                                            <i class="bi bi-image image-main-icon"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="image-content">
+                                        <div id="image-filename" class="image-filename">
+                                            {% if object.kapak_gorseli and object.kapak_gorseli.url %}
+                                                <a href="{{ object.kapak_gorseli.url }}" target="_blank" class="image-link">
+                                                    <i class="bi bi-eye me-1"></i>
+                                                    {% with name=object.kapak_gorseli.name|cut:'journal_covers/' %}
+                                                        {% if name|length > 30 %}
+                                                            {{ name|slice:"0:15" }}...{{ name|slice:"-15:" }}
+                                                        {% else %}
+                                                            {{ name }}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </a>
+                                            {% else %}
+                                                <span class="image-placeholder">
+                                                    <i class="bi bi-cloud-upload me-2"></i>Kapak görselinizi yükleyin
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="image-info">
+                                            <small class="text-muted">JPG, PNG formatında, maksimum 5MB</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-actions">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="change-image-btn">
+                                        <i class="bi bi-upload me-1"></i>{% if object.kapak_gorseli %}Değiştir{% else %}Yükle{% endif %}
+                                    </button>
+                                    {% if object.kapak_gorseli %}
+                                        <button type="button" class="btn btn-outline-danger btn-sm" id="remove-image-btn">
+                                            <i class="bi bi-trash me-1"></i>Kaldır
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-none">
+                                {{ form.kapak_gorseli }}
+                            </div>
                             {% if form.kapak_gorseli.errors %}
                                 <div class="text-danger mt-1">{{ form.kapak_gorseli.errors.0 }}</div>
                             {% endif %}
@@ -88,8 +137,53 @@
 
                         {# PDF Dosyası #}
                         <div class="mb-3">
-                            <label for="{{ form.pdf_dosyasi.id_for_label }}" class="form-label fw-semibold">{{ form.pdf_dosyasi.label }}</label>
-                            {{ form.pdf_dosyasi|add_class:'form-control' }}
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-file-earmark-pdf text-primary me-2"></i>
+                                <label class="form-label fw-semibold mb-0">{{ form.pdf_dosyasi.label }}</label>
+                            </div>
+                            <div class="modern-pdf-upload-wrapper" id="pdf-wrapper">
+                                <div class="pdf-upload-area" id="pdf-upload-area">
+                                    <div class="pdf-icon-container">
+                                        <i class="bi bi-file-earmark-pdf-fill pdf-main-icon"></i>
+                                    </div>
+                                    <div class="pdf-content">
+                                        <div id="pdf-filename" class="pdf-filename">
+                                            {% if object.pdf_dosyasi and object.pdf_dosyasi.url %}
+                                                <a href="{{ object.pdf_dosyasi.url }}" target="_blank" class="pdf-link">
+                                                    <i class="bi bi-download me-1"></i>
+                                                    {% with name=object.pdf_dosyasi.name|cut:'journal_pdfs/' %}
+                                                        {% if name|length > 30 %}
+                                                            {{ name|slice:"0:15" }}...{{ name|slice:"-15:" }}
+                                                        {% else %}
+                                                            {{ name }}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </a>
+                                            {% else %}
+                                                <span class="pdf-placeholder">
+                                                    <i class="bi bi-cloud-upload me-2"></i>Dergi PDF dosyanızı yükleyin
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="pdf-info">
+                                            <small class="text-muted">PDF formatında, maksimum 10MB</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pdf-actions">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="change-pdf-btn">
+                                        <i class="bi bi-upload me-1"></i>{% if object.pdf_dosyasi %}Değiştir{% else %}Yükle{% endif %}
+                                    </button>
+                                    {% if object.pdf_dosyasi %}
+                                        <button type="button" class="btn btn-outline-danger btn-sm" id="remove-pdf-btn">
+                                            <i class="bi bi-trash me-1"></i>Kaldır
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-none">
+                                {{ form.pdf_dosyasi }}
+                            </div>
                             {% if form.pdf_dosyasi.errors %}
                                 <div class="text-danger mt-1">{{ form.pdf_dosyasi.errors.0 }}</div>
                             {% endif %}
@@ -128,4 +222,196 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image Upload Functionality
+    const changeImageBtn = document.getElementById('change-image-btn');
+    const removeImageBtn = document.getElementById('remove-image-btn');
+    const imageInput = document.getElementById('{{ form.kapak_gorseli.id_for_label }}');
+    const imageFilename = document.getElementById('image-filename');
+    const imageUploadArea = document.getElementById('image-upload-area');
+    const imageActions = document.querySelector('.image-actions');
+
+    if (changeImageBtn && imageInput) {
+        changeImageBtn.addEventListener('click', function() {
+            imageInput.click();
+        });
+    }
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            const fileName = this.files.length > 0 ? this.files[0].name : "";
+            const imageIconContainer = document.getElementById('image-icon-container');
+            
+            if (fileName && this.files[0]) {
+                // Show file name
+                imageFilename.innerHTML = '<a href="#" class="image-link"><i class="bi bi-eye me-1"></i>' + fileName + '</a>';
+                
+                // Show image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageIconContainer.innerHTML = '<img src="' + e.target.result + '" alt="Kapak Görseli" class="image-preview">';
+                };
+                reader.readAsDataURL(this.files[0]);
+                
+                // Show remove button if not already visible
+                if (!removeImageBtn) {
+                    const newRemoveBtn = document.createElement('button');
+                    newRemoveBtn.type = 'button';
+                    newRemoveBtn.className = 'btn btn-outline-danger btn-sm';
+                    newRemoveBtn.id = 'remove-image-btn';
+                    newRemoveBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Kaldır';
+                    imageActions.appendChild(newRemoveBtn);
+                    
+                    newRemoveBtn.addEventListener('click', function() {
+                        imageInput.value = '';
+                        imageFilename.innerHTML = '<span class="image-placeholder"><i class="bi bi-cloud-upload me-2"></i>Kapak görselinizi yükleyin</span>';
+                        imageIconContainer.innerHTML = '<i class="bi bi-image image-main-icon"></i>';
+                        this.remove();
+                    });
+                }
+            } else {
+                imageFilename.innerHTML = '<span class="image-placeholder"><i class="bi bi-cloud-upload me-2"></i>Kapak görselinizi yükleyin</span>';
+                imageIconContainer.innerHTML = '<i class="bi bi-image image-main-icon"></i>';
+            }
+        });
+    }
+
+    if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', function() {
+            imageInput.value = '';
+            imageFilename.innerHTML = '<span class="image-placeholder"><i class="bi bi-cloud-upload me-2"></i>Kapak görselinizi yükleyin</span>';
+            const imageIconContainer = document.getElementById('image-icon-container');
+            imageIconContainer.innerHTML = '<i class="bi bi-image image-main-icon"></i>';
+            this.remove();
+        });
+    }
+
+    // Image drag and drop functionality
+    if (imageUploadArea) {
+        imageUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#007bff';
+            this.style.backgroundColor = 'rgba(0, 123, 255, 0.05)';
+        });
+
+        imageUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#e0eafc';
+            this.style.backgroundColor = 'transparent';
+        });
+
+        imageUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#e0eafc';
+            this.style.backgroundColor = 'transparent';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    // Create a new FileList
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    imageInput.files = dataTransfer.files;
+                    
+                    // Trigger change event
+                    imageInput.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    alert('Lütfen sadece görsel dosyası yükleyin.');
+                }
+            }
+        });
+    }
+
+    // PDF Upload Functionality
+    const changePdfBtn = document.getElementById('change-pdf-btn');
+    const removePdfBtn = document.getElementById('remove-pdf-btn');
+    const pdfInput = document.getElementById('{{ form.pdf_dosyasi.id_for_label }}');
+    const pdfFilename = document.getElementById('pdf-filename');
+    const pdfUploadArea = document.getElementById('pdf-upload-area');
+    const pdfActions = document.querySelector('.pdf-actions');
+
+    if (changePdfBtn && pdfInput) {
+        changePdfBtn.addEventListener('click', function() {
+            pdfInput.click();
+        });
+    }
+
+    if (pdfInput) {
+        pdfInput.addEventListener('change', function() {
+            const fileName = this.files.length > 0 ? this.files[0].name : "";
+            
+            if (fileName) {
+                // Show file name
+                pdfFilename.innerHTML = '<a href="#" class="pdf-link"><i class="bi bi-download me-1"></i>' + fileName + '</a>';
+                
+                // Show remove button if not already visible
+                if (!removePdfBtn) {
+                    const newRemoveBtn = document.createElement('button');
+                    newRemoveBtn.type = 'button';
+                    newRemoveBtn.className = 'btn btn-outline-danger btn-sm';
+                    newRemoveBtn.id = 'remove-pdf-btn';
+                    newRemoveBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Kaldır';
+                    pdfActions.appendChild(newRemoveBtn);
+                    
+                    newRemoveBtn.addEventListener('click', function() {
+                        pdfInput.value = '';
+                        pdfFilename.innerHTML = '<span class="pdf-placeholder"><i class="bi bi-cloud-upload me-2"></i>Dergi PDF dosyanızı yükleyin</span>';
+                        this.remove();
+                    });
+                }
+            } else {
+                pdfFilename.innerHTML = '<span class="pdf-placeholder"><i class="bi bi-cloud-upload me-2"></i>Dergi PDF dosyanızı yükleyin</span>';
+            }
+        });
+    }
+
+    if (removePdfBtn) {
+        removePdfBtn.addEventListener('click', function() {
+            pdfInput.value = '';
+            pdfFilename.innerHTML = '<span class="pdf-placeholder"><i class="bi bi-cloud-upload me-2"></i>Dergi PDF dosyanızı yükleyin</span>';
+            this.remove();
+        });
+    }
+
+    // PDF drag and drop functionality
+    if (pdfUploadArea) {
+        pdfUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#007bff';
+            this.style.backgroundColor = 'rgba(0, 123, 255, 0.05)';
+        });
+
+        pdfUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#e0eafc';
+            this.style.backgroundColor = 'transparent';
+        });
+
+        pdfUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#e0eafc';
+            this.style.backgroundColor = 'transparent';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type === 'application/pdf') {
+                    // Create a new FileList
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    pdfInput.files = dataTransfer.files;
+                    
+                    // Trigger change event
+                    pdfInput.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    alert('Lütfen sadece PDF dosyası yükleyin.');
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
