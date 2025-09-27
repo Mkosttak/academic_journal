@@ -26,4 +26,11 @@ urlpatterns = [
     path('dergi-sayilari/yeni/', views.AdminDergiSayisiCreateView.as_view(), name='admin_dergisayisi_create'),
     path('dergi-sayilari/duzenle/<int:pk>/', views.AdminDergiSayisiUpdateView.as_view(), name='admin_dergisayisi_update'),
     path('dergi-sayilari/sil/<int:pk>/', views.AdminDergiSayisiDeleteView.as_view(), name='admin_dergisayisi_delete'),
+    
+    # Admin - Dergi İçeriği Yönetimi
+    path('dergi-icerik/', views.AdminDergiIcerigiListView.as_view(), name='admin_dergi_icerik_list'),
+    path('dergi-icerik/yeni/', views.AdminDergiIcerigiCreateView.as_view(), name='admin_dergi_icerik_create'),
+    path('dergi-icerik/duzenle/<slug:slug>/', views.AdminDergiIcerigiUpdateView.as_view(), name='admin_dergi_icerik_update'),
+    path('dergi-icerik/sil/<slug:slug>/', views.AdminDergiIcerigiDeleteView.as_view(), name='admin_dergi_icerik_delete'),
+    path('dergi-icerik/detay/<slug:slug>/', views.AdminDergiIcerigiDetailView.as_view(), name='admin_dergi_icerik_detail'),
 ]

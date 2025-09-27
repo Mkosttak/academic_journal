@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 
 from core.mixins import AdminRequiredMixin, EditorRequiredMixin
 from users.models import User
-from articles.models import Makale, DergiSayisi
+from articles.models import Makale, DergiSayisi, DergiIcerigi
 from pages.models import IletisimFormu
 from articles.forms import EditorMakaleForm
 from .forms import AdminUserUpdateForm, DergiSayisiForm
@@ -184,3 +184,78 @@ class AdminIletisimSilView(AdminRequiredMixin, DeleteView):
     model = IletisimFormu
     template_name = 'dashboard/iletisim_confirm_delete.html'
     success_url = reverse_lazy('dashboard:admin_iletisim_list')
+
+
+# Dergi İçeriği Yönetimi Views
+class AdminDergiIcerigiListView(AdminRequiredMixin, ListView):
+    model = DergiIcerigi
+    template_name = 'dashboard/admin_dergi_icerik_list.html'
+    context_object_name = 'icerikler'
+    paginate_by = 20
+    
+    def get_queryset(self):
+        queryset = DergiIcerigi.objects.all().select_related('dergi_sayisi').prefetch_related('yazarlar')
+        
+        # Filtreleme
+        icerik_turu = self.request.GET.get('icerik_turu')
+        if icerik_turu:
+            queryset = queryset.filter(icerik_turu=icerik_turu)
+            
+        status = self.request.GET.get('status')
+        if status == 'published':
+            queryset = queryset.filter(yayinda_mi=True)
+        elif status == 'draft':
+            queryset = queryset.filter(yayinda_mi=False)
+            
+        # Arama
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(baslik__icontains=query) |
+                Q(yazarlar__isim_soyisim__icontains=query) |
+                Q(anahtar_kelimeler__icontains=query)
+            ).distinct()
+
+        return queryset.order_by('-olusturulma_tarihi')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['icerik_turleri'] = DergiIcerigi.ICERIK_TURLERI
+        return context
+
+
+class AdminDergiIcerigiCreateView(AdminRequiredMixin, CreateView):
+    model = DergiIcerigi
+    template_name = 'dashboard/admin_dergi_icerik_form.html'
+    fields = ['baslik', 'aciklama', 'pdf_dosyasi', 'dergi_sayisi', 'yayinda_mi']
+    success_url = reverse_lazy('dashboard:admin_dergi_icerik_list')
+    
+    def form_valid(self, form):
+        form.instance.olusturan_admin = self.request.user
+        return super().form_valid(form)
+
+
+class AdminDergiIcerigiUpdateView(AdminRequiredMixin, UpdateView):
+    model = DergiIcerigi
+    template_name = 'dashboard/admin_dergi_icerik_form.html'
+    fields = ['baslik', 'aciklama', 'pdf_dosyasi', 'dergi_sayisi', 'yayinda_mi']
+    success_url = reverse_lazy('dashboard:admin_dergi_icerik_list')
+
+
+class AdminDergiIcerigiDeleteView(AdminRequiredMixin, DeleteView):
+    model = DergiIcerigi
+    template_name = 'dashboard/confirm_delete.html'
+    success_url = reverse_lazy('dashboard:admin_dergi_icerik_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['delete_message'] = (
+            f"{self.object.get_icerik_turu_display()} - {self.object.baslik} içeriğini silmek üzeresiniz."
+        )
+        return context
+
+
+class AdminDergiIcerigiDetailView(AdminRequiredMixin, DetailView):
+    model = DergiIcerigi
+    template_name = 'dashboard/admin_dergi_icerik_detail.html'
+    context_object_name = 'icerik'

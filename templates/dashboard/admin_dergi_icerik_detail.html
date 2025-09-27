@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ icerik.baslik }} - Detay{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="bi bi-file-earmark-richtext me-2"></i>
+                {{ icerik.get_icerik_turu_display }} Detayı
+            </h2>
+            <div class="btn-group">
+                <a href="{% url 'dashboard:admin_dergi_icerik_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Geri Dön
+                </a>
+                <a href="{% url 'dashboard:admin_dergi_icerik_update' icerik.slug %}" class="btn btn-primary">
+                    <i class="bi bi-pencil me-1"></i>Düzenle
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Ana İçerik -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ icerik.baslik }}</h5>
+                        {% if icerik.yayinda_mi %}
+                            <span class="badge bg-success">Yayında</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Taslak</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2">Açıklama</h6>
+                            <p>{{ icerik.aciklama|linebreaks }}</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2">İçerik</h6>
+                            <div class="border p-3 rounded bg-light">
+                                {{ icerik.icerik|linebreaks }}
+                            </div>
+                        </div>
+
+                        {% if icerik.get_keywords_list %}
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2">Anahtar Kelimeler</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for keyword in icerik.get_keywords_list %}
+                                        <span class="badge bg-info text-white">{{ keyword }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if icerik.yazarlar.exists %}
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2">Yazarlar</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for yazar in icerik.yazarlar.all %}
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-person me-1"></i>{{ yazar.isim_soyisim }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if icerik.pdf_dosyasi %}
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2">PDF Dosyası</h6>
+                                <a href="{{ icerik.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-danger">
+                                    <i class="bi bi-file-earmark-pdf me-2"></i>PDF'i Görüntüle
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <!-- Bilgi Kartı -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">Genel Bilgiler</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>İçerik Türü:</strong><br>
+                            <span class="badge bg-info">{{ icerik.get_icerik_turu_display }}</span>
+                        </div>
+
+                        {% if icerik.dergi_sayisi %}
+                            <div class="mb-3">
+                                <strong>Dergi Sayısı:</strong><br>
+                                {{ icerik.dergi_sayisi.get_tarih_format }} - {{ icerik.dergi_sayisi.get_cilt_sayi_format }}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <strong>Durum:</strong><br>
+                            {% if icerik.yayinda_mi %}
+                                <span class="badge bg-success">Yayında</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Taslak</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Görüntülenme:</strong><br>
+                            {{ icerik.goruntulenme_sayisi }} kez
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Oluşturan:</strong><br>
+                            {% if icerik.olusturan_admin %}
+                                {{ icerik.olusturan_admin.get_full_name|default:icerik.olusturan_admin.username }}
+                            {% else %}
+                                <span class="text-muted">Bilinmiyor</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Oluşturulma:</strong><br>
+                            {{ icerik.olusturulma_tarihi|date:"d M Y, H:i" }}
+                        </div>
+
+                        <div class="mb-0">
+                            <strong>Son Güncelleme:</strong><br>
+                            {{ icerik.guncellenme_tarihi|date:"d M Y, H:i" }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İşlemler -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">İşlemler</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'dashboard:admin_dergi_icerik_update' icerik.slug %}" class="btn btn-primary">
+                                <i class="bi bi-pencil me-1"></i>Düzenle
+                            </a>
+                            
+                            {% if icerik.pdf_dosyasi %}
+                                <a href="{{ icerik.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-danger">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF'i Aç
+                                </a>
+                            {% endif %}
+                            
+                            <a href="{% url 'dashboard:admin_dergi_icerik_delete' icerik.slug %}" 
+                               class="btn btn-outline-danger"
+                               onclick="return confirm('Bu içeriği silmek istediğinizden emin misiniz?')">
+                                <i class="bi bi-trash me-1"></i>Sil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

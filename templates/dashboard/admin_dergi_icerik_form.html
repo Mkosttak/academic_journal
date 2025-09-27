@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load form_tags %}
+
+{% block title %}
+    {% if object %}Dergi İçeriği Düzenle{% else %}Yeni Dergi İçeriği{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="bi bi-file-earmark-richtext me-2"></i>
+                {% if object %}{{ object.baslik }} - Düzenle{% else %}Yeni Dergi İçeriği{% endif %}
+            </h2>
+            <a href="{% url 'dashboard:admin_dergi_icerik_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Geri Dön
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Başlık -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ form.baslik.label }}</label>
+                                {{ form.baslik|add_class:'form-control' }}
+                                {% if form.baslik.help_text %}
+                                    <div class="form-text">{{ form.baslik.help_text }}</div>
+                                {% endif %}
+                                {% if form.baslik.errors %}
+                                    <div class="text-danger">{{ form.baslik.errors }}</div>
+                                {% endif %}
+                            </div>
+
+
+                            <!-- Açıklama -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ form.aciklama.label }}</label>
+                                {{ form.aciklama|add_class:'form-control' }}
+                                {% if form.aciklama.help_text %}
+                                    <div class="form-text">{{ form.aciklama.help_text }}</div>
+                                {% endif %}
+                                {% if form.aciklama.errors %}
+                                    <div class="text-danger">{{ form.aciklama.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <!-- Dergi Sayısı -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ form.dergi_sayisi.label }}</label>
+                                {{ form.dergi_sayisi|add_class:'form-select' }}
+                                {% if form.dergi_sayisi.help_text %}
+                                    <div class="form-text">{{ form.dergi_sayisi.help_text }}</div>
+                                {% endif %}
+                                {% if form.dergi_sayisi.errors %}
+                                    <div class="text-danger">{{ form.dergi_sayisi.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- PDF Dosyası -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ form.pdf_dosyasi.label }}</label>
+                                <div class="card p-3 bg-light">
+                                    {% if object.pdf_dosyasi %}
+                                        <div class="mb-2">
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-file-earmark-pdf me-1"></i>Mevcut PDF
+                                            </span>
+                                            <a href="{{ object.pdf_dosyasi.url }}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">
+                                                <i class="bi bi-eye"></i> Görüntüle
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                    {{ form.pdf_dosyasi|add_class:'form-control' }}
+                                    {% if form.pdf_dosyasi.help_text %}
+                                        <div class="form-text">{{ form.pdf_dosyasi.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.pdf_dosyasi.errors %}
+                                        <div class="text-danger">{{ form.pdf_dosyasi.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Yayında mı -->
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    {{ form.yayinda_mi }}
+                                    <label class="form-check-label fw-bold" for="{{ form.yayinda_mi.id_for_label }}">
+                                        {{ form.yayinda_mi.label }}
+                                    </label>
+                                </div>
+                                {% if form.yayinda_mi.help_text %}
+                                    <div class="form-text">{{ form.yayinda_mi.help_text }}</div>
+                                {% endif %}
+                                {% if form.yayinda_mi.errors %}
+                                    <div class="text-danger">{{ form.yayinda_mi.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'dashboard:admin_dergi_icerik_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>
+                            {% if object %}Güncelle{% else %}Kaydet{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #id_icerik {
+        min-height: 200px;
+    }
+    
+    #id_aciklama {
+        min-height: 100px;
+    }
+    
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+</style>
+{% endblock %}

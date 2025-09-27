@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.db.models import Count, Q
 from .forms import IletisimModelForm
 from users.models import User
-from articles.models import DergiSayisi, Makale
+from articles.models import DergiSayisi, Makale, DergiIcerigi
 from django.contrib import messages
 from collections import defaultdict
 from datetime import datetime
@@ -95,4 +95,11 @@ class SayiMakaleleriView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['dergi_sayisi'] = self.dergi_sayisi
+        
+        # Yayında olan dergi içeriklerini de ekle (makalelerden sonra göstermek için)
+        context['dergi_icerikleri'] = DergiIcerigi.objects.filter(
+            dergi_sayisi=self.dergi_sayisi,
+            yayinda_mi=True
+        ).order_by('-olusturulma_tarihi')
+        
         return context

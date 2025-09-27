@@ -19,6 +19,9 @@ def journal_cover_path(instance, filename):
 def journal_pdf_path(instance, filename):
     return unique_file_path(instance, filename, 'journal_pdfs')
 
+def content_pdf_path(instance, filename):
+    return unique_file_path(instance, filename, 'content_pdfs')
+
 class DergiSayisi(models.Model):
     AYLAR = [
         (1, 'Ocak'), (2, 'Şubat'), (3, 'Mart'), (4, 'Nisan'),
@@ -152,6 +155,67 @@ class Makale(models.Model):
             except Makale.DoesNotExist:
                 pass # Yeni obje, sorun yok
 
+        super().save(*args, **kwargs)
+
+    def get_keywords_list(self):
+        if self.anahtar_kelimeler:
+            return [keyword.strip() for keyword in self.anahtar_kelimeler.split(',')]
+        return []
+
+    def get_yazarlar_display(self):
+        return ", ".join([yazar.isim_soyisim for yazar in self.yazarlar.all()])
+
+
+class DergiIcerigi(models.Model):
+    """
+    Dergi içindeki farklı içerik türleri için model (söyleşiler, mezun hikayeler, vb.)
+    Sadece admin kullanıcıları tarafından eklenebilir.
+    """
+    ICERIK_TURLERI = [
+        ('soylesi', 'Söyleşi'),
+        ('mezun_hikayesi', 'Mezun Hikayesi'),
+        ('etkinlik', 'Etkinlik'),
+        ('haber', 'Haber'),
+        ('editorden', 'Editörden'),
+        ('diger', 'Diğer'),
+    ]
+    
+    baslik = models.CharField(max_length=255, verbose_name="Başlık")
+    slug = models.SlugField(max_length=255, unique=True, blank=True, help_text="Bu alan otomatik oluşturulur.")
+    icerik_turu = models.CharField(max_length=20, choices=ICERIK_TURLERI, verbose_name="İçerik Türü")
+    aciklama = models.TextField(verbose_name="Açıklama/Özet", blank=True, null=True)
+    icerik = models.TextField(verbose_name="İçerik", help_text="Ana içerik metni")
+    pdf_dosyasi = models.FileField(upload_to=content_pdf_path, verbose_name="PDF Dosyası")
+    anahtar_kelimeler = models.CharField(max_length=255, verbose_name="Anahtar Kelimeler", help_text="Kelimeleri virgül (,) ile ayırınız.", blank=True)
+    yazarlar = models.ManyToManyField(Yazar, related_name='dergi_icerikleri', verbose_name="Yazarlar", blank=True)
+    dergi_sayisi = models.ForeignKey(DergiSayisi, on_delete=models.SET_NULL, null=True, blank=True, related_name='icerikler', verbose_name="Dergi Sayısı")
+    goruntulenme_sayisi = models.PositiveIntegerField(default=0, verbose_name="Görüntülenme Sayısı")
+    yayinda_mi = models.BooleanField(default=False, verbose_name="Yayında mı?")
+    olusturulma_tarihi = models.DateTimeField(auto_now_add=True)
+    guncellenme_tarihi = models.DateTimeField(auto_now=True)
+    olusturan_admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='olusturulan_icerikler', verbose_name="Oluşturan Admin")
+
+    class Meta:
+        verbose_name = "Dergi İçeriği"
+        verbose_name_plural = "Dergi İçerikleri"
+        ordering = ['-olusturulma_tarihi']
+
+    def __str__(self):
+        return f"{self.get_icerik_turu_display()} - {self.baslik}"
+
+    def save(self, *args, **kwargs):
+        # Eğer slug boş ise, başlıktan otomatik oluştur
+        if not self.slug:
+            self.slug = slugify(self.baslik)
+            # Slug'ın benzersiz olmasını sağla
+            original_slug = self.slug
+            queryset = DergiIcerigi.objects.filter(slug=self.slug).exists()
+            counter = 1
+            while queryset:
+                self.slug = f"{original_slug}-{counter}"
+                counter += 1
+                queryset = DergiIcerigi.objects.filter(slug=self.slug).exists()
+        
         super().save(*args, **kwargs)
 
     def get_keywords_list(self):

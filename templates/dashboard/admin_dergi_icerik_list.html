@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dergi İçeriği Yönetimi{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-file-earmark-richtext me-2"></i>Dergi İçeriği Yönetimi</h2>
+            <a href="{% url 'dashboard:admin_dergi_icerik_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>Yeni İçerik Ekle
+            </a>
+        </div>
+
+        <!-- Filtreler -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Arama</label>
+                        <input type="text" name="q" class="form-control" placeholder="Başlık, yazar ara..." value="{{ request.GET.q }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Durum</label>
+                        <select name="status" class="form-select">
+                            <option value="">Tümü</option>
+                            <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>Yayında</option>
+                            <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>Taslak</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-search me-1"></i>Filtrele
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- İçerik Listesi -->
+        <div class="card">
+            <div class="card-body">
+                {% if icerikler %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Başlık</th>
+                                    <th>Dergi Sayısı</th>
+                                    <th>Durum</th>
+                                    <th>Oluşturulma</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for icerik in icerikler %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ icerik.baslik }}</strong>
+                                            {% if icerik.aciklama %}
+                                                <br><small class="text-muted">{{ icerik.aciklama|truncatewords:10 }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if icerik.dergi_sayisi %}
+                                                {{ icerik.dergi_sayisi.get_cilt_sayi_format }}
+                                            {% else %}
+                                                <span class="text-muted">Atanmamış</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if icerik.yayinda_mi %}
+                                                <span class="badge bg-success">Yayında</span>
+                                            {% else %}
+                                                <span class="badge bg-warning text-dark">Taslak</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ icerik.olusturulma_tarihi|date:"d.m.Y H:i" }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'dashboard:admin_dergi_icerik_detail' icerik.slug %}" class="btn btn-outline-info" title="Detay">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{% url 'dashboard:admin_dergi_icerik_update' icerik.slug %}" class="btn btn-outline-primary" title="Düzenle">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'dashboard:admin_dergi_icerik_delete' icerik.slug %}" class="btn btn-outline-danger" title="Sil" onclick="return confirm('Bu içeriği silmek istediğinizden emin misiniz?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if is_paginated %}
+                        <nav aria-label="Page navigation" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">İlk</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Önceki</a>
+                                    </li>
+                                {% endif %}
+
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Sonraki</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Son</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-file-earmark-x display-1 text-muted"></i>
+                        <h4 class="mt-3">Henüz içerik eklenmemiş</h4>
+                        <p class="text-muted">İlk içeriği eklemek için yukarıdaki butonu kullanın.</p>
+                        <a href="{% url 'dashboard:admin_dergi_icerik_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>İlk İçeriği Ekle
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
