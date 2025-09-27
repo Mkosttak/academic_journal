@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/ordering.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <div class="page-header-content">
+                    <h1 class="page-title">{{ page_title }}</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard:admin_dashboard' %}">Ana Panel</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'dashboard:admin_dergi_icerik_list' %}">Dergi İçerikleri</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">İçerik Sıralaması</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            {{ error }}
+        </div>
+    {% else %}
+        <div class="ordering-container">
+            <div class="ordering-header">
+                <div class="ordering-info">
+                    <p><strong>Dergi:</strong> {{ dergi_sayisi.get_tarih_format }} - {{ dergi_sayisi.get_cilt_sayi_format }}</p>
+                    <p><strong>Toplam İçerik:</strong> {{ icerikler.count }}</p>
+                </div>
+            </div>
+
+            <div class="ordering-controls">
+                <button type="button" id="save-order" class="btn btn-primary" disabled>
+                    <i class="fas fa-save"></i>
+                    Sıralamayı Kaydet
+                </button>
+                <button type="button" id="reset-order" class="btn btn-secondary">
+                    <i class="fas fa-undo"></i>
+                    Sıfırla
+                </button>
+                <a href="{% url 'dashboard:admin_dergi_icerik_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Geri Dön
+                </a>
+            </div>
+
+            <div class="ordering-instructions">
+                <div class="instruction-item">
+                    <i class="fas fa-info-circle"></i>
+                    <span>İçerikleri sürükleyip bırakarak sıralayabilirsiniz</span>
+                </div>
+                <div class="instruction-item">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Değişiklikleri kaydetmek için "Sıralamayı Kaydet" butonuna tıklayın</span>
+                </div>
+            </div>
+
+            <div class="articles-list-container">
+                {% if icerikler %}
+                    <div id="sortable-contents" class="sortable-list">
+                        {% for icerik in icerikler %}
+                        <div class="article-item" data-id="{{ icerik.id }}" data-order="{{ icerik.siralama }}">
+                            <div class="article-handle">
+                                <i class="fas fa-grip-vertical"></i>
+                            </div>
+                            <div class="article-content">
+                                <div class="article-header">
+                                    <h3 class="article-title">{{ icerik.baslik }}</h3>
+                                    <div class="article-status">
+                                        {% if icerik.yayinda_mi %}
+                                            <span class="status-badge published">Yayında</span>
+                                        {% else %}
+                                            <span class="status-badge draft">Taslak</span>
+                                        {% endif %}
+                                        <span class="content-type-badge">{{ icerik.get_icerik_turu_display }}</span>
+                                    </div>
+                                </div>
+                                <div class="article-meta">
+                                    <p class="article-authors">{{ icerik.get_yazarlar_display|default:"Yazar yok" }}</p>
+                                    <p class="article-date">{{ icerik.olusturulma_tarihi|date:"d.m.Y H:i" }}</p>
+                                </div>
+                            </div>
+                            <div class="article-order">
+                                <span class="order-number">{{ forloop.counter }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h3>Bu dergi sayısında henüz içerik bulunmuyor</h3>
+                        <p>İçerik ekledikten sonra sıralama yapabilirsiniz.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div id="loading-overlay" class="loading-overlay" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Sıralama kaydediliyor...</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sortableList = document.getElementById('sortable-contents');
+    const saveButton = document.getElementById('save-order');
+    const resetButton = document.getElementById('reset-order');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    
+    let hasChanges = false;
+    let originalOrder = [];
+
+    // Sortable.js ile sürükle-bırak özelliğini etkinleştir
+    if (sortableList) {
+        const sortable = Sortable.create(sortableList, {
+            handle: '.article-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
+            onStart: function() {
+                // Sürükleme başladığında
+                document.body.classList.add('dragging');
+            },
+            onEnd: function() {
+                // Sürükleme bittiğinde
+                document.body.classList.remove('dragging');
+                updateOrderNumbers();
+                markAsChanged();
+            }
+        });
+
+        // İlk sıralamayı kaydet
+        originalOrder = Array.from(sortableList.children).map(item => ({
+            id: item.dataset.id,
+            order: parseInt(item.dataset.order)
+        }));
+    }
+
+    // Sıralama numaralarını güncelle
+    function updateOrderNumbers() {
+        const items = sortableList.querySelectorAll('.article-item');
+        items.forEach((item, index) => {
+            const orderNumber = item.querySelector('.order-number');
+            if (orderNumber) {
+                orderNumber.textContent = index + 1;
+            }
+        });
+    }
+
+    // Değişiklik olduğunu işaretle
+    function markAsChanged() {
+        hasChanges = true;
+        saveButton.disabled = false;
+        saveButton.classList.add('btn-success');
+        saveButton.classList.remove('btn-primary');
+    }
+
+    // Sıralamayı kaydet
+    saveButton.addEventListener('click', function() {
+        if (!hasChanges) return;
+
+        const items = sortableList.querySelectorAll('.article-item');
+        const contentOrders = Array.from(items).map((item, index) => ({
+            id: parseInt(item.dataset.id),
+            order: index
+        }));
+
+        loadingOverlay.style.display = 'flex';
+        saveButton.disabled = true;
+
+        fetch('{% url "dashboard:update_dergi_icerik_order_dashboard" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                dergi_sayisi_id: {{ dergi_sayisi.id }},
+                content_orders: contentOrders
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Başarılı mesajı göster
+                showNotification('Sıralama başarıyla kaydedildi!', 'success');
+                hasChanges = false;
+                saveButton.disabled = true;
+                saveButton.classList.remove('btn-success');
+                saveButton.classList.add('btn-primary');
+                
+                // Güncel sıralamayı kaydet
+                originalOrder = contentOrders;
+            } else {
+                showNotification('Hata: ' + data.message, 'error');
+                saveButton.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+            saveButton.disabled = false;
+        })
+        .finally(() => {
+            loadingOverlay.style.display = 'none';
+        });
+    });
+
+    // Sıralamayı sıfırla
+    resetButton.addEventListener('click', function() {
+        if (confirm('Sıralamayı orijinal haline döndürmek istediğinizden emin misiniz?')) {
+            // Orijinal sıralamayı geri yükle
+            const items = sortableList.querySelectorAll('.article-item');
+            const sortedItems = Array.from(items).sort((a, b) => {
+                const aOrder = originalOrder.find(item => item.id == a.dataset.id)?.order || 0;
+                const bOrder = originalOrder.find(item => item.id == b.dataset.id)?.order || 0;
+                return aOrder - bOrder;
+            });
+
+            // DOM'u güncelle
+            sortedItems.forEach(item => sortableList.appendChild(item));
+            updateOrderNumbers();
+            
+            hasChanges = false;
+            saveButton.disabled = true;
+            saveButton.classList.remove('btn-success');
+            saveButton.classList.add('btn-primary');
+        }
+    });
+
+    // Bildirim göster
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // 3 saniye sonra otomatik kapat
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 3000);
+    }
+});
+</script>
+{% endblock %}

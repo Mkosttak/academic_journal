@@ -353,12 +353,18 @@
                 <div class="sidebar-stats">
                     <div class="sidebar-stat">
                         <i class="bi bi-file-text"></i>
-                        <span>{{ makaleler|length }} makale</span>
+                        <span>{{ all_items|length }} toplam içerik</span>
                     </div>
+                    {% if makaleler %}
+                        <div class="sidebar-stat">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <span>{{ makaleler|length }} makale</span>
+                        </div>
+                    {% endif %}
                     {% if dergi_icerikleri %}
                         <div class="sidebar-stat">
                             <i class="bi bi-file-earmark-richtext"></i>
-                            <span>{{ dergi_icerikleri|length }} içerik</span>
+                            <span>{{ dergi_icerikleri|length }} dergi içeriği</span>
                         </div>
                     {% endif %}
                 </div>
@@ -376,53 +382,50 @@
 
     <!-- Sağ İçerik Alanı -->
     <div class="content-area">
-    {% if makaleler %}
-        {% for makale in makaleler %}
-            <div class="makale-card">
-                <div class="makale-header">
-                    <div class="makale-icon">
-                        <i class="bi bi-file-earmark-text"></i>
+    {% if all_items %}
+        {% for item in all_items %}
+            {% if item.type == 'makale' %}
+                <div class="makale-card">
+                    <div class="makale-header">
+                        <div class="makale-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <div class="makale-title">
+                            <h3>
+                                <a href="{% url 'makale_detail_with_journal' dergi_sayisi.slug item.obj.slug %}">{{ item.obj.baslik }}</a>
+                            </h3>
+                            <div class="makale-yazarlar">
+                                <i class="bi bi-person me-1"></i>{{ item.obj.get_yazarlar_display }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="makale-title">
-                        <h3>
-                            <a href="{% url 'makale_detail' makale.slug %}">{{ makale.baslik }}</a>
-                        </h3>
-                        <div class="makale-yazarlar">
-                            <i class="bi bi-person me-1"></i>{{ makale.get_yazarlar_display }}
+                    
+                    <div class="makale-aciklama">
+                        {{ item.obj.aciklama|truncatewords:30 }}
+                    </div>
+                    
+                    {% if item.obj.get_keywords_list %}
+                        <div class="makale-keywords">
+                            {% for keyword in item.obj.get_keywords_list %}
+                                <span class="keyword-tag">{{ keyword }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="makale-footer">
+                        <div class="makale-actions">
+                            <a href="{% url 'makale_detail' item.obj.slug %}" class="btn btn-primary btn-sm rounded-pill">
+                                <i class="bi bi-eye me-1"></i>İncele
+                            </a>
+                            {% if item.obj.pdf_dosyasi %}
+                                <a href="{{ item.obj.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-                
-                <div class="makale-aciklama">
-                    {{ makale.aciklama|truncatewords:30 }}
-                </div>
-                
-                {% if makale.get_keywords_list %}
-                    <div class="makale-keywords">
-                        {% for keyword in makale.get_keywords_list %}
-                            <span class="keyword-tag">{{ keyword }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                
-                <div class="makale-footer">
-                    <div class="makale-actions">
-                        <a href="{% url 'makale_detail' makale.slug %}" class="btn btn-primary btn-sm rounded-pill">
-                            <i class="bi bi-eye me-1"></i>İncele
-                        </a>
-                        {% if makale.pdf_dosyasi %}
-                            <a href="{{ makale.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
-                                <i class="bi bi-file-earmark-pdf me-1"></i>PDF
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-        
-        <!-- Dergi İçerikleri (Makalelerden sonra) -->
-        {% if dergi_icerikleri %}
-            {% for icerik in dergi_icerikleri %}
+            {% else %}
                 <div class="makale-card icerik-card">
                     <div class="makale-header">
                         <div class="makale-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
@@ -430,29 +433,35 @@
                         </div>
                         <div class="makale-title">
                             <h3>
-                                {{ icerik.baslik }}
+                                {{ item.obj.baslik }}
                             </h3>
+                            {% if item.obj.yazarlar.exists %}
+                            <div class="makale-yazarlar">
+                                <i class="bi bi-person me-1"></i>
+                                {{ item.obj.get_yazarlar_display }}
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     
-                    {% if icerik.aciklama %}
+                    {% if item.obj.aciklama %}
                     <div class="makale-aciklama">
-                        {{ icerik.aciklama|truncatewords:30 }}
+                        {{ item.obj.aciklama|truncatewords:30 }}
                     </div>
                     {% endif %}
                     
                     <div class="makale-footer">
                         <div class="makale-actions">
-                            {% if icerik.pdf_dosyasi %}
-                                <a href="{{ icerik.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
+                            {% if item.obj.pdf_dosyasi %}
+                                <a href="{{ item.obj.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
                                     <i class="bi bi-file-earmark-pdf me-1"></i>PDF
                                 </a>
                             {% endif %}
                         </div>
                     </div>
                 </div>
-            {% endfor %}
-        {% endif %}
+            {% endif %}
+        {% endfor %}
         
         {% if is_paginated %}
             <div class="d-flex justify-content-center mt-4">

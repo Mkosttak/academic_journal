@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from articles.views import MakaleDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,9 @@ urlpatterns = [
     
     # Makalelerle ilgili URL'leri 'articles' uygulamasına yönlendir
     path('makaleler/', include('articles.urls')),
+    
+    # Dergi sayısı altında makale detayları için özel URL
+    path('sayilar/<slug:dergi_slug>/<slug:makale_slug>/', MakaleDetailView.as_view(), name='makale_detail_with_journal'),
     
     # Diğer sayfalar (Anasayfa, Hakkında, İletişim vs.) için 'pages' uygulamasını kullan
     # 'pages' uygulamasındaki URL'leri ana dizinden çağıracağımız için path boş olacak

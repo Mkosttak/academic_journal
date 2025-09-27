@@ -26,6 +26,8 @@ urlpatterns = [
     path('dergi-sayilari/yeni/', views.AdminDergiSayisiCreateView.as_view(), name='admin_dergisayisi_create'),
     path('dergi-sayilari/duzenle/<int:pk>/', views.AdminDergiSayisiUpdateView.as_view(), name='admin_dergisayisi_update'),
     path('dergi-sayilari/sil/<int:pk>/', views.AdminDergiSayisiDeleteView.as_view(), name='admin_dergisayisi_delete'),
+    path('dergi-sayilari/siralama/<int:dergi_sayisi_id>/', views.AdminMakaleSiralamaView.as_view(), name='admin_makale_siralama'),
+    path('dergi-sayilari/siralama-guncelle/', views.update_makale_order_dashboard, name='update_makale_order_dashboard'),
     
     # Admin - Dergi İçeriği Yönetimi
     path('dergi-icerik/', views.AdminDergiIcerigiListView.as_view(), name='admin_dergi_icerik_list'),
@@ -33,4 +35,6 @@ urlpatterns = [
     path('dergi-icerik/duzenle/<slug:slug>/', views.AdminDergiIcerigiUpdateView.as_view(), name='admin_dergi_icerik_update'),
     path('dergi-icerik/sil/<slug:slug>/', views.AdminDergiIcerigiDeleteView.as_view(), name='admin_dergi_icerik_delete'),
     path('dergi-icerik/detay/<slug:slug>/', views.AdminDergiIcerigiDetailView.as_view(), name='admin_dergi_icerik_detail'),
+    path('dergi-icerik/siralama/<int:dergi_sayisi_id>/', views.AdminDergiIcerikSiralamaView.as_view(), name='admin_dergi_icerik_siralama'),
+    path('dergi-icerik/siralama-guncelle/', views.update_dergi_icerik_order_dashboard, name='update_dergi_icerik_order_dashboard'),
 ]

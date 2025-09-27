@@ -21,6 +21,15 @@
               </div>
               <h5 class="fw-bold mb-1">{{ user.first_name }} {{ user.last_name }}</h5>
               <span class="text-muted mb-2">@{{ user.username }}</span>
+              {% if user.is_chief_editor %}
+                <span class="badge bg-warning text-dark mb-2">
+                  <i class="bi bi-star-fill me-1"></i>Baş Editör
+                </span>
+              {% elif user.is_editor %}
+                <span class="badge bg-info text-white mb-2">
+                  <i class="bi bi-pencil-square me-1"></i>Editör
+                </span>
+              {% endif %}
               <span class="mb-2"><i class="bi bi-envelope me-1"></i>{{ user.email }}</span>
               {% if user.resume %}
                 <a href="{{ user.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm mb-2"><i class="bi bi-download"></i> Özgeçmişi İndir</a>

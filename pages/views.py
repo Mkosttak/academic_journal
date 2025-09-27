@@ -19,13 +19,28 @@ class IletisimView(CreateView):
     template_name = 'pages/iletisim.html'
     success_url = reverse_lazy('anasayfa') # Mesaj gönderildikten sonra anasayfaya yönlendir
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.method == 'POST':
+            kwargs['data'] = self.request.POST
+        return kwargs
+
     def form_valid(self, form):
+        # Honeypot kontrolü - eğer website alanı doldurulmuşsa robot
+        website = self.request.POST.get('website', '')
+        if website:
+            # Robot tespit edildi, formu geçersiz say
+            messages.error(self.request, 'Spam tespit edildi. Lütfen formu tekrar doldurun.')
+            return self.form_invalid(form)
+        
         response = super().form_valid(form)
         messages.success(self.request, 'Mesajınız başarıyla gönderildi. En kısa sürede size geri döneceğiz.')
         return response
 
     def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
+        # Form verilerini korumak için context'e form'u ekle
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context)
 
 class EditorlerListView(ListView):
     model = User
@@ -34,8 +49,36 @@ class EditorlerListView(ListView):
     paginate_by = 12 # Sayfa başına 12 editör göster
 
     def get_queryset(self):
-        # Sadece editör yetkisi olan ve Editörler sayfasında görünmesi istenen kullanıcıları listele
-        return User.objects.filter(is_editor=True, goster_editorler_sayfasinda=True)
+        # Editör yetkisi olan VEYA sadece "Editörler sayfasında görüntülensin" seçeneği işaretlenmiş kullanıcıları listele
+        from django.db.models import Q
+        return User.objects.filter(
+            Q(is_editor=True, goster_editorler_sayfasinda=True) | 
+            Q(is_editor=False, goster_editorler_sayfasinda=True)
+        ).order_by('first_name')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Baş editörler
+        context['chief_editors'] = User.objects.filter(
+            is_chief_editor=True, 
+            goster_editorler_sayfasinda=True
+        ).order_by('first_name')
+        
+        # Normal editörler (baş editör olmayan, editör yetkisi olan)
+        context['editors'] = User.objects.filter(
+            is_editor=True, 
+            is_chief_editor=False,
+            goster_editorler_sayfasinda=True
+        ).order_by('first_name')
+        
+        # Misafir editörler (editör yetkisi olmayan, sadece görüntülenen)
+        context['guest_editors'] = User.objects.filter(
+            is_editor=False, 
+            goster_editorler_sayfasinda=True
+        ).order_by('first_name')
+        
+        return context
 
 
 class SayilarListView(ListView):
@@ -86,20 +129,47 @@ class SayiMakaleleriView(ListView):
     paginate_by = 20
     
     def get_queryset(self):
-        self.dergi_sayisi = get_object_or_404(DergiSayisi, pk=self.kwargs['sayi_id'])
+        self.dergi_sayisi = get_object_or_404(DergiSayisi, slug=self.kwargs['slug'])
         return Makale.objects.filter(
             dergi_sayisi=self.dergi_sayisi,
             goster_makaleler_sayfasinda=True
-        ).select_related('dergi_sayisi').prefetch_related('yazarlar').order_by('-olusturulma_tarihi')
+        ).select_related('dergi_sayisi').prefetch_related('yazarlar').order_by('siralama', '-olusturulma_tarihi')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['dergi_sayisi'] = self.dergi_sayisi
         
-        # Yayında olan dergi içeriklerini de ekle (makalelerden sonra göstermek için)
-        context['dergi_icerikleri'] = DergiIcerigi.objects.filter(
+        # Yayında olan dergi içeriklerini de ekle
+        dergi_icerikleri = DergiIcerigi.objects.filter(
             dergi_sayisi=self.dergi_sayisi,
             yayinda_mi=True
-        ).order_by('-olusturulma_tarihi')
+        ).order_by('siralama', '-olusturulma_tarihi')
+        
+        # Tüm içerikleri birleştir ve sırala (makaleler + içerikler)
+        all_items = []
+        
+        # Makaleleri ekle
+        for makale in self.get_queryset():
+            all_items.append({
+                'id': makale.id,
+                'type': 'makale',
+                'siralama': makale.siralama,
+                'obj': makale
+            })
+        
+        # İçerikleri ekle
+        for icerik in dergi_icerikleri:
+            all_items.append({
+                'id': icerik.id,
+                'type': 'icerik',
+                'siralama': icerik.siralama,
+                'obj': icerik
+            })
+        
+        # Sıralamaya göre sırala
+        all_items.sort(key=lambda x: x['siralama'])
+        
+        context['all_items'] = all_items
+        context['dergi_icerikleri'] = dergi_icerikleri
         
         return context

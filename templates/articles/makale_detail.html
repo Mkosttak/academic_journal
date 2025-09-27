@@ -2,6 +2,13 @@
 {% block title %}{{ makale.baslik }}{% endblock %}
 {% block content %}
 <div class="container py-4">
+    
+    <!-- Geri Dön Butonu -->
+    <div class="mb-4">
+        <a href="{% url 'sayi_makaleleri' makale.dergi_sayisi.slug %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>{{ makale.dergi_sayisi.get_tarih_format }} Sayısına Dön
+        </a>
+    </div>
 
     {% if makale.admin_notu %}
     <div class="d-flex align-items-center bg-warning bg-opacity-10 text-warning-emphasis rounded-3 p-3 mt-2 mb-4 small border-start border-warning border-4">

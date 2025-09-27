@@ -1,5 +1,376 @@
-<footer class="bg-dark text-white text-center p-4 mt-5">
-    <div class="container">
-        <p>&copy; {% now "Y" %} Akademik Dergi Platformu. Tüm Hakları Saklıdır.</p>
+{% load static %}
+<footer class="modern-footer">
+    <div class="container-fluid">
+        <div class="footer-content">
+            <!-- Ana Footer Bölümü -->
+            <div class="footer-main">
+                <div class="row g-4">
+                    <!-- Logo ve Açıklama -->
+                    <div class="col-lg-8 col-md-12">
+                        <div class="footer-brand">
+                            <div class="footer-logo-large">
+                                <img src="{% static 'images/logos/logo.png' %}" alt="Akademik Dergi Logo" class="footer-logo-img-large">
+                                <div class="footer-brand-text">
+                                    <h3 class="footer-brand-title">Akademik Dergi</h3>
+                                    <p class="footer-brand-subtitle">Bilginin ve Araştırmanın Merkezi</p>
+                                </div>
+                            </div>
+                            <p class="footer-description">
+                                En son makaleleri keşfedin, kendi çalışmalarınızı yayınlayın ve akademik dünyaya katkıda bulunun. 
+                                Hacettepe Üniversitesi Matematik Bölümü'nün resmi akademik dergi platformu.
+                            </p>
+                            <div class="footer-social">
+                                <a href="https://www.instagram.com/hacettepe_matematik_resmi/" target="_blank" class="social-link" title="Instagram">
+                                    <i class="bi bi-instagram"></i>
+                                    <span>Instagram</span>
+                                </a>
+                                <a href="https://mat.hacettepe.edu.tr/" target="_blank" class="social-link" title="Web Sitesi">
+                                    <i class="bi bi-globe"></i>
+                                    <span>Web Sitesi</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hızlı Linkler -->
+                    <div class="col-lg-4 col-md-12">
+                        <div class="footer-section">
+                            <h5 class="footer-title">Hızlı Erişim</h5>
+                            <ul class="footer-links">
+                                <li><a href="{% url 'anasayfa' %}">Ana Sayfa</a></li>
+                                <li><a href="{% url 'sayilar' %}">Dergi Sayıları</a></li>
+                                <li><a href="{% url 'editorler' %}">Editörler</a></li>
+                                <li><a href="{% url 'iletisim' %}">İletişim</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Alt Footer -->
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="footer-copyright">
+                            <p>&copy; {% now "Y" %} Akademik Dergi Platformu. Tüm hakları saklıdır.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="footer-legal">
+                            <a href="{% url 'iletisim' %}">Gizlilik Politikası</a>
+                            <a href="{% url 'iletisim' %}">Kullanım Şartları</a>
+                            <a href="{% url 'iletisim' %}">Çerez Politikası</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</footer> 
+</footer>
+
+<style>
+.modern-footer {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #ecf0f1;
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #3498db, transparent);
+}
+
+.footer-content {
+    padding: 3rem 0 1rem 0;
+}
+
+.footer-main {
+    margin-bottom: 2rem;
+}
+
+.footer-brand {
+    margin-bottom: 1.5rem;
+}
+
+.footer-logo-large {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.footer-logo-img-large {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.footer-logo-img-large:hover {
+    transform: scale(1.05);
+}
+
+.footer-brand-text {
+    flex: 1;
+}
+
+.footer-brand-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3498db;
+    margin: 0 0 0.5rem 0;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.footer-brand-subtitle {
+    font-size: 1rem;
+    color: #bdc3c7;
+    margin: 0;
+    font-weight: 500;
+}
+
+.footer-description {
+    color: #bdc3c7;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.footer-social {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.2);
+    border-radius: 25px;
+    color: #3498db;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.social-link:hover {
+    background: #3498db;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.social-link i {
+    font-size: 1.2rem;
+}
+
+.footer-section {
+    margin-bottom: 1.5rem;
+}
+
+.footer-title {
+    color: #3498db;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    border-radius: 1px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    position: relative;
+    padding-left: 0;
+}
+
+.footer-links a:hover {
+    color: #3498db;
+    padding-left: 10px;
+}
+
+.footer-links a::before {
+    content: '→';
+    position: absolute;
+    left: -15px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    color: #3498db;
+}
+
+.footer-links a:hover::before {
+    opacity: 1;
+    left: -10px;
+}
+
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #bdc3c7;
+    font-size: 0.9rem;
+}
+
+.contact-item i {
+    color: #3498db;
+    width: 16px;
+    text-align: center;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(52, 152, 219, 0.2);
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+.footer-copyright p {
+    margin: 0;
+    color: #95a5a6;
+    font-size: 0.9rem;
+}
+
+.footer-legal {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.footer-legal a {
+    color: #95a5a6;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+}
+
+.footer-legal a:hover {
+    color: #3498db;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-content {
+        padding: 2rem 0 1rem 0;
+    }
+    
+    .footer-main {
+        margin-bottom: 1.5rem;
+    }
+    
+    .footer-section {
+        margin-bottom: 2rem;
+    }
+    
+    .footer-logo-large {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .footer-brand-title {
+        font-size: 1.5rem;
+    }
+    
+    .footer-logo-img-large {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .footer-social {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .footer-legal {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    
+    .footer-copyright {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-legal {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .footer-logo {
+        justify-content: center;
+    }
+    
+    .footer-description {
+        text-align: center;
+    }
+}
+
+/* Animasyonlar */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footer-section {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.footer-section:nth-child(1) { animation-delay: 0.1s; }
+.footer-section:nth-child(2) { animation-delay: 0.2s; }
+.footer-section:nth-child(3) { animation-delay: 0.3s; }
+.footer-section:nth-child(4) { animation-delay: 0.4s; }
+.footer-section:nth-child(5) { animation-delay: 0.5s; }
+</style>

@@ -1,40 +1,211 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Editörler{% endblock %}
 {% block content %}
-<div class="container-fluid py-4 editors-page">
+<div class="container-fluid py-5 editors-page">
     <div class="container">
-        <div class="welcome-section text-center mb-4">
-            <h2 class="fw-bold text-gradient mb-2 fs-2-1rem">Editör Kadromuz</h2>
-            <p class="text-muted mb-0 fs-1-1rem">Akademik dergimizin değerli editörleri ile tanışın</p>
-        </div>
 
-        <div class="row g-3">
-        {% for editor in editorler %}
-            <div class="col-lg-4 col-md-6">
-                <div class="editor-card glass-card text-center mb-4">
-                    <img src="{{ editor.profile_resmi.url }}" class="editor-card__image profile-pic mb-3" alt="{{ editor.get_full_name }}">
-                    <h5 class="editor-card__name">{{ editor.get_full_name }}</h5>
-                    <a href="{% url 'kullanici_profili' editor.username %}" class="btn btn-outline-primary btn-sm">Profili Görüntüle</a>
+        {% if chief_editors or editors or guest_editors %}
+            <!-- Baş Editörler -->
+            {% if chief_editors %}
+                <div class="chief-editors-section mb-5">
+                    <div class="section-header text-center mb-4">
+                        <h2 class="fw-bold text-gradient mb-2">
+                            <i class="bi bi-star-fill me-2"></i>Baş Editörler
+                        </h2>
+                        <div class="divider mx-auto"></div>
+                    </div>
+                    <div class="d-flex justify-content-center flex-wrap gap-4">
+                        {% for editor in chief_editors %}
+                            <div class="editor-col">
+                                <div class="editor-card chief-editor-card text-center h-100">
+                                    <div class="editor-avatar-container">
+                                        {% if editor.profile_resmi %}
+                                            <img src="{{ editor.profile_resmi.url }}" class="editor-avatar chief-editor-avatar" alt="{{ editor.get_full_name }}">
+                                        {% else %}
+                                            <div class="editor-avatar chief-editor-avatar bg-primary d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-person-fill text-white fs-1"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="editor-info">
+                                        <h4 class="editor-name mb-2">{{ editor.get_full_name }}</h4>
+                                        <p class="editor-username text-muted mb-3">@{{ editor.username }}</p>
+                                        <a href="{% url 'kullanici_profili' editor.username %}" class="btn btn-primary btn-sm rounded-pill px-4">
+                                            <i class="bi bi-person-lines-fill me-1"></i>Profili Görüntüle
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="empty-state text-center py-4">
-                    <i class="bi bi-person-workspace display-6 text-muted mb-2"></i>
-                    <h3 class="text-muted fs-5">Henüz Editör Yok</h3>
-                    <p class="text-muted small">Henüz görüntülenecek editör bulunmamaktadır.</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+            {% endif %}
 
-        {% if editorler.has_other_pages %}
-        <div class="pagination-section mt-4">
-            {% include 'partials/_pagination.html' %}
-        </div>
+            <!-- Editörler -->
+            {% if editors or guest_editors %}
+                <div class="regular-editors-section">
+                    <div class="section-header text-center mb-4">
+                        <h2 class="fw-bold text-secondary mb-2">
+                            <i class="bi bi-people-fill me-2"></i>Editörler
+                        </h2>
+                        <div class="divider divider-secondary mx-auto"></div>
+                    </div>
+                    <div class="d-flex justify-content-center flex-wrap gap-4">
+                        {% for editor in editors %}
+                            <div class="editor-col">
+                                <div class="editor-card regular-editor-card text-center h-100">
+                                    <div class="editor-avatar-container">
+                                        {% if editor.profile_resmi %}
+                                            <img src="{{ editor.profile_resmi.url }}" class="editor-avatar regular-editor-avatar" alt="{{ editor.get_full_name }}">
+                                        {% else %}
+                                            <div class="editor-avatar regular-editor-avatar bg-secondary d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-person-fill text-white fs-4"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="editor-info">
+                                        <h5 class="editor-name mb-1">{{ editor.get_full_name }}</h5>
+                                        <p class="editor-username text-muted mb-2 small">@{{ editor.username }}</p>
+                                        <a href="{% url 'kullanici_profili' editor.username %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                            <i class="bi bi-person me-1"></i>Profil
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for editor in guest_editors %}
+                            <div class="editor-col">
+                                <div class="editor-card guest-editor-card text-center h-100">
+                                    <div class="editor-avatar-container">
+                                        {% if editor.profile_resmi %}
+                                            <img src="{{ editor.profile_resmi.url }}" class="editor-avatar guest-editor-avatar" alt="{{ editor.get_full_name }}">
+                                        {% else %}
+                                            <div class="editor-avatar guest-editor-avatar bg-info d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-person-fill text-white fs-4"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="editor-info">
+                                        <h5 class="editor-name mb-1">{{ editor.get_full_name }}</h5>
+                                        <p class="editor-username text-muted mb-2 small">@{{ editor.username }}</p>
+                                        <a href="{% url 'kullanici_profili' editor.username %}" class="btn btn-outline-info btn-sm rounded-pill px-3">
+                                            <i class="bi bi-person me-1"></i>Profil
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if editorler.has_other_pages %}
+                <div class="pagination-section mt-5">
+                    {% include 'partials/_pagination.html' %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="empty-state text-center py-5">
+                <i class="bi bi-person-workspace display-1 text-muted mb-3"></i>
+                <h3 class="text-muted mb-2">Henüz Editör Yok</h3>
+                <p class="text-muted fs-5">Henüz görüntülenecek editör bulunmamaktadır.</p>
+            </div>
         {% endif %}
     </div>
 </div>
 
+<style>
+.editors-page {
+    background: #f8fafc;
+    min-height: 100vh;
+}
 
-{% endblock %} 
+.text-gradient {
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.divider {
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    border-radius: 2px;
+}
+.divider-secondary {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, #6c757d, #495057);
+    border-radius: 2px;
+}
+
+/* Kart kolonları */
+.editor-col {
+    flex: 0 1 calc(25% - 2rem); /* Daha dar kartlar, bir satırda 4 tane */
+    display: flex;
+}
+
+/* Kartlar */
+.editor-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 1.5rem 1rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.editor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+/* Avatar */
+.editor-avatar-container {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.editor-avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 80px;
+    height: 80px;
+    transition: all 0.3s ease;
+}
+
+.editor-avatar:hover {
+    transform: scale(1.08);
+}
+
+.editor-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.editor-username {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.btn { transition: all 0.2s ease; }
+.btn:hover { transform: translateY(-2px); }
+
+/* Responsive */
+@media (max-width: 992px) {
+    .editor-col { flex: 0 1 calc(33.333% - 2rem); } /* tablet: 3 kart */
+}
+@media (max-width: 768px) {
+    .editor-col { flex: 0 1 calc(50% - 2rem); } /* mobil: 2 kart */
+}
+@media (max-width: 576px) {
+    .editor-col { flex: 0 1 100%; } /* küçük mobil: 1 kart */
+    .editor-avatar { width: 70px; height: 70px; }
+}
+</style>
+{% endblock %}

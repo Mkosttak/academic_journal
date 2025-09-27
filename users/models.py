@@ -32,6 +32,7 @@ class User(AbstractUser):
         verbose_name="Özgeçmiş (PDF)"
     )
     is_editor = models.BooleanField(default=False, verbose_name="Editör Yetkisi")
+    is_chief_editor = models.BooleanField(default=False, verbose_name="Baş Editör")
     goster_editorler_sayfasinda = models.BooleanField(
         default=False,
         verbose_name="Editörler Sayfasında Gösterilsin mi?"

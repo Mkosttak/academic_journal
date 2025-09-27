@@ -22,11 +22,20 @@
                             <div>
                                 <span class="fw-semibold fs-5">{{ dergi.get_tarih_format }} - {{ dergi.get_cilt_sayi_format }}</span>
                                 <br>
-                                <small class="text-muted">{{ dergi.get_cilt_sayi_format }} | {{ dergi.yayinlanma_tarihi|date:"d M Y" }}</small>
+                                <small class="text-muted">{{ dergi.get_cilt_sayi_format }} | Makale Sayısı: {{ dergi.makale_sayisi }}</small>
                             </div>
                             <span class="d-flex gap-2">
-                                <a href="{% url 'dashboard:admin_dergisayisi_update' dergi.pk %}" class="btn btn-sm btn-primary rounded-pill px-3">Düzenle</a>
-                                <a href="{% url 'dashboard:admin_dergisayisi_delete' dergi.pk %}" class="btn btn-sm btn-danger rounded-pill px-3">Sil</a>
+                                <a href="{% url 'dashboard:admin_dergisayisi_update' dergi.pk %}" class="btn btn-sm btn-primary rounded-pill px-3">
+                                    <i class="fas fa-edit"></i> Düzenle
+                                </a>
+                                {% if dergi.makale_sayisi > 0 %}
+                                    <a href="{% url 'dashboard:admin_makale_siralama' dergi.pk %}" class="btn btn-sm btn-info rounded-pill px-3">
+                                        <i class="fas fa-sort"></i> Sırala
+                                    </a>
+                                {% endif %}
+                                <a href="{% url 'dashboard:admin_dergisayisi_delete' dergi.pk %}" class="btn btn-sm btn-danger rounded-pill px-3">
+                                    <i class="fas fa-trash"></i> Sil
+                                </a>
                             </span>
                         </li>
                         {% empty %}

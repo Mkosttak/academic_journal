@@ -9,12 +9,17 @@
         </div>
         <form method="post" novalidate>
             {% csrf_token %}
+            <!-- Honeypot - Robot koruması için gizli alan -->
+            <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+                <label for="id_website">Website (boş bırakın):</label>
+                <input type="text" name="website" id="id_website" tabindex="-1" autocomplete="off">
+            </div>
             <div class="modern-form-fields">
                 <div class="mb-3">
-                    <label for="id_adsoyad" class="form-label">İsim Soyisim</label>
-                    <input type="text" name="adsoyad" class="form-control" id="id_adsoyad" required value="{{ form.adsoyad.value|default:'' }}">
-                    {% if form.adsoyad.errors %}
-                        <div class="form-error-text mt-1">{{ form.adsoyad.errors.0 }}</div>
+                    <label for="id_isim_soyisim" class="form-label">İsim Soyisim</label>
+                    <input type="text" name="isim_soyisim" class="form-control" id="id_isim_soyisim" required value="{{ form.isim_soyisim.value|default:'' }}">
+                    {% if form.isim_soyisim.errors %}
+                        <div class="form-error-text mt-1">{{ form.isim_soyisim.errors.0 }}</div>
                     {% endif %}
                 </div>
                 <div class="mb-3">

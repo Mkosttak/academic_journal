@@ -6,6 +6,9 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import json
 
 from core.mixins import AdminRequiredMixin, EditorRequiredMixin
 from users.models import User
@@ -90,13 +93,35 @@ class AdminDashboardView(AdminRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        # Temel istatistikler
         context['toplam_kullanici'] = User.objects.count()
         context['toplam_makale'] = Makale.objects.count()
+        context['toplam_dergi_sayisi'] = DergiSayisi.objects.count()
+        context['toplam_icerik'] = DergiIcerigi.objects.count()
         context['cevap_bekleyen_mesaj'] = IletisimFormu.objects.filter(cevaplandi=False).count()
         context['yayindaki_makaleler'] = Makale.objects.filter(goster_makaleler_sayfasinda=True).count()
-        context['son_makaleler'] = Makale.objects.all().order_by('-olusturulma_tarihi')[:5]
+        context['yayindaki_icerikler'] = DergiIcerigi.objects.filter(yayinda_mi=True).count()
+        
+        # Son eklenenler
+        context['son_makaleler'] = Makale.objects.select_related('dergi_sayisi').prefetch_related('yazarlar').order_by('-olusturulma_tarihi')[:5]
+        context['son_icerikler'] = DergiIcerigi.objects.select_related('dergi_sayisi').prefetch_related('yazarlar').order_by('-olusturulma_tarihi')[:5]
+        context['son_dergi_sayilari'] = DergiSayisi.objects.order_by('-olusturulma_tarihi')[:5]
         context['son_kullanicilar'] = User.objects.all().order_by('-date_joined')[:5]
-        context['en_cok_okunan_makaleler'] = Makale.objects.all().order_by('-goruntulenme_sayisi')[:5]
+        
+        # En çok okunanlar
+        context['en_cok_okunan_makaleler'] = Makale.objects.filter(goster_makaleler_sayfasinda=True).order_by('-goruntulenme_sayisi')[:5]
+        
+        # Bu ay istatistikleri
+        from django.utils import timezone
+        from datetime import datetime, timedelta
+        now = timezone.now()
+        this_month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        context['bu_ay_makale'] = Makale.objects.filter(olusturulma_tarihi__gte=this_month_start).count()
+        context['bu_ay_icerik'] = DergiIcerigi.objects.filter(olusturulma_tarihi__gte=this_month_start).count()
+        context['bu_ay_kullanici'] = User.objects.filter(date_joined__gte=this_month_start).count()
+        
         return context
 
 class AdminUserListView(AdminRequiredMixin, ListView):
@@ -216,7 +241,7 @@ class AdminDergiIcerigiListView(AdminRequiredMixin, ListView):
                 Q(anahtar_kelimeler__icontains=query)
             ).distinct()
 
-        return queryset.order_by('-olusturulma_tarihi')
+        return queryset.order_by('dergi_sayisi__yil', 'dergi_sayisi__ay', 'dergi_sayisi__sayi_no', 'siralama', '-olusturulma_tarihi')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -259,3 +284,161 @@ class AdminDergiIcerigiDetailView(AdminRequiredMixin, DetailView):
     model = DergiIcerigi
     template_name = 'dashboard/admin_dergi_icerik_detail.html'
     context_object_name = 'icerik'
+
+# Makale Sıralama Views
+class AdminMakaleSiralamaView(AdminRequiredMixin, TemplateView):
+    template_name = 'dashboard/admin_makale_siralama.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        dergi_sayisi_id = self.kwargs.get('dergi_sayisi_id')
+        
+        try:
+            dergi_sayisi = DergiSayisi.objects.get(id=dergi_sayisi_id)
+            # Önce sıralamaya göre, sonra oluşturulma tarihine göre sırala
+            makaleler = Makale.objects.filter(dergi_sayisi=dergi_sayisi).order_by('siralama', '-olusturulma_tarihi')
+            icerikler = DergiIcerigi.objects.filter(dergi_sayisi=dergi_sayisi).order_by('siralama', '-olusturulma_tarihi')
+            
+            # Tüm içerikleri birleştir ve sırala
+            all_items = []
+            for makale in makaleler:
+                all_items.append({
+                    'id': makale.id,
+                    'type': 'makale',
+                    'siralama': makale.siralama,
+                    'obj': makale
+                })
+            for icerik in icerikler:
+                all_items.append({
+                    'id': icerik.id,
+                    'type': 'icerik', 
+                    'siralama': icerik.siralama,
+                    'obj': icerik
+                })
+            
+            # Sıralamaya göre sırala
+            all_items.sort(key=lambda x: x['siralama'])
+            
+            # Sıralanmış listeleri oluştur
+            sorted_makaleler = [item['obj'] for item in all_items if item['type'] == 'makale']
+            sorted_icerikler = [item['obj'] for item in all_items if item['type'] == 'icerik']
+            
+            context.update({
+                'dergi_sayisi': dergi_sayisi,
+                'makaleler': sorted_makaleler,
+                'icerikler': sorted_icerikler,
+                'all_items': all_items,
+                'page_title': f'İçerik Sıralaması - {dergi_sayisi}',
+            })
+        except DergiSayisi.DoesNotExist:
+            context['error'] = 'Dergi sayısı bulunamadı.'
+            
+        return context
+
+@login_required
+@require_POST
+def update_makale_order_dashboard(request):
+    """
+    Dashboard'dan makalelerin sıralamasını günceller. Sadece admin kullanıcıları kullanabilir.
+    """
+    if not request.user.is_superuser:
+        return JsonResponse({'status': 'error', 'message': 'Bu işlem için admin yetkisi gereklidir.'}, status=403)
+    
+    try:
+        data = json.loads(request.body)
+        dergi_sayisi_id = data.get('dergi_sayisi_id')
+        article_orders = data.get('article_orders', [])
+        
+        if not dergi_sayisi_id or not article_orders:
+            return JsonResponse({'status': 'error', 'message': 'Geçersiz veri.'}, status=400)
+        
+        # Dergi sayısını kontrol et
+        try:
+            dergi_sayisi = DergiSayisi.objects.get(id=dergi_sayisi_id)
+        except DergiSayisi.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Dergi sayısı bulunamadı.'}, status=404)
+        
+        # Makalelerin sıralamasını güncelle
+        for order_data in article_orders:
+            article_id = order_data.get('id')
+            new_order = order_data.get('order')
+            
+            if article_id is not None and new_order is not None:
+                try:
+                    article = Makale.objects.get(id=article_id, dergi_sayisi=dergi_sayisi)
+                    article.siralama = new_order
+                    article.save(update_fields=['siralama'])
+                except Makale.DoesNotExist:
+                    continue  # Makale bulunamadı, devam et
+        
+        return JsonResponse({'status': 'success', 'message': 'Sıralama başarıyla güncellendi.'})
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Geçersiz JSON verisi.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Bir hata oluştu: {str(e)}'}, status=500)
+
+# Dergi İçeriği Sıralama Views
+class AdminDergiIcerikSiralamaView(AdminRequiredMixin, TemplateView):
+    template_name = 'dashboard/admin_dergi_icerik_siralama.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        dergi_sayisi_id = self.kwargs.get('dergi_sayisi_id')
+        
+        try:
+            dergi_sayisi = DergiSayisi.objects.get(id=dergi_sayisi_id)
+            icerikler = DergiIcerigi.objects.filter(dergi_sayisi=dergi_sayisi).order_by('siralama', '-olusturulma_tarihi')
+            
+            context.update({
+                'dergi_sayisi': dergi_sayisi,
+                'icerikler': icerikler,
+                'page_title': f'Dergi İçeriği Sıralaması - {dergi_sayisi}',
+            })
+        except DergiSayisi.DoesNotExist:
+            context['error'] = 'Dergi sayısı bulunamadı.'
+            
+        return context
+
+@login_required
+@require_POST
+def update_dergi_icerik_order_dashboard(request):
+    """
+    Dashboard'dan dergi içeriklerinin sıralamasını günceller. Sadece admin kullanıcıları kullanabilir.
+    """
+    if not request.user.is_superuser:
+        return JsonResponse({'status': 'error', 'message': 'Bu işlem için admin yetkisi gereklidir.'}, status=403)
+    
+    try:
+        data = json.loads(request.body)
+        dergi_sayisi_id = data.get('dergi_sayisi_id')
+        content_orders = data.get('content_orders', [])
+        
+        if not dergi_sayisi_id or not content_orders:
+            return JsonResponse({'status': 'error', 'message': 'Geçersiz veri.'}, status=400)
+        
+        # Dergi sayısını kontrol et
+        try:
+            dergi_sayisi = DergiSayisi.objects.get(id=dergi_sayisi_id)
+        except DergiSayisi.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Dergi sayısı bulunamadı.'}, status=404)
+        
+        # İçeriklerin sıralamasını güncelle
+        for order_data in content_orders:
+            content_id = order_data.get('id')
+            new_order = order_data.get('order')
+            
+            if content_id is not None and new_order is not None:
+                try:
+                    icerik = DergiIcerigi.objects.get(id=content_id, dergi_sayisi=dergi_sayisi)
+                    icerik.siralama = new_order
+                    icerik.save(update_fields=['siralama'])
+                except DergiIcerigi.DoesNotExist:
+                    continue  # İçerik bulunamadı, devam et
+        
+        return JsonResponse({'status': 'success', 'message': 'Sıralama başarıyla güncellendi.'})
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Geçersiz JSON verisi.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Bir hata oluştu: {str(e)}'}, status=500)

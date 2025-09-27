@@ -45,59 +45,80 @@
         <div class="card">
             <div class="card-body">
                 {% if icerikler %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Başlık</th>
-                                    <th>Dergi Sayısı</th>
-                                    <th>Durum</th>
-                                    <th>Oluşturulma</th>
-                                    <th>İşlemler</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for icerik in icerikler %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ icerik.baslik }}</strong>
-                                            {% if icerik.aciklama %}
-                                                <br><small class="text-muted">{{ icerik.aciklama|truncatewords:10 }}</small>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if icerik.dergi_sayisi %}
-                                                {{ icerik.dergi_sayisi.get_cilt_sayi_format }}
-                                            {% else %}
-                                                <span class="text-muted">Atanmamış</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if icerik.yayinda_mi %}
-                                                <span class="badge bg-success">Yayında</span>
-                                            {% else %}
-                                                <span class="badge bg-warning text-dark">Taslak</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ icerik.olusturulma_tarihi|date:"d.m.Y H:i" }}</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="{% url 'dashboard:admin_dergi_icerik_detail' icerik.slug %}" class="btn btn-outline-info" title="Detay">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{% url 'dashboard:admin_dergi_icerik_update' icerik.slug %}" class="btn btn-outline-primary" title="Düzenle">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a href="{% url 'dashboard:admin_dergi_icerik_delete' icerik.slug %}" class="btn btn-outline-danger" title="Sil" onclick="return confirm('Bu içeriği silmek istediğinizden emin misiniz?')">
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% regroup icerikler by dergi_sayisi as dergi_groups %}
+                    {% for dergi_group in dergi_groups %}
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">
+                                    {% if dergi_group.grouper %}
+                                        <i class="bi bi-journal-text me-2"></i>{{ dergi_group.grouper.get_tarih_format }} - {{ dergi_group.grouper.get_cilt_sayi_format }}
+                                        <span class="badge bg-secondary ms-2">{{ dergi_group.list|length }} içerik</span>
+                                    {% else %}
+                                        <i class="bi bi-journal-x me-2"></i>Atanmamış İçerikler
+                                        <span class="badge bg-secondary ms-2">{{ dergi_group.list|length }} içerik</span>
+                                    {% endif %}
+                                </h5>
+                                {% if dergi_group.grouper and dergi_group.list|length > 0 %}
+                                    <a href="{% url 'dashboard:admin_dergi_icerik_siralama' dergi_group.grouper.id %}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-sort"></i> Sırala
+                                    </a>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Başlık</th>
+                                            <th>İçerik Türü</th>
+                                            <th>Durum</th>
+                                            <th>Oluşturulma</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for icerik in dergi_group.list %}
+                                            <tr>
+                                                <td>
+                                                    <strong>{{ icerik.baslik }}</strong>
+                                                    {% if icerik.aciklama %}
+                                                        <br><small class="text-muted">{{ icerik.aciklama|truncatewords:10 }}</small>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-info">{{ icerik.get_icerik_turu_display }}</span>
+                                                </td>
+                                                <td>
+                                                    {% if icerik.yayinda_mi %}
+                                                        <span class="badge bg-success">Yayında</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning text-dark">Taslak</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ icerik.olusturulma_tarihi|date:"d.m.Y H:i" }}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="{% url 'dashboard:admin_dergi_icerik_detail' icerik.slug %}" class="btn btn-outline-info" title="Detay">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                        <a href="{% url 'dashboard:admin_dergi_icerik_update' icerik.slug %}" class="btn btn-outline-primary" title="Düzenle">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <a href="{% url 'dashboard:admin_dergi_icerik_delete' icerik.slug %}" class="btn btn-outline-danger" title="Sil" onclick="return confirm('Bu içeriği silmek istediğinizden emin misiniz?')">
+                                                            <i class="bi bi-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% if not forloop.last %}
+                            <hr class="my-4">
+                        {% endif %}
+                    {% endfor %}
 
                     <!-- Pagination -->
                     {% if is_paginated %}

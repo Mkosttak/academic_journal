@@ -6,5 +6,5 @@ urlpatterns = [
     path('iletisim/', IletisimView.as_view(), name='iletisim'),
     path('editorler/', EditorlerListView.as_view(), name='editorler'),
     path('sayilar/', SayilarListView.as_view(), name='sayilar'),
-    path('sayilar/<int:sayi_id>/', SayiMakaleleriView.as_view(), name='sayi_makaleleri'),
+    path('sayilar/<slug:slug>/', SayiMakaleleriView.as_view(), name='sayi_makaleleri'),
 ]

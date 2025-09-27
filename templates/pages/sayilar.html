@@ -349,7 +349,7 @@
                 {% if tum_dergiler %}
                 <div class="journals-grid">
                     {% for dergi in tum_dergiler %}
-                        <div class="journal-card" onclick="window.location.href='{% url 'sayi_makaleleri' dergi.pk %}'">
+                        <div class="journal-card" onclick="window.location.href='{% url 'sayi_makaleleri' dergi.slug %}'">
                             <div class="journal-content">
                                 <div class="journal-cover {% if not dergi.kapak_gorseli %}no-image{% endif %}">
                                     {% if dergi.kapak_gorseli %}
@@ -359,7 +359,7 @@
                                 <div class="journal-info">
                                     <h3 class="journal-title">{{ dergi.get_tarih_format }}</h3>
                                     <div class="journal-actions">
-                                        <a href="{% url 'sayi_makaleleri' dergi.pk %}" class="btn btn-primary btn-sm rounded-pill" title="İncele">
+                                        <a href="{% url 'sayi_makaleleri' dergi.slug %}" class="btn btn-primary btn-sm rounded-pill" title="İncele">
                                             <i class="bi bi-eye me-1"></i>İncele
                                         </a>
                                         {% if dergi.pdf_dosyasi %}

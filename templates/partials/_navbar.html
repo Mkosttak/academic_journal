@@ -95,11 +95,6 @@
                         <i class="bi bi-house-door me-1"></i>Ana Sayfa
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{% url 'makale_list' %}" class="nav-link {% if request.resolver_match.url_name == 'makale_list' %}active fw-bold{% endif %}">
-                        <i class="bi bi-newspaper me-1"></i>Makaleler
-                    </a>
-                </li>
 
                 <li class="nav-item">
                     <a href="{% url 'sayilar' %}" class="nav-link {% if request.resolver_match.url_name == 'sayilar' or request.resolver_match.url_name == 'sayi_makaleleri' %}active fw-bold{% endif %}">
@@ -257,7 +252,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
             </div>
             <div class="modal-body pt-0">
-                <form method="get" action="{% url 'makale_list' %}" class="mb-4">
+                <form method="get" action="{% url 'sayilar' %}" class="mb-4">
                     <div class="input-group input-group-lg">
                         <span class="input-group-text bg-light border-end-0 rounded-start-pill">
                             <i class="bi bi-search text-muted"></i>

@@ -145,7 +145,15 @@
                                             <label class="form-check-label ms-2 mb-0" for="{{ form.is_editor.id_for_label }}">Editör Yetkisi Verilsin Mi?</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-12 mt-2 mt-md-0">
+                                    <div class="col-md-6 col-12 mt-2 mt-md-0" id="chief-editor-field" style="display: none;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            {{ form.is_chief_editor|add_class:'form-check-input ms-0' }}
+                                            <label class="form-check-label ms-2 mb-0" for="{{ form.is_chief_editor.id_for_label }}">Baş Editör Olsun Mu?</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-3 mt-2 align-items-center">
+                                    <div class="col-md-6 col-12">
                                         <div class="d-flex align-items-center gap-2">
                                             {{ form.goster_editorler_sayfasinda|add_class:'form-check-input ms-0' }}
                                             <label class="form-check-label ms-2 mb-0" for="{{ form.goster_editorler_sayfasinda.id_for_label }}">Editörler Sayfasında Görüntülensin Mi?</label>
@@ -185,31 +193,56 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Switch değişikliklerinde onay penceresi
+    // Baş editör alanını kontrol et
     const isEditorSwitch = document.getElementById('{{ form.is_editor.id_for_label }}');
+    const isChiefEditorField = document.getElementById('chief-editor-field');
+    const isChiefEditorSwitch = document.getElementById('{{ form.is_chief_editor.id_for_label }}');
     const showOnEditorsPageSwitch = document.getElementById('{{ form.goster_editorler_sayfasinda.id_for_label }}');
+    
+    function toggleChiefEditorField() {
+        if (isEditorSwitch && isChiefEditorField && showOnEditorsPageSwitch) {
+            // Baş editör seçeneği sadece hem editör yetkisi hem de editörler sayfasında görüntülenme seçenekleri işaretliyse görünür
+            if (isEditorSwitch.checked && showOnEditorsPageSwitch.checked) {
+                isChiefEditorField.style.display = 'block';
+            } else {
+                isChiefEditorField.style.display = 'none';
+                if (isChiefEditorSwitch) {
+                    isChiefEditorSwitch.checked = false;
+                }
+            }
+        }
+    }
+    
+    // Sayfa yüklendiğinde kontrol et
+    toggleChiefEditorField();
+    
+    // Editör yetkisi değiştiğinde kontrol et
     if (isEditorSwitch) {
-        let prev = isEditorSwitch.checked;
         isEditorSwitch.addEventListener('change', function(e) {
+            toggleChiefEditorField();
             const confirmed = confirm('Bu kullanıcının editör yetkisini değiştirmek üzeresiniz. Emin misiniz?');
             if (!confirmed) {
-                isEditorSwitch.checked = prev;
-            } else {
-                prev = isEditorSwitch.checked;
+                isEditorSwitch.checked = !isEditorSwitch.checked;
+                toggleChiefEditorField();
             }
         });
     }
+    
+    // Editörler sayfasında görüntülenme değiştiğinde kontrol et
     if (showOnEditorsPageSwitch) {
-        let prev = showOnEditorsPageSwitch.checked;
         showOnEditorsPageSwitch.addEventListener('change', function(e) {
+            toggleChiefEditorField();
             const confirmed = confirm('Bu kullanıcının editörler sayfasında görünüp görünmeyeceğini değiştirmek üzeresiniz. Emin misiniz?');
             if (!confirmed) {
-                showOnEditorsPageSwitch.checked = prev;
+                showOnEditorsPageSwitch.checked = !showOnEditorsPageSwitch.checked;
+                toggleChiefEditorField();
             } else {
-                prev = showOnEditorsPageSwitch.checked;
+                toggleChiefEditorField();
             }
         });
     }
+    
+    // Baş editör değişikliğinde onay yok - direkt değişiklik
 });
 </script>
 {% endblock %}

@@ -9,7 +9,7 @@ class AdminUserUpdateForm(forms.ModelForm):
             'username',
             'first_name', 'last_name', 'email', 'biyografi', 
             'profile_resmi', 'resume', 
-            'is_editor', 'goster_editorler_sayfasinda'
+            'is_editor', 'is_chief_editor', 'goster_editorler_sayfasinda'
         ]
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -19,6 +19,7 @@ class AdminUserUpdateForm(forms.ModelForm):
             'profile_resmi': forms.FileInput(attrs={'class': 'form-control'}),
             'resume': forms.FileInput(attrs={'class': 'form-control'}),
             'is_editor': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_chief_editor': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'goster_editorler_sayfasinda': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 

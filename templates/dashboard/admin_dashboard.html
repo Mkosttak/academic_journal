@@ -1,169 +1,626 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Admin Paneli{% endblock %}
-{% block content %}
-<div class="container-fluid mt-4 dashboard-container">
-    <div class="welcome-section mb-4 text-center">
-        <h2 class="mb-2 fw-bold text-gradient">Admin Paneli</h2>
-        <p class="text-muted mb-4">Site yönetimine hoş geldiniz<span class="fw-semibold">{{ request.user.get_full_name }}</span>.</p>
-    </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-            <div class="stat-card users-card">
-                <div class="card-body">
-                    <div class="icon-wrapper">
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    .dashboard-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .welcome-text {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+    
+    .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .stat-icon.users { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .stat-icon.articles { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .stat-icon.journals { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .stat-icon.contents { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+    .stat-icon.messages { background: linear-gradient(135deg, #fa709a, #fee140); }
+    .stat-icon.published { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        line-height: 1;
+    }
+    
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .stat-change {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        margin-top: 0.5rem;
+        display: inline-block;
+    }
+    
+    .stat-change.positive {
+        background: rgba(34, 197, 94, 0.1);
+        color: #16a34a;
+    }
+    
+    .stat-change.negative {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+    
+    .content-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .content-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .quick-action {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(102, 126, 234, 0.05);
+        border-radius: 12px;
+        text-decoration: none;
+        color: #2d3748;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+    
+    .quick-action:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateX(5px);
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .quick-action-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+    
+    .quick-action-content {
+        flex: 1;
+    }
+    
+    .quick-action-title {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .quick-action-desc {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    
+    .recent-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .recent-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 10px;
+        text-decoration: none;
+        color: #2d3748;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .recent-item:hover {
+        background: rgba(102, 126, 234, 0.05);
+        transform: translateX(5px);
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .recent-item-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+    
+    .recent-item-content {
+        flex: 1;
+    }
+    
+    .recent-item-title {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .recent-item-meta {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    .chart-container {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 10px;
+        color: #6c757d;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1rem 0;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .quick-actions {
+            grid-template-columns: 1fr;
+        }
+        
+        .welcome-text {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="dashboard-header text-center">
+            <h1 class="welcome-text">Admin Paneli</h1>
+            <p class="subtitle">Hoş geldiniz, <strong>{{ request.user.get_full_name|default:request.user.username }}</strong></p>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ toplam_kullanici }}</div>
+                        <div class="stat-label">Toplam Kullanıcı</div>
+                        <div class="stat-change positive">+{{ bu_ay_kullanici }} bu ay</div>
+                    </div>
+                    <div class="stat-icon users">
                         <i class="bi bi-people"></i>
                     </div>
-                    <div class="stat-info">
-                        <div class="stat-label">Toplam Kullanıcı</div>
-                        <div class="stat-value">{{ toplam_kullanici }}</div>
-                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card articles-card">
-                <div class="card-body">
-                    <div class="icon-wrapper">
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ toplam_makale }}</div>
+                        <div class="stat-label">Toplam Makale</div>
+                        <div class="stat-change positive">+{{ bu_ay_makale }} bu ay</div>
+                    </div>
+                    <div class="stat-icon articles">
                         <i class="bi bi-journal-text"></i>
                     </div>
-                    <div class="stat-info">
-                        <div class="stat-label">Toplam Makale</div>
-                        <div class="stat-value">{{ toplam_makale }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ toplam_dergi_sayisi }}</div>
+                        <div class="stat-label">Dergi Sayısı</div>
+                    </div>
+                    <div class="stat-icon journals">
+                        <i class="bi bi-collection"></i>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card messages-card">
-                <div class="card-body">
-                    <div class="icon-wrapper">
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ toplam_icerik }}</div>
+                        <div class="stat-label">Dergi İçeriği</div>
+                        <div class="stat-change positive">+{{ bu_ay_icerik }} bu ay</div>
+                    </div>
+                    <div class="stat-icon contents">
+                        <i class="bi bi-file-earmark-richtext"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ cevap_bekleyen_mesaj }}</div>
+                        <div class="stat-label">Bekleyen Mesaj</div>
+                    </div>
+                    <div class="stat-icon messages">
                         <i class="bi bi-envelope-exclamation"></i>
                     </div>
-                    <div class="stat-info">
-                        <div class="stat-label">Cevaplanmamış Mesaj</div>
-                        <div class="stat-value">{{ cevap_bekleyen_mesaj }}</div>
-                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card published-card">
-                <div class="card-body">
-                    <div class="icon-wrapper">
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ yayindaki_makaleler }}</div>
+                        <div class="stat-label">Yayındaki Makale</div>
+                    </div>
+                    <div class="stat-icon published">
                         <i class="bi bi-journal-check"></i>
                     </div>
-                    <div class="stat-info">
-                        <div class="stat-label">Yayındaki Makale</div>
-                        <div class="stat-value">{{ yayindaki_makaleler }}</div>
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="row g-4">
-        <div class="col-12 col-lg-6">
+
+        <!-- Hızlı Erişim ve Son Aktiviteler -->
+        <div class="content-grid">
+            <!-- Hızlı Erişim -->
             <div class="content-card">
                 <div class="card-header">
-                    <span class="header-title"><i class="bi bi-lightning-charge"></i>Hızlı Erişim</span>
+                    <i class="bi bi-lightning-charge"></i>
+                    Hızlı Erişim
                 </div>
                 <div class="card-body">
-                    <div class="quick-access-list">
-                        <a href="{% url 'dashboard:editor_panel' %}" class="quick-access-item">
-                            <i class="bi bi-journals"></i>
-                            <span>Makale Yönetimi</span>
-                            <i class="bi bi-chevron-right"></i>
+                    <div class="quick-actions">
+                        <a href="{% url 'dashboard:admin_dergisayisi_list' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-collection"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Dergi Sayıları</div>
+                                <div class="quick-action-desc">Dergi sayılarını yönet</div>
+                            </div>
                         </a>
-                        <a href="{% url 'dashboard:admin_user_list' %}" class="quick-access-item">
-                            <i class="bi bi-people"></i>
-                            <span>Kullanıcı Yönetimi</span>
-                            <i class="bi bi-chevron-right"></i>
+
+                        <a href="{% url 'dashboard:admin_dergi_icerik_list' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-file-earmark-richtext"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Dergi İçerikleri</div>
+                                <div class="quick-action-desc">İçerikleri yönet</div>
+                            </div>
                         </a>
-                        <a href="{% url 'dashboard:admin_iletisim_list' %}" class="quick-access-item">
-                            <i class="bi bi-envelope"></i>
-                            <span>İletişim Mesajları</span>
-                            <i class="bi bi-chevron-right"></i>
+
+                        <a href="{% url 'dashboard:editor_panel' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-journals"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Makale Yönetimi</div>
+                                <div class="quick-action-desc">Makaleleri düzenle</div>
+                            </div>
                         </a>
-                        <a href="{% url 'dashboard:admin_dergisayisi_list' %}" class="quick-access-item">
-                            <i class="bi bi-collection"></i>
-                            <span>Dergi Sayısı Yönetimi</span>
-                            <i class="bi bi-chevron-right"></i>
+
+                        <a href="{% url 'dashboard:admin_user_list' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Kullanıcılar</div>
+                                <div class="quick-action-desc">Kullanıcıları yönet</div>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'dashboard:admin_iletisim_list' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Mesajlar</div>
+                                <div class="quick-action-desc">İletişim mesajları</div>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'admin:index' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-gear"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Django Admin</div>
+                                <div class="quick-action-desc">Gelişmiş yönetim</div>
+                            </div>
                         </a>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-lg-6">
+
+            <!-- Son Makaleler -->
             <div class="content-card">
                 <div class="card-header">
-                    <span class="header-title"><i class="bi bi-journal-text"></i>Son Eklenen Makaleler</span>
+                    <i class="bi bi-journal-text"></i>
+                    Son Eklenen Makaleler
                 </div>
                 <div class="card-body">
                     <div class="recent-list">
                         {% for makale in son_makaleler %}
-                            <a href="{% url 'makale_detail' makale.slug %}" class="recent-item text-decoration-none">
-                                <div class="recent-info">
-                                    <span class="recent-title">{{ makale.baslik|truncatechars:40 }}</span>
-                                    <span class="recent-time">{{ makale.olusturulma_tarihi|timesince }} önce</span>
+                            <a href="{% if makale.dergi_sayisi %}{% url 'makale_detail_with_journal' makale.dergi_sayisi.slug makale.slug %}{% else %}{% url 'makale_detail' makale.slug %}{% endif %}" class="recent-item">
+                                <div class="recent-item-icon">
+                                    <i class="bi bi-file-text"></i>
+                                </div>
+                                <div class="recent-item-content">
+                                    <div class="recent-item-title">{{ makale.baslik|truncatechars:50 }}</div>
+                                    <div class="recent-item-meta">
+                                        {% if makale.dergi_sayisi %}{{ makale.dergi_sayisi.get_tarih_format }} • {% endif %}{{ makale.olusturulma_tarihi|timesince }} önce
+                                    </div>
                                 </div>
                             </a>
                         {% empty %}
                             <div class="empty-state">
                                 <i class="bi bi-journal-x"></i>
-                                <span>Henüz makale eklenmemiş</span>
+                                <div>Henüz makale eklenmemiş</div>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row g-4 mt-2">
-        <div class="col-12 col-lg-6">
+        <!-- Son İçerikler ve En Çok Okunanlar -->
+        <div class="content-grid">
+            <!-- Son Dergi İçerikleri -->
             <div class="content-card">
                 <div class="card-header">
-                    <span class="header-title"><i class="bi bi-person-plus"></i>Son Kayıtlı Kullanıcılar</span>
+                    <i class="bi bi-file-earmark-richtext"></i>
+                    Son Dergi İçerikleri
+                </div>
+                <div class="card-body">
+                    <div class="recent-list">
+                        {% for icerik in son_icerikler %}
+                            <a href="{% url 'dashboard:admin_dergi_icerik_detail' icerik.slug %}" class="recent-item">
+                                <div class="recent-item-icon">
+                                    <i class="bi bi-file-earmark-richtext"></i>
+                                </div>
+                                <div class="recent-item-content">
+                                    <div class="recent-item-title">{{ icerik.baslik|truncatechars:50 }}</div>
+                                    <div class="recent-item-meta">
+                                        {{ icerik.dergi_sayisi.get_tarih_format }} • {{ icerik.olusturulma_tarihi|timesince }} önce
+                                    </div>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <div class="empty-state">
+                                <i class="bi bi-file-earmark-x"></i>
+                                <div>Henüz içerik eklenmemiş</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- En Çok Okunan Makaleler -->
+            <div class="content-card">
+                <div class="card-header">
+                    <i class="bi bi-graph-up"></i>
+                    En Çok Okunan Makaleler
+                </div>
+                <div class="card-body">
+                    <div class="recent-list">
+                        {% for makale in en_cok_okunan_makaleler %}
+                            <a href="{% if makale.dergi_sayisi %}{% url 'makale_detail_with_journal' makale.dergi_sayisi.slug makale.slug %}{% else %}{% url 'makale_detail' makale.slug %}{% endif %}" class="recent-item">
+                                <div class="recent-item-icon">
+                                    <i class="bi bi-eye"></i>
+                                </div>
+                                <div class="recent-item-content">
+                                    <div class="recent-item-title">{{ makale.baslik|truncatechars:50 }}</div>
+                                    <div class="recent-item-meta">
+                                        <i class="bi bi-eye me-1"></i>{{ makale.goruntulenme_sayisi }} görüntülenme
+                                    </div>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <div class="empty-state">
+                                <i class="bi bi-graph-down"></i>
+                                <div>Henüz görüntülenme verisi yok</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Son Dergi Sayıları ve Kullanıcılar -->
+        <div class="content-grid">
+            <!-- Son Dergi Sayıları -->
+            <div class="content-card">
+                <div class="card-header">
+                    <i class="bi bi-collection"></i>
+                    Son Dergi Sayıları
+                </div>
+                <div class="card-body">
+                    <div class="recent-list">
+                        {% for dergi in son_dergi_sayilari %}
+                            <a href="{% url 'sayi_makaleleri' dergi.slug %}" class="recent-item">
+                                <div class="recent-item-icon">
+                                    <i class="bi bi-collection"></i>
+                                </div>
+                                <div class="recent-item-content">
+                                    <div class="recent-item-title">{{ dergi.get_tarih_format }}</div>
+                                    <div class="recent-item-meta">
+                                        {{ dergi.get_cilt_sayi_format }} • {{ dergi.olusturulma_tarihi|timesince }} önce
+                                    </div>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <div class="empty-state">
+                                <i class="bi bi-collection-x"></i>
+                                <div>Henüz dergi sayısı eklenmemiş</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Son Kullanıcılar -->
+            <div class="content-card">
+                <div class="card-header">
+                    <i class="bi bi-person-plus"></i>
+                    Son Kayıtlı Kullanıcılar
                 </div>
                 <div class="card-body">
                     <div class="recent-list">
                         {% for user in son_kullanicilar %}
                             <div class="recent-item">
-                                <div class="recent-info">
-                                    <span class="recent-title">{{ user.get_full_name|default:user.username }}</span>
-                                    <span class="recent-time">{{ user.date_joined|timesince }} önce</span>
+                                <div class="recent-item-icon">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                <div class="recent-item-content">
+                                    <div class="recent-item-title">{{ user.get_full_name|default:user.username }}</div>
+                                    <div class="recent-item-meta">
+                                        {{ user.email }} • {{ user.date_joined|timesince }} önce
+                                    </div>
                                 </div>
                             </div>
                         {% empty %}
                             <div class="empty-state">
                                 <i class="bi bi-person-x"></i>
-                                <span>Henüz kullanıcı eklenmemiş</span>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-6">
-            <div class="content-card">
-                <div class="card-header">
-                    <span class="header-title"><i class="bi bi-bar-chart"></i>En Çok Okunan Makaleler</span>
-                </div>
-                <div class="card-body">
-                    <div class="recent-list">
-                        {% for makale in en_cok_okunan_makaleler %}
-                            <a href="{% url 'makale_detail' makale.slug %}" class="recent-item text-decoration-none">
-                                <div class="recent-info">
-                                    <span class="recent-title">{{ makale.baslik|truncatechars:40 }}</span>
-                                    <span class="recent-time"><i class="bi bi-eye me-1"></i>{{ makale.goruntulenme_sayisi }}</span>
-                                </div>
-                            </a>
-                        {% empty %}
-                            <div class="empty-state">
-                                <i class="bi bi-journal-x"></i>
-                                <span>Henüz makale yok</span>
+                                <div>Henüz kullanıcı eklenmemiş</div>
                             </div>
                         {% endfor %}
                     </div>
@@ -172,6 +629,4 @@
         </div>
     </div>
 </div>
-
-
-{% endblock %} 
+{% endblock %}
