@@ -32,7 +32,7 @@ class CustomUserChangeForm(forms.ModelForm):
         self.fields['last_name'].error_messages = {'required': 'Soyad alanı zorunludur.'}
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'biyografi', 'profile_resmi', 'resume')
+        fields = ('username', 'first_name', 'last_name', 'email', 'biyografi', 'profile_resmi', 'resume', 'email_paylasim_izni', 'ozgecmis_paylasim_izni')
         widgets = {
             'biyografi': forms.Textarea(attrs={'rows': 4}),
             'resume': forms.ClearableFileInput(attrs={'accept': 'application/pdf'}),
@@ -40,9 +40,13 @@ class CustomUserChangeForm(forms.ModelForm):
         }
         labels = {
             'resume': 'Özgeçmiş (PDF)',
+            'email_paylasim_izni': 'E-posta Adresimi Diğer Kullanıcılarla Paylaş',
+            'ozgecmis_paylasim_izni': 'Özgeçmişimi Diğer Kullanıcılarla Paylaş',
         }
         help_texts = {
             'resume': None,
+            'email_paylasim_izni': 'Bu seçeneği işaretlerseniz, diğer kullanıcılar sizin e-posta adresinizi görebilir.',
+            'ozgecmis_paylasim_izni': 'Bu seçeneği işaretlerseniz, diğer kullanıcılar sizin özgeçmişinizi indirebilir.',
         }
 
     def clean_profile_resmi(self):

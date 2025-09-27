@@ -336,6 +336,231 @@ footer {
     background: #f1f5f9;
 }
 
+/* Modern PDF Upload Wrapper */
+.modern-pdf-upload-wrapper {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px dashed #e0eafc;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-pdf-upload-wrapper:hover {
+    border-color: var(--primary-color);
+    background: rgba(13, 110, 253, 0.02);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.1);
+}
+
+.pdf-upload-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pdf-icon-container {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(238, 90, 82, 0.3);
+}
+
+.pdf-main-icon {
+    font-size: 1.8rem;
+    color: white;
+}
+
+.pdf-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.pdf-filename {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+}
+
+.pdf-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.pdf-link:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+
+.pdf-placeholder {
+    color: #6c757d;
+    font-style: italic;
+    display: inline-flex;
+    align-items: center;
+}
+
+.pdf-info {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.pdf-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.pdf-actions .btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.pdf-actions .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive PDF Upload */
+@media (max-width: 576px) {
+    .pdf-upload-area {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+    
+    .pdf-icon-container {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .pdf-main-icon {
+        font-size: 1.5rem;
+    }
+    
+    .pdf-actions {
+        justify-content: center;
+    }
+    
+    .pdf-actions .btn {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
+/* === PROFİL DÜZENLEME SEKMELERİ === */
+.nav-tabs {
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 0.75rem 0.75rem 0 0;
+    color: #6c757d;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: transparent;
+    color: var(--primary-color);
+    background: rgba(13, 110, 253, 0.05);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-color);
+    background: rgba(13, 110, 253, 0.1);
+    border-color: transparent;
+    font-weight: 600;
+}
+
+.nav-tabs .nav-link i {
+    font-size: 1.1rem;
+}
+
+/* Paylaşım İzinleri Kartları */
+.privacy-settings {
+    padding: 1rem 0;
+}
+
+.privacy-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #e9ecef;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.privacy-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.1);
+    transform: translateY(-2px);
+}
+
+.privacy-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.privacy-header h6 {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.privacy-content {
+    padding-left: 0.5rem;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-check-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-left: 0.5rem;
+}
+
+/* Responsive Sekmeler */
+@media (max-width: 768px) {
+    .nav-tabs .nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .nav-tabs .nav-link i {
+        font-size: 1rem;
+    }
+    
+    .privacy-card {
+        padding: 1rem;
+    }
+}
+
 /* Makale Formu */
 .admin-note-box {
     background: rgba(13, 110, 253, 0.08);

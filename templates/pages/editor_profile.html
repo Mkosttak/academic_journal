@@ -20,12 +20,23 @@
                         </div>
                         <div class="col-md-8 d-flex flex-column align-items-start">
                             <h2 class="fw-bold display-5 mb-2 text-start">{{ profil_kullanici.get_full_name|default:profil_kullanici.username }}</h2>
+                            {% if profil_kullanici.email_paylasim_izni %}
+                                <div class="mb-3 p-2 bg-light rounded d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-envelope me-2 text-primary"></i>
+                                        <span class="fw-medium text-dark" id="email-text">{{ profil_kullanici.email }}</span>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="copyEmail()" title="E-posta adresini kopyala">
+                                        <i class="bi bi-copy"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
                             {% if profil_kullanici.biyografi %}
                                 <div class="profile-info-box mb-3 p-4 text-start w-100">
                                     <p class="author-bio-box text-muted mb-0">{{ profil_kullanici.biyografi|linebreaks }}</p>
                                 </div>
                             {% endif %}
-                            {% if profil_kullanici.resume %}
+                            {% if profil_kullanici.resume and profil_kullanici.ozgecmis_paylasim_izni %}
                                 <a href="{{ profil_kullanici.resume.url }}" target="_blank" class="btn btn-primary rounded-pill px-4 py-2 mb-3 align-self-start mt-0-5rem maxw-250px">
                                     <i class="bi bi-file-earmark-person me-2"></i> Özgeçmişi Görüntüle
                                 </a>
@@ -60,5 +71,117 @@
     </div>
 </div>
 
+{% endblock %}
 
+{% block extra_js %}
+<script>
+function copyEmail() {
+    const emailText = document.getElementById('email-text').textContent;
+    
+    // Modern clipboard API kullan
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(emailText).then(function() {
+            showCopySuccess();
+        }).catch(function(err) {
+            fallbackCopyTextToClipboard(emailText);
+        });
+    } else {
+        // Fallback için eski yöntem
+        fallbackCopyTextToClipboard(emailText);
+    }
+}
+
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showCopySuccess();
+        } else {
+            showCopyError();
+        }
+    } catch (err) {
+        showCopyError();
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+function showCopySuccess() {
+    // Mevcut toast sistemine uygun mesaj göster
+    const toastContainer = document.querySelector('.modern-toast-container') || createToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast shadow fade show custom-toast border-0 rounded-4 mb-3 animate__animated animate__fadeInDown modern-toast';
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.setAttribute('data-bs-delay', '3000');
+    
+    toast.innerHTML = `
+        <div class="d-flex align-items-center p-3">
+            <div class="icon-wrapper bg-success bg-opacity-10 text-success me-3">
+                <i class="bi bi-check-circle-fill fs-4"></i>
+            </div>
+            <div class="flex-grow-1 modern-toast-text">E-posta adresi panoya kopyalandı!</div>
+            <button type="button" class="btn-close ms-3 modern-toast-close" data-bs-dismiss="toast" aria-label="Kapat"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // 3 saniye sonra kaldır
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 3000);
+}
+
+function showCopyError() {
+    const toastContainer = document.querySelector('.modern-toast-container') || createToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast shadow fade show custom-toast border-0 rounded-4 mb-3 animate__animated animate__fadeInDown modern-toast';
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.setAttribute('data-bs-delay', '5000');
+    
+    toast.innerHTML = `
+        <div class="d-flex align-items-center p-3">
+            <div class="icon-wrapper bg-danger bg-opacity-10 text-danger me-3">
+                <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+            </div>
+            <div class="flex-grow-1 modern-toast-text">E-posta adresi kopyalanamadı. Lütfen manuel olarak kopyalayın.</div>
+            <button type="button" class="btn-close ms-3 modern-toast-close" data-bs-dismiss="toast" aria-label="Kapat"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 5000);
+}
+
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.className = 'toast-container position-fixed top-0 start-50 translate-middle-x modern-toast-container';
+    document.body.appendChild(container);
+    return container;
+}
+</script>
 {% endblock %} 

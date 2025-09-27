@@ -37,6 +37,16 @@ class User(AbstractUser):
         default=False,
         verbose_name="Editörler Sayfasında Gösterilsin mi?"
     )
+    
+    # Paylaşım İzinleri
+    email_paylasim_izni = models.BooleanField(
+        default=False,
+        verbose_name="E-posta Adresimi Diğer Kullanıcılarla Paylaş"
+    )
+    ozgecmis_paylasim_izni = models.BooleanField(
+        default=False,
+        verbose_name="Özgeçmişimi Diğer Kullanıcılarla Paylaş"
+    )
 
     # Django'nun User modelinde 'date_joined' (oluşturulma tarihi) ve
     # 'last_login' (en son giriş tarihi) zaten mevcut.

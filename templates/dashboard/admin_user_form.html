@@ -32,12 +32,12 @@
                                     {% if object.profile_resmi %}
                                         <img id="image-preview" src="{{ object.profile_resmi.url }}" class="rounded-circle shadow border border-3 border-white" alt="Profil Resmi" style="width: 150px; height: 150px; object-fit: cover;">
                                         <div id="icon-placeholder" class="rounded-circle d-none" style="width: 150px; height: 150px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center;">
-                                            <i class="bi bi-person-fill text-secondary" style="font-size: 5rem;"></i>
+                                            <i class="bi bi-person-fill text-secondary" style="font-size: 4rem;"></i>
                                         </div>
                                     {% else %}
                                         <img id="image-preview" src="" class="rounded-circle d-none" alt="Profil Resmi" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
                                         <div id="icon-placeholder" class="rounded-circle" style="width: 150px; height: 150px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center;">
-                                            <i class="bi bi-person-fill text-secondary" style="font-size: 5rem;"></i>
+                                            <i class="bi bi-person-fill text-secondary" style="font-size: 4rem;"></i>
                                         </div>
                                     {% endif %}
                                     <label for="{{ form.profile_resmi.id_for_label }}" class="position-absolute bottom-0 start-50 translate-middle-x badge bg-primary text-white shadow px-3 py-2" style="cursor:pointer; opacity:0.92; font-size:1rem; border-radius: 1.5rem;">
@@ -64,6 +64,11 @@
                                                         </a>
                                                     </span>
                                                     <a href="{{ object.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2"><i class="bi bi-download"></i> İndir</a>
+                                                    {% if object.ozgecmis_paylasim_izni %}
+                                                        <span class="badge bg-info ms-2">Paylaşım Açık</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning ms-2">Paylaşım Kapalı</span>
+                                                    {% endif %}
                                                 {% else %}
                                                     <span class="text-muted">Henüz özgeçmiş yüklenmedi.</span>
                                                 {% endif %}
@@ -124,6 +129,14 @@
                                         {{ form.email|add_class:'form-control form-control-lg rounded-3 shadow-sm bg-light text-secondary border-0 user-noneditable'|attr:'readonly:readonly' }}
                                         <span class="position-absolute top-50 end-0 translate-middle-y badge bg-secondary me-2">Değiştirilemez</span>
                                     </div>
+                                    <div class="d-flex align-items-center mt-2">
+                                        {% if object.email_paylasim_izni %}
+                                            <span class="badge bg-info me-2"><i class="bi bi-share me-1"></i>Paylaşım Açık</span>
+                                        {% else %}
+                                            <span class="badge bg-warning me-2"><i class="bi bi-shield-lock me-1"></i>Paylaşım Kapalı</span>
+                                        {% endif %}
+                                        <small class="text-muted">Diğer kullanıcılar e-posta adresini görebilir</small>
+                                    </div>
                                     {% if form.email.errors %}
                                     <div class="text-danger small mt-1">{{ form.email.errors }}</div>
                                     {% endif %}
@@ -157,6 +170,33 @@
                                         <div class="d-flex align-items-center gap-2">
                                             {{ form.goster_editorler_sayfasinda|add_class:'form-check-input ms-0' }}
                                             <label class="form-check-label ms-2 mb-0" for="{{ form.goster_editorler_sayfasinda.id_for_label }}">Editörler Sayfasında Görüntülensin Mi?</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Paylaşım İzinleri Bölümü -->
+                                <div class="mt-4">
+                                    <h6 class="fw-bold text-primary mb-3">
+                                        <i class="bi bi-shield-check me-2"></i>Paylaşım İzinleri
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6 col-12">
+                                            <div class="d-flex align-items-center gap-2">
+                                                {{ form.email_paylasim_izni|add_class:'form-check-input ms-0' }}
+                                                <label class="form-check-label ms-2 mb-0" for="{{ form.email_paylasim_izni.id_for_label }}">
+                                                    E-posta Adresini Paylaş
+                                                </label>
+                                            </div>
+                                            <small class="text-muted ms-4">Diğer kullanıcılar e-posta adresini görebilir</small>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="d-flex align-items-center gap-2">
+                                                {{ form.ozgecmis_paylasim_izni|add_class:'form-check-input ms-0' }}
+                                                <label class="form-check-label ms-2 mb-0" for="{{ form.ozgecmis_paylasim_izni.id_for_label }}">
+                                                    Özgeçmişi Paylaş
+                                                </label>
+                                            </div>
+                                            <small class="text-muted ms-4">Diğer kullanıcılar özgeçmişi indirebilir</small>
                                         </div>
                                     </div>
                                 </div>

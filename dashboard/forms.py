@@ -9,7 +9,8 @@ class AdminUserUpdateForm(forms.ModelForm):
             'username',
             'first_name', 'last_name', 'email', 'biyografi', 
             'profile_resmi', 'resume', 
-            'is_editor', 'is_chief_editor', 'goster_editorler_sayfasinda'
+            'is_editor', 'is_chief_editor', 'goster_editorler_sayfasinda',
+            'email_paylasim_izni', 'ozgecmis_paylasim_izni'
         ]
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -21,6 +22,8 @@ class AdminUserUpdateForm(forms.ModelForm):
             'is_editor': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'is_chief_editor': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'goster_editorler_sayfasinda': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'email_paylasim_izni': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'ozgecmis_paylasim_izni': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
     def __init__(self, *args, **kwargs):
