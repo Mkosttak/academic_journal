@@ -42,6 +42,22 @@ class YazarFormMixin:
                 raise forms.ValidationError("Geçersiz yazar formatı.")
         except json.JSONDecodeError:
             raise forms.ValidationError("Geçersiz yazar formatı.")
+        
+        # Yazar kontrolü: Normal kullanıcılar kendilerini yazar olarak eklemek zorunda
+        if self.request and self.request.user.is_authenticated:
+            current_user = self.request.user
+            # Admin kullanıcıları herhangi bir makale oluşturabilir
+            if not current_user.is_staff and not current_user.is_superuser:
+                # Normal kullanıcı: kendisinin yazarlar arasında olup olmadığını kontrol et
+                user_in_authors = any(
+                    yazar.get('username') == current_user.username 
+                    for yazar in yazarlar_list
+                )
+                if not user_in_authors:
+                    raise forms.ValidationError(
+                        "Makale oluşturabilmek için kendinizi yazarlar arasına eklemeniz gerekmektedir."
+                    )
+        
         return yazarlar_list
 
     def _save_yazarlar(self, instance):

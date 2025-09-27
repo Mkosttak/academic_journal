@@ -3,6 +3,12 @@ document.addEventListener('DOMContentLoaded', function() {
         el.removeAttribute('required');
     });
 
+    // Admin kontrolü - window.isAdmin varsa onu kullan, yoksa sayfa kontrolü yap
+    const isAdmin = window.isAdmin || 
+                   document.querySelector('meta[name="is-admin"]')?.content === 'true' || 
+                   window.location.pathname.includes('/dashboard/') ||
+                   document.querySelector('[data-is-admin="true"]') !== null;
+
     // Makale ekle formu için yazarlar alanı kontrolü
     const authorListDiv = document.getElementById('author-list');
     const hiddenAuthorsInput = document.getElementById('id_yazarlar_json');
@@ -23,10 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
             tag.className = 'badge d-flex align-items-center p-2 text-dark-emphasis bg-light-subtle border border-dark-subtle rounded-pill';
             tag.dataset.isim_soyisim = isim_soyisim;
             tag.dataset.username = username || '';
+            // Admin kullanıcıları her yazarı kaldırabilir, normal kullanıcılar sadece kendilerini kaldıramaz
+            const canRemove = isAdmin || (username && username !== window.currentUsername) || !username;
+            
             tag.innerHTML = `
                 ${isim_soyisim} ${username ? '(@' + username + ')' : ''}
-                ${username && username !== window.currentUsername ? '<button type="button" class="btn-close ms-2 remove-author-btn" aria-label="Close"></button>' : ''}
-                ${!username ? '<button type="button" class="btn-close ms-2 remove-author-btn" aria-label="Close"></button>' : ''}
+                ${canRemove ? '<button type="button" class="btn-close ms-2 remove-author-btn" aria-label="Close"></button>' : ''}
             `;
             authorListDiv.appendChild(tag);
             updateHiddenInput();
@@ -125,9 +133,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Silme işlemi
         authorListDiv.addEventListener('click', function(e) {
             if (e.target && e.target.classList.contains('remove-author-btn')) {
-                // Kendi etiketi için kaldırma işlemini engelle
+                // Admin kullanıcıları her yazarı kaldırabilir, normal kullanıcılar sadece kendilerini kaldıramaz
                 const parentTag = e.target.parentElement;
-                if (parentTag.dataset.username === window.currentUsername) {
+                if (!isAdmin && parentTag.dataset.username === window.currentUsername) {
                     return;
                 }
                 parentTag.remove();

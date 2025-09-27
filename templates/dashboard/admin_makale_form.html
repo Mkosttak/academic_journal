@@ -98,6 +98,10 @@
                         <h4 class="mb-0"><i class="bi bi-people me-2"></i>Yazarlar</h4>
                     </div>
                     <div class="card-body p-4">
+                        <div class="alert alert-info mb-3 py-2 px-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Admin Yetkisi:</strong> Admin kullanıcısı olarak herhangi bir makale oluşturabilir ve düzenleyebilirsiniz.
+                        </div>
                         <div class="input-group mb-3">
                             <input type="text" id="author-input" class="form-control rounded-start-pill" placeholder="Harici yazar için 'İsim Soyisim', kayıtlı yazar için '@kullaniciadi'">
                             <button class="btn btn-outline-success rounded-end-pill" type="button" id="add-author-btn">Ekle</button>
@@ -154,6 +158,7 @@ window.currentUsername = "{{ request.user.username|escapejs }}";
 window.currentFullName = "{{ request.user.get_full_name|default:request.user.username|escapejs }}";
 window.checkAuthorUrl = "{% url 'check_author' %}";
 window.csrfToken = "{{ csrf_token }}";
+window.isAdmin = {{ request.user.is_staff|yesno:"true,false" }} || {{ request.user.is_superuser|yesno:"true,false" }};
 
 // PDF Upload Functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -163,6 +168,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const pdfFilename = document.getElementById('pdf-filename');
     const pdfUploadArea = document.getElementById('pdf-upload-area');
     const pdfActions = document.querySelector('.pdf-actions');
+
+    // Form hata durumunda PDF dosyasını koruma
+    function restorePdfState() {
+        if (pdfInput && pdfInput.files && pdfInput.files.length > 0) {
+            const fileName = pdfInput.files[0].name;
+            pdfFilename.innerHTML = '<a href="#" class="pdf-link"><i class="bi bi-download me-1"></i>' + fileName + '</a>';
+            
+            // Remove button'u göster
+            if (!removePdfBtn) {
+                const newRemoveBtn = document.createElement('button');
+                newRemoveBtn.type = 'button';
+                newRemoveBtn.className = 'btn btn-outline-danger btn-sm';
+                newRemoveBtn.id = 'remove-pdf-btn';
+                newRemoveBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Kaldır';
+                pdfActions.appendChild(newRemoveBtn);
+                
+                newRemoveBtn.addEventListener('click', function() {
+                    pdfInput.value = '';
+                    pdfFilename.innerHTML = '<span class="pdf-placeholder"><i class="bi bi-cloud-upload me-2"></i>Makale PDF dosyanızı yükleyin</span>';
+                    this.remove();
+                });
+            }
+        }
+    }
+
+    // Sayfa yüklendiğinde PDF durumunu kontrol et
+    restorePdfState();
 
     if (changePdfBtn && pdfInput) {
         changePdfBtn.addEventListener('click', function() {
@@ -243,6 +275,56 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Form submit kontrolü - PDF dosyasını koruma
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // PDF dosyasını sessionStorage'a kaydet (form hata verirse geri yüklemek için)
+            if (pdfInput && pdfInput.files && pdfInput.files.length > 0) {
+                const file = pdfInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    sessionStorage.setItem('pdf_file_data', e.target.result);
+                    sessionStorage.setItem('pdf_file_name', file.name);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Sayfa yüklendiğinde sessionStorage'dan PDF dosyasını geri yükle
+    function restorePdfFromSession() {
+        const pdfData = sessionStorage.getItem('pdf_file_data');
+        const pdfName = sessionStorage.getItem('pdf_file_name');
+        
+        if (pdfData && pdfName && pdfInput) {
+            // PDF dosyasını input'a geri yükle
+            const byteCharacters = atob(pdfData.split(',')[1]);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'application/pdf' });
+            const file = new File([blob], pdfName, { type: 'application/pdf' });
+            
+            // FileList oluştur ve input'a ata
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            pdfInput.files = dataTransfer.files;
+            
+            // PDF durumunu güncelle
+            restorePdfState();
+            
+            // SessionStorage'ı temizle
+            sessionStorage.removeItem('pdf_file_data');
+            sessionStorage.removeItem('pdf_file_name');
+        }
+    }
+
+    // Sayfa yüklendiğinde PDF'i geri yükle
+    restorePdfFromSession();
 });
 </script>
 <script src="{% static 'js/style.js' %}"></script>
