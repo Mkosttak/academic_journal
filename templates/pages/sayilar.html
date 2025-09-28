@@ -182,16 +182,6 @@
         image-rendering: crisp-edges;
     }
 
-    .journal-cover.no-image::before {
-        content: '📖';
-        font-size: 2.5rem;
-        opacity: 0.7;
-        color: #3b82f6;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
 
     .journal-info {
         flex: 1;
@@ -351,10 +341,8 @@
                     {% for dergi in tum_dergiler %}
                         <div class="journal-card" onclick="window.location.href='{% url 'sayi_makaleleri' dergi.slug %}'">
                             <div class="journal-content">
-                                <div class="journal-cover {% if not dergi.kapak_gorseli %}no-image{% endif %}">
-                                    {% if dergi.kapak_gorseli %}
-                                        <img src="{{ dergi.get_kapak_url }}" alt="{{ dergi.get_tarih_format }}" loading="lazy">
-                                    {% endif %}
+                                <div class="journal-cover">
+                                    <img src="{{ dergi.get_kapak_url }}" alt="{{ dergi.get_tarih_format }}" loading="lazy">
                                 </div>
                                 <div class="journal-info">
                                     <h3 class="journal-title">{{ dergi.get_tarih_format }}</h3>
@@ -363,8 +351,8 @@
                                             <i class="bi bi-eye me-1"></i>İncele
                                         </a>
                                         {% if dergi.pdf_dosyasi %}
-                                            <a href="{{ dergi.pdf_dosyasi.url }}" download class="btn btn-outline-secondary btn-sm rounded-pill" title="PDF İndir" onclick="event.stopPropagation();">
-                                                <i class="bi bi-download me-1"></i>İndir
+                                            <a href="{{ dergi.pdf_dosyasi.url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill" title="PDF Aç" onclick="event.stopPropagation();">
+                                                <i class="bi bi-file-earmark-pdf me-1"></i>PDF
                                             </a>
                                         {% endif %}
                                     </div>

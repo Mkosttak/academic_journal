@@ -100,7 +100,7 @@ class DergiSayisi(models.Model):
         """Kapak görseli varsa onun URL'ini, yoksa varsayılan kapak URL'ini döndürür"""
         if self.kapak_gorseli:
             return self.kapak_gorseli.url
-        return '/static/images/default-journal-cover.svg'  # Varsayılan kapak
+        return '/static/images/default-journal-cover.png'  # Varsayılan kapak
         
     @property 
     def makale_sayisi(self):

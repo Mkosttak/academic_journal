@@ -19,7 +19,7 @@
             <!-- Profile/Buttons (right) -->
             <div class="d-flex align-items-center gap-2 me-1">
                 <!-- Search Button (Mobile) -->
-                <button type="button" class="btn btn-outline-primary rounded-circle p-2 d-lg-none" data-bs-toggle="modal" data-bs-target="#searchModal" title="Ara">
+                <button type="button" class="search-btn-mobile d-lg-none" data-bs-toggle="modal" data-bs-target="#searchModal" title="Ara">
                     <i class="bi bi-search"></i>
                 </button>
                 {% if user.is_authenticated %}
@@ -91,30 +91,30 @@
             </div>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1 gap-2 mobile-menu-list">
                 <li class="nav-item">
-                    <a href="{% url 'anasayfa' %}" class="nav-link {% if request.resolver_match.url_name == 'anasayfa' %}active fw-bold{% endif %}">
+                    <a href="{% url 'anasayfa' %}" class="nav-link nav-link-modern {% if request.resolver_match.url_name == 'anasayfa' %}active fw-bold{% endif %}">
                         <i class="bi bi-house-door me-1"></i>Ana Sayfa
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{% url 'sayilar' %}" class="nav-link {% if request.resolver_match.url_name == 'sayilar' or request.resolver_match.url_name == 'sayi_makaleleri' %}active fw-bold{% endif %}">
+                    <a href="{% url 'sayilar' %}" class="nav-link nav-link-modern {% if request.resolver_match.url_name == 'sayilar' or request.resolver_match.url_name == 'sayi_makaleleri' %}active fw-bold{% endif %}">
                         <i class="bi bi-collection me-1"></i>Sayılar
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{% url 'makale_ekle_redirect' %}" class="nav-link {% if request.resolver_match.url_name == 'makale_ekle' or request.resolver_match.url_name == 'makale_ekle_redirect' %}active fw-bold{% endif %}">
+                    <a href="{% url 'makale_ekle_redirect' %}" class="nav-link nav-link-modern {% if request.resolver_match.url_name == 'makale_ekle' or request.resolver_match.url_name == 'makale_ekle_redirect' %}active fw-bold{% endif %}">
                         <i class="bi bi-plus-circle me-1"></i>Makale Ekle
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{% url 'editorler' %}" class="nav-link {% if request.resolver_match.url_name == 'editorler' %}active fw-bold{% endif %}">
+                    <a href="{% url 'editorler' %}" class="nav-link nav-link-modern {% if request.resolver_match.url_name == 'editorler' %}active fw-bold{% endif %}">
                         <i class="bi bi-people me-1"></i>Editörler
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'iletisim' %}" class="nav-link {% if request.resolver_match.url_name == 'iletisim' %}active fw-bold{% endif %}">
+                    <a href="{% url 'iletisim' %}" class="nav-link nav-link-modern {% if request.resolver_match.url_name == 'iletisim' %}active fw-bold{% endif %}">
                         <i class="bi bi-envelope me-1"></i>İletişim
                     </a>
                 </li>
@@ -122,7 +122,7 @@
                 {% if user.is_authenticated %}
                     {% if user.is_editor and not user.is_superuser %}
                     <li class="nav-item">
-                        <a href="{% url 'dashboard:editor_panel' %}" class="nav-link nav-link-red {% if request.resolver_match.url_name == 'editor_panel' %}active fw-bold{% endif %}">
+                        <a href="{% url 'dashboard:editor_panel' %}" class="nav-link nav-link-modern nav-link-red {% if request.resolver_match.url_name == 'editor_panel' %}active fw-bold{% endif %}">
                             <i class="bi bi-pencil-square me-1"></i>Editör Makaleleri
                         </a>
                     </li>
@@ -130,7 +130,7 @@
                     
                     {% if user.is_superuser %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle nav-link-red" href="#" id="adminDropdown"
+                        <a class="nav-link nav-link-modern nav-link-red dropdown-toggle" href="#" id="adminDropdown"
                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-gear me-1"></i>Admin İşlemleri
                         </a>
@@ -161,7 +161,7 @@
             <ul class="navbar-nav align-items-center gap-lg-1 gap-2 d-none d-lg-flex">
                 <!-- Search Button (Desktop) -->
                 <li class="nav-item me-2">
-                    <button type="button" class="btn btn-outline-primary rounded-circle p-2" data-bs-toggle="modal" data-bs-target="#searchModal" title="Ara">
+                    <button type="button" class="search-btn" data-bs-toggle="modal" data-bs-target="#searchModal" title="Ara">
                         <i class="bi bi-search"></i>
                     </button>
                 </li>
@@ -244,7 +244,7 @@
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header border-0 pb-2">
                 <h5 class="modal-title fw-bold" id="searchModalLabel">
-                    <i class="bi bi-search me-2 text-primary"></i>Arama
+                    <i class="bi bi-search me-2 search-modal-icon"></i>Arama
                     <small class="text-muted ms-2 fw-normal d-none d-md-inline">
                         <kbd class="small">Ctrl</kbd> + <kbd class="small">K</kbd>
                     </small>
@@ -255,13 +255,13 @@
                 <form method="get" action="{% url 'sayilar' %}" class="mb-4">
                     <div class="input-group input-group-lg">
                         <span class="input-group-text bg-light border-end-0 rounded-start-pill">
-                            <i class="bi bi-search text-muted"></i>
+                            <i class="bi bi-search search-input-icon"></i>
                         </span>
                         <input type="text" name="q" class="form-control border-start-0 rounded-end-pill shadow-none" 
                                placeholder="Makale başlığı, yazar adı veya anahtar kelime..." 
                                autocomplete="off" id="searchInput">
                         <button type="submit" class="btn btn-primary rounded-pill ms-2 px-4">
-                            <i class="bi bi-search me-1"></i>Ara
+                            <i class="bi bi-search me-1 search-modal-icon"></i>Ara
                         </button>
                     </div>
                 </form>
@@ -278,4 +278,4 @@
             </div>
         </div>
     </div>
-</div> 
+</div>

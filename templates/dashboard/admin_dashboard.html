@@ -91,9 +91,7 @@
     .stat-icon.users { background: linear-gradient(135deg, #667eea, #764ba2); }
     .stat-icon.articles { background: linear-gradient(135deg, #f093fb, #f5576c); }
     .stat-icon.journals { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-    .stat-icon.contents { background: linear-gradient(135deg, #43e97b, #38f9d7); }
     .stat-icon.messages { background: linear-gradient(135deg, #fa709a, #fee140); }
-    .stat-icon.published { background: linear-gradient(135deg, #a8edea, #fed6e3); }
     
     .stat-value {
         font-size: 2.5rem;
@@ -360,18 +358,6 @@
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value">{{ toplam_icerik }}</div>
-                        <div class="stat-label">Dergi İçeriği</div>
-                        <div class="stat-change positive">+{{ bu_ay_icerik }} bu ay</div>
-                    </div>
-                    <div class="stat-icon contents">
-                        <i class="bi bi-file-earmark-richtext"></i>
-                    </div>
-                </div>
-            </div>
 
             <div class="stat-card">
                 <div class="stat-header">
@@ -385,17 +371,6 @@
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value">{{ yayindaki_makaleler }}</div>
-                        <div class="stat-label">Yayındaki Makale</div>
-                    </div>
-                    <div class="stat-icon published">
-                        <i class="bi bi-journal-check"></i>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Hızlı Erişim ve Son Aktiviteler -->
@@ -418,15 +393,6 @@
                             </div>
                         </a>
 
-                        <a href="{% url 'dashboard:admin_dergi_icerik_list' %}" class="quick-action">
-                            <div class="quick-action-icon">
-                                <i class="bi bi-file-earmark-richtext"></i>
-                            </div>
-                            <div class="quick-action-content">
-                                <div class="quick-action-title">Dergi İçerikleri</div>
-                                <div class="quick-action-desc">İçerikleri yönet</div>
-                            </div>
-                        </a>
 
                         <a href="{% url 'dashboard:editor_panel' %}" class="quick-action">
                             <div class="quick-action-icon">
@@ -455,6 +421,36 @@
                             <div class="quick-action-content">
                                 <div class="quick-action-title">Mesajlar</div>
                                 <div class="quick-action-desc">İletişim mesajları</div>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'dashboard:admin_dergi_icerik_list' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-file-earmark-richtext"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Dergi İçerikleri</div>
+                                <div class="quick-action-desc">İçerikleri yönet</div>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'dashboard:admin_dergisayisi_create' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-plus-circle"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Yeni Dergi Sayısı</div>
+                                <div class="quick-action-desc">Dergi sayısı ekle</div>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'dashboard:admin_dergi_icerik_create' %}" class="quick-action">
+                            <div class="quick-action-icon">
+                                <i class="bi bi-file-plus"></i>
+                            </div>
+                            <div class="quick-action-content">
+                                <div class="quick-action-title">Yeni Dergi İçeriği</div>
+                                <div class="quick-action-desc">İçerik ekle</div>
                             </div>
                         </a>
 
@@ -488,6 +484,9 @@
                                     <div class="recent-item-title">{{ makale.baslik|truncatechars:50 }}</div>
                                     <div class="recent-item-meta">
                                         {% if makale.dergi_sayisi %}{{ makale.dergi_sayisi.get_tarih_format }} • {% endif %}{{ makale.olusturulma_tarihi|timesince }} önce
+                                        <span class="badge {% if makale.goster_makaleler_sayfasinda %}bg-success{% else %}bg-warning text-dark{% endif %} ms-2">
+                                            {% if makale.goster_makaleler_sayfasinda %}Yayında{% else %}Taslak{% endif %}
+                                        </span>
                                     </div>
                                 </div>
                             </a>
@@ -502,38 +501,8 @@
             </div>
         </div>
 
-        <!-- Son İçerikler ve En Çok Okunanlar -->
-        <div class="content-grid">
-            <!-- Son Dergi İçerikleri -->
-            <div class="content-card">
-                <div class="card-header">
-                    <i class="bi bi-file-earmark-richtext"></i>
-                    Son Dergi İçerikleri
-                </div>
-                <div class="card-body">
-                    <div class="recent-list">
-                        {% for icerik in son_icerikler %}
-                            <a href="{% url 'dashboard:admin_dergi_icerik_detail' icerik.slug %}" class="recent-item">
-                                <div class="recent-item-icon">
-                                    <i class="bi bi-file-earmark-richtext"></i>
-                                </div>
-                                <div class="recent-item-content">
-                                    <div class="recent-item-title">{{ icerik.baslik|truncatechars:50 }}</div>
-                                    <div class="recent-item-meta">
-                                        {{ icerik.dergi_sayisi.get_tarih_format }} • {{ icerik.olusturulma_tarihi|timesince }} önce
-                                    </div>
-                                </div>
-                            </a>
-                        {% empty %}
-                            <div class="empty-state">
-                                <i class="bi bi-file-earmark-x"></i>
-                                <div>Henüz içerik eklenmemiş</div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
+        <!-- En Çok Okunanlar -->
+        <div class="content-grid" style="grid-template-columns: 1fr;">
             <!-- En Çok Okunan Makaleler -->
             <div class="content-card">
                 <div class="card-header">
@@ -629,4 +598,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock %} 

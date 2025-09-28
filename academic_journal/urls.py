@@ -19,9 +19,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from articles.views import MakaleDetailView
+from .admin import admin_site
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
     
     # Kullanıcı işlemleriyle ilgili URL'leri 'users' uygulamasına yönlendir
     path('kullanici/', include('users.urls')),

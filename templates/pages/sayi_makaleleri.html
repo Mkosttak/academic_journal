@@ -392,7 +392,7 @@
                         </div>
                         <div class="makale-title">
                             <h3>
-                                <a href="{% url 'makale_detail_with_journal' dergi_sayisi.slug item.obj.slug %}">{{ item.obj.baslik }}</a>
+                                <a href="{% url 'makale_detail' item.obj.slug %}">{{ item.obj.baslik }}</a>
                             </h3>
                             <div class="makale-yazarlar">
                                 <i class="bi bi-person me-1"></i>{{ item.obj.get_yazarlar_display }}
@@ -435,12 +435,14 @@
                             <h3>
                                 {{ item.obj.baslik }}
                             </h3>
-                            {% if item.obj.yazarlar.exists %}
                             <div class="makale-yazarlar">
                                 <i class="bi bi-person me-1"></i>
-                                {{ item.obj.get_yazarlar_display }}
+                                {% if item.obj.yazarlar.exists %}
+                                    {{ item.obj.get_yazarlar_display }}
+                                {% else %}
+                                    <span class="text-muted">Yazar bilgisi yok</span>
+                                {% endif %}
                             </div>
-                            {% endif %}
                         </div>
                     </div>
                     

@@ -173,6 +173,15 @@
             if (searchModal && searchInput) {
                 searchModal.addEventListener('shown.bs.modal', function () {
                     searchInput.focus();
+                    // Body'ye blur class ekle ve scroll'u engelle
+                    document.body.classList.add('modal-blur');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                // Modal kapandığında blur class'ı kaldır ve scroll'u geri aç
+                searchModal.addEventListener('hidden.bs.modal', function () {
+                    document.body.classList.remove('modal-blur');
+                    document.body.style.overflow = '';
                 });
                 
                 // Submit form on Enter key
