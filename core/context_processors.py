@@ -1,31 +1,46 @@
-# core/context_processors.py
-
-from articles.models import Makale
-from pages.models import IletisimFormu
+from django.conf import settings
 
 def notification_context(request):
-    if not request.user.is_authenticated:
-        return {}
-
-    user = request.user
+    """
+    Navbar bildirim sayısı için context processor
+    """
     context = {}
-
-    # Admin için okunmamış iletişim formu mesajları
-    if user.is_superuser:
-        context['unread_messages_count'] = IletisimFormu.objects.filter(cevaplandi=False).count()
-    else:
-        context['unread_messages_count'] = 0
-
-    # Admin ve Editör için taslak makaleler
-    if user.is_superuser or user.is_editor:
-        context['draft_articles_count'] = Makale.objects.filter(goster_makaleler_sayfasinda=False).count()
-    else:
-        context['draft_articles_count'] = 0
+    
+    if request.user.is_authenticated:
+        # Admin notu sayısı
+        if hasattr(request.user, 'yazar_profili'):
+            try:
+                from articles.models import Makale
+                unread_notes = Makale.objects.filter(
+                    yazarlar=request.user.yazar_profili,
+                    admin_notu_okundu=False,
+                    admin_notu__isnull=False
+                ).count()
+                context['unread_admin_notes'] = unread_notes
+            except:
+                context['unread_admin_notes'] = 0
+        else:
+            context['unread_admin_notes'] = 0
         
-    # Her kullanıcı için sadece kendi makalelerinde yeni admin notu varsa say
-    context['unread_notes_count'] = Makale.objects.filter(
-        yazarlar__user_hesabi=user,
-        admin_notu_okundu=False
-    ).exclude(admin_notu__isnull=True).exclude(admin_notu__exact='').count()
-
+        # Cevap bekleyen mesaj sayısı (sadece admin için)
+        if request.user.is_superuser:
+            try:
+                from pages.models import IletisimFormu
+                unread_messages = IletisimFormu.objects.filter(cevaplandi=False).count()
+                context['unread_messages'] = unread_messages
+            except:
+                context['unread_messages'] = 0
+        else:
+            context['unread_messages'] = 0
+    
     return context
+
+def site_settings(request):
+    """
+    Site genel ayarları için context processor
+    """
+    return {
+        'SITE_NAME': 'Akademik Dergi',
+        'SITE_DESCRIPTION': 'Akademik araştırma ve makale yayınlama platformu',
+        'SITE_URL': request.build_absolute_uri('/'),
+    }

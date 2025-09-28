@@ -17,27 +17,77 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form method="get" class="row g-3">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label class="form-label">Arama</label>
                         <input type="text" name="q" class="form-control" placeholder="Başlık, yazar ara..." value="{{ request.GET.q }}">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label">Durum</label>
                         <select name="status" class="form-select">
                             <option value="">Tümü</option>
-                            <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>Yayında</option>
+                            <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>Yayınlandı</option>
                             <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>Taslak</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <label class="form-label">Yıl</label>
+                        <select name="yil" class="form-select">
+                            <option value="">Tüm Yıllar</option>
+                            {% for yil in yillar %}
+                                <option value="{{ yil }}" {% if request.GET.yil == yil|stringformat:"s" %}selected{% endif %}>{{ yil }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Ay</label>
+                        <select name="ay" class="form-select">
+                            <option value="">Tüm Aylar</option>
+                            {% for ay_no, ay_adi in aylar %}
+                                <option value="{{ ay_no }}" {% if request.GET.ay == ay_no|stringformat:"s" %}selected{% endif %}>{{ ay_adi }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                         <label class="form-label">&nbsp;</label>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-outline-primary">
-                                <i class="bi bi-search me-1"></i>Filtrele
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-search me-1"></i>Filtrele
+                        </button>
                     </div>
                 </form>
+                
+                <!-- Aktif Filtreler -->
+                {% if request.GET.q or request.GET.status or request.GET.yil or request.GET.ay %}
+                    <div class="mt-3">
+                        <div class="d-flex flex-wrap gap-2 align-items-center">
+                            <span class="text-muted small">Aktif Filtreler:</span>
+                            {% if request.GET.q %}
+                                <span class="badge bg-primary">Arama: "{{ request.GET.q }}"</span>
+                            {% endif %}
+                            {% if request.GET.status %}
+                                {% if request.GET.status == 'published' %}
+                                    <span class="badge bg-info">Durum: Yayınlandı</span>
+                                {% elif request.GET.status == 'draft' %}
+                                    <span class="badge bg-info">Durum: Taslak</span>
+                                {% else %}
+                                    <span class="badge bg-info">Durum: {{ request.GET.status|title }}</span>
+                                {% endif %}
+                            {% endif %}
+                            {% if request.GET.yil %}
+                                <span class="badge bg-success">Yıl: {{ request.GET.yil }}</span>
+                            {% endif %}
+                            {% if request.GET.ay %}
+                                {% for ay_no, ay_adi in aylar %}
+                                    {% if request.GET.ay == ay_no|stringformat:"s" %}
+                                        <span class="badge bg-warning text-dark">Ay: {{ ay_adi }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <a href="{% url 'dashboard:admin_dergi_icerik_list' %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-x-circle me-1"></i>Tümünü Temizle
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
@@ -126,10 +176,10 @@
                             <ul class="pagination justify-content-center">
                                 {% if page_obj.has_previous %}
                                     <li class="page-item">
-                                        <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">İlk</a>
+                                        <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.yil %}&yil={{ request.GET.yil }}{% endif %}{% if request.GET.ay %}&ay={{ request.GET.ay }}{% endif %}">İlk</a>
                                     </li>
                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Önceki</a>
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.yil %}&yil={{ request.GET.yil }}{% endif %}{% if request.GET.ay %}&ay={{ request.GET.ay }}{% endif %}">Önceki</a>
                                     </li>
                                 {% endif %}
 
@@ -139,10 +189,10 @@
 
                                 {% if page_obj.has_next %}
                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Sonraki</a>
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.yil %}&yil={{ request.GET.yil }}{% endif %}{% if request.GET.ay %}&ay={{ request.GET.ay }}{% endif %}">Sonraki</a>
                                     </li>
                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Son</a>
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.icerik_turu %}&icerik_turu={{ request.GET.icerik_turu }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.yil %}&yil={{ request.GET.yil }}{% endif %}{% if request.GET.ay %}&ay={{ request.GET.ay }}{% endif %}">Son</a>
                                     </li>
                                 {% endif %}
                             </ul>
@@ -162,4 +212,29 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form submit animasyonu
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function() {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Filtreleniyor...';
+                submitBtn.disabled = true;
+                
+                // 2 saniye sonra eski haline döndür (eğer sayfa yüklenmemişse)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

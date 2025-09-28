@@ -47,8 +47,13 @@ class MakaleListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        # Sadece yayında olan makaleleri göster
-        queryset = Makale.objects.filter(goster_makaleler_sayfasinda=True)
+        # Sadece yayında olan makaleleri göster - Optimized queries
+        queryset = Makale.objects.filter(
+            goster_makaleler_sayfasinda=True
+        ).select_related('dergi_sayisi').prefetch_related(
+            'yazarlar',
+            'yazarlar__user_hesabi'  # Yazar kullanıcı bilgilerini de prefetch et
+        )
         
         # Filtreleme ve Arama
         dergi_no = self.request.GET.get('dergi')
@@ -70,7 +75,10 @@ class MakaleListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['dergi_sayilari'] = DergiSayisi.objects.all()
+        # Dergi sayılarını da optimize et
+        context['dergi_sayilari'] = DergiSayisi.objects.filter(
+            yayinlandi_mi=True
+        ).select_related().prefetch_related('makaleler').order_by('-yil', '-ay', '-sayi_no')
         return context
 
 class MakaleDetailView(DetailView):
@@ -135,9 +143,11 @@ class MakalelerimView(LoginRequiredMixin, ListView):
         user = self.request.user
         try:
             yazar = user.yazar_profili
-            return Makale.objects.filter(yazarlar=yazar)
+            return Makale.objects.filter(yazarlar=yazar).select_related(
+                'dergi_sayisi'
+            ).prefetch_related('yazarlar', 'yazarlar__user_hesabi')
         except Exception:
-            return Makale.objects
+            return Makale.objects.select_related('dergi_sayisi').prefetch_related('yazarlar')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -242,7 +252,6 @@ def check_author_view(request):
 
 @login_required
 @require_POST
-@csrf_exempt
 def update_article_order(request):
     """
     Makalelerin ve içeriklerin sıralamasını günceller. Sadece admin kullanıcıları kullanabilir.

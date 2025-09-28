@@ -1,132 +1,162 @@
 {% extends 'base.html' %}
-{% block title %}{{ makale.baslik }}{% endblock %}
+{% load static %}
+{% load core_seo %}
+
+{% block title %}{{ makale.baslik }} - Akademik Dergi{% endblock %}
+
+{% block description %}{{ makale.aciklama|truncatewords:30 }}{% endblock %}
+
+{% block keywords %}{{ makale.anahtar_kelimeler }}, akademik makale, araştırma{% endblock %}
+
+{% block author %}{{ makale.get_yazarlar_display }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block og_image %}{% if makale.dergi_sayisi.kapak_gorseli %}{{ makale.dergi_sayisi.kapak_gorseli.url }}{% else %}{{ makale.dergi_sayisi.get_kapak_url }}{% endif %}{% endblock %}
+
+{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "{{ makale.baslik|escapejs }}",
+  "description": "{{ makale.aciklama|truncatewords:30|escapejs }}",
+  "author": [
+    {% for yazar in makale.yazarlar.all %}
+    {
+      "@type": "Person",
+      "name": "{{ yazar.isim_soyisim|escapejs }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "Akademik Dergi",
+    "url": "{{ request.build_absolute_uri:'/' }}"
+  },
+  "datePublished": "{{ makale.olusturulma_tarihi|date:'c' }}",
+  "dateModified": "{{ makale.guncellenme_tarihi|date:'c' }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ request.build_absolute_uri }}"
+  }{% if makale.dergi_sayisi %},
+  "isPartOf": {
+    "@type": "PublicationIssue",
+    "issueNumber": "{{ makale.dergi_sayisi.sayi_no }}",
+    "datePublished": "{{ makale.dergi_sayisi.yil }}-{{ makale.dergi_sayisi.ay|stringformat:'02d' }}-01"
+  }{% endif %}
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container py-4">
-    
-    <!-- Geri Dön Butonu -->
-    <div class="mb-4">
-        <a href="{% url 'sayi_makaleleri' makale.dergi_sayisi.slug %}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-2"></i>{{ makale.dergi_sayisi.get_tarih_format }} Sayısına Dön
-        </a>
-    </div>
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'anasayfa' %}">Ana Sayfa</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'sayilar' %}">Sayılar</a></li>
+            {% if makale.dergi_sayisi %}
+            <li class="breadcrumb-item"><a href="{% url 'sayi_makaleleri' makale.dergi_sayisi.slug %}">{{ makale.dergi_sayisi.get_tarih_format }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ makale.baslik|truncatechars:50 }}</li>
+        </ol>
+    </nav>
 
-    {% if makale.admin_notu %}
-    <div class="d-flex align-items-center bg-warning bg-opacity-10 text-warning-emphasis rounded-3 p-3 mt-2 mb-4 small border-start border-warning border-4">
-        <i class="bi bi-info-circle-fill me-2 fs-5"></i>
-        <strong>Editör Notu:</strong> <span class="ms-2">{{ makale.admin_notu }}</span>
-    </div>
-    {% endif %}
-
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-4 p-md-5 position-relative">
-            <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
-                <div>
-                    <h1 class="h2 mb-3">{{ makale.baslik }}</h1>
-                </div>
-                {% if request.user.is_authenticated %}
-                    {% if request.user in makale.yazarlar.all or request.user.is_editor or request.user.is_superuser %}
-                        <div class="dropdown makale-menu-dropdown" style="position: absolute; top: 1.5rem; right: 2rem; z-index: 2;">
-                            <button class="btn btn-light rounded-circle" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                <li>
-                                    {% if request.user.is_superuser %}
-                                        <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" class="dropdown-item">
-                                            <i class="bi bi-pencil-square me-2"></i>Düzenle (Admin)
-                                        </a>
-                                    {% elif request.user.is_editor %}
-                                        {% if request.user not in makale.yazarlar.all %}
-                                            <a href="{% url 'dashboard:editor_makale_duzenle' makale.slug %}" class="dropdown-item">
-                                                <i class="bi bi-pencil-square me-2"></i>Düzenle (Editör)
-                                            </a>
-                                        {% else %}
-                                            <a href="{% url 'makale_duzenle' makale.slug %}" class="dropdown-item">
-                                                <i class="bi bi-pencil-square me-2"></i>Düzenle
-                                            </a>
-                                        {% endif %}
-                                    {% else %}
-                                        <a href="{% url 'makale_duzenle' makale.slug %}" class="dropdown-item">
-                                            <i class="bi bi-pencil-square me-2"></i>Düzenle
-                                        </a>
-                                    {% endif %}
-                                </li>
-                                {% if request.user.is_superuser %}
-                                <li>
-                                    <a href="#" class="dropdown-item text-danger" onclick="return confirm('Bu makale silinsin mi?');">
-                                        <i class="bi bi-trash me-2"></i>Sil
-                                    </a>
-                                </li>
-                                {% endif %}
-                            </ul>
+    <!-- Article Header -->
+    <div class="row">
+        <div class="col-lg-8">
+            <article class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <header class="mb-4">
+                        <h1 class="h2 mb-3">{{ makale.baslik }}</h1>
+                        
+                        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="bi bi-person me-2"></i>
+                                <span>Yazarlar: {{ makale.get_yazarlar_display }}</span>
+                            </div>
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="bi bi-calendar3 me-2"></i>
+                                <span>{{ makale.olusturulma_tarihi|date:"d M Y" }}</span>
+                            </div>
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="bi bi-eye me-2"></i>
+                                <span>{{ makale.goruntulenme_sayisi }} görüntülenme</span>
+                            </div>
                         </div>
-                    {% endif %}
-                {% endif %}
-            </div>
 
-            <div class="mb-4">
-                <h5 class="d-flex align-items-center mb-3">
-                    <i class="bi bi-person me-2 text-primary"></i>
-                    Yazarlar
-                </h5>
-                <div class="d-flex align-items-center flex-wrap gap-2">
-                    {% for yazar in makale.yazarlar.all %}
-                        {% if yazar.user_hesabi %}
-                            <a href="{% url 'kullanici_profili' yazar.user_hesabi.username %}" class="badge bg-primary text-white text-decoration-none px-3 py-2 rounded-pill">
-                                <i class="bi bi-person me-1"></i>
-                                {{ yazar.isim_soyisim }}
-                            </a>
-                        {% else %}
-                            <span class="badge bg-secondary text-white px-3 py-2 rounded-pill">
-                                <i class="bi bi-person me-1"></i>
-                                {{ yazar.isim_soyisim }}
-                            </span>
+                        {% if makale.anahtar_kelimeler %}
+                        <div class="mb-3">
+                            <span class="text-muted me-2">Anahtar Kelimeler:</span>
+                            {% for keyword in makale.get_keywords_list %}
+                                <span class="badge bg-primary me-1">{{ keyword }}</span>
+                            {% endfor %}
+                        </div>
                         {% endif %}
-                    {% empty %}
-                        <span class="text-muted">Yazar bilgisi yok</span>
-                    {% endfor %}
-                </div>
-            </div>
+                    </header>
 
-            {% if makale.get_keywords_list %}
-            <div class="mb-4">
-                <h5 class="d-flex align-items-center mb-3">
-                    <i class="bi bi-key me-2 text-primary"></i>
-                    Anahtar Kelimeler
-                </h5>
-                <div class="d-flex flex-wrap gap-2">
-                    {% for keyword in makale.get_keywords_list %}
-                        <span class="badge bg-info text-white px-3 py-2 rounded-pill">
-                            {{ keyword }}
-                        </span>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            <div class="mb-4">
-                <h5 class="d-flex align-items-center mb-3">
-                    <i class="bi bi-file-text me-2 text-primary"></i>
-                    Açıklama
-                </h5>
-                <div class="card bg-light border-0 rounded-3">
-                    <div class="card-body">
-                        {{ makale.aciklama|linebreaks }}
+                    <!-- Article Description -->
+                    <div class="mb-4">
+                        <h3 class="h5 mb-3">Özet</h3>
+                        <p class="lead">{{ makale.aciklama }}</p>
                     </div>
+
+                    <!-- PDF Download -->
+                    <div class="mb-4">
+                        <a href="{{ makale.pdf_dosyasi.url }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                            <i class="bi bi-download me-2"></i>PDF İndir
+                        </a>
+                    </div>
+
+                    <!-- Admin Note -->
+                    {% if makale.admin_notu and user.is_authenticated %}
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">Editör Notu</h6>
+                        <p class="mb-0">{{ makale.admin_notu }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </article>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Dergi Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    {% if makale.dergi_sayisi %}
+                    <div class="text-center mb-3">
+                        <img src="{% if makale.dergi_sayisi.kapak_gorseli %}{{ makale.dergi_sayisi.kapak_gorseli.url }}{% else %}{{ makale.dergi_sayisi.get_kapak_url }}{% endif %}" 
+                             alt="{{ makale.dergi_sayisi.get_tarih_format }}" 
+                             class="img-fluid rounded" 
+                             style="max-height: 200px;">
+                    </div>
+                    <h6>{{ makale.dergi_sayisi.get_tarih_format }}</h6>
+                    <p class="text-muted">{{ makale.dergi_sayisi.get_cilt_sayi_format }}</p>
+                    <a href="{% url 'sayi_makaleleri' makale.dergi_sayisi.slug %}" class="btn btn-outline-primary btn-sm">
+                        Dergi Sayısını İncele
+                    </a>
+                    {% else %}
+                    <p class="text-muted">Bu makale henüz bir dergi sayısına atanmamış.</p>
+                    {% endif %}
                 </div>
             </div>
 
-            {% if makale.pdf_dosyasi %}
-            <div class="text-center mt-4 pt-4 border-top">
-                <a href="{{ makale.pdf_dosyasi.url }}" target="_blank" class="btn btn-danger rounded-pill px-4 py-2 shadow-sm">
-                    <i class="bi bi-file-earmark-pdf-fill me-2"></i>PDF'i Görüntüle
-                </a>
+            <!-- Related Articles -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">İlgili Makaleler</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">İlgili makaleler burada görünecek.</p>
+                </div>
             </div>
-            {% endif %}
-
         </div>
     </div>
 </div>
-
-
-{% endblock %} 
+{% endblock %}

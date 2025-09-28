@@ -2,13 +2,15 @@ import os
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 from uuid import uuid4
+from core.security import validate_image_file, validate_pdf_file, secure_filename, scan_file_for_malware
+from core.image_utils import optimize_image, create_thumbnail
 
 # Benzersiz dosya yolu için yardımcı fonksiyon
 def unique_file_path(instance, filename, subfolder):
-    ext = filename.split('.')[-1]
-    filename = f"{uuid4()}.{ext}"
-    return os.path.join(subfolder, filename)
+    secure_name = secure_filename(filename)
+    return os.path.join(subfolder, secure_name)
 
 def article_pdf_path(instance, filename):
     return unique_file_path(instance, filename, 'article_pdfs')
@@ -39,8 +41,8 @@ class DergiSayisi(models.Model):
     cilt = models.PositiveIntegerField(verbose_name="Cilt", help_text="Örn: 1", default=1)
     sayi_no = models.PositiveIntegerField(verbose_name="Sayı No", help_text="Örn: 1", default=1)
     slug = models.SlugField(max_length=255, unique=True, blank=True, help_text="Bu alan otomatik oluşturulur.")
-    kapak_gorseli = models.ImageField(upload_to=journal_cover_path, verbose_name="Kapak Görseli", null=True, blank=True, help_text="Yüklenmezse varsayılan kapak kullanılır")
-    pdf_dosyasi = models.FileField(upload_to=journal_pdf_path, verbose_name="Dergi PDF Dosyası", null=True, blank=True, help_text="Derginin tam halini içeren PDF dosyası (isteğe bağlı)")
+    kapak_gorseli = models.ImageField(upload_to=journal_cover_path, verbose_name="Kapak Görseli", null=True, blank=True, help_text="Yüklenmezse varsayılan kapak kullanılır", validators=[validate_image_file])
+    pdf_dosyasi = models.FileField(upload_to=journal_pdf_path, verbose_name="Dergi PDF Dosyası", null=True, blank=True, help_text="Derginin tam halini içeren PDF dosyası (isteğe bağlı)", validators=[validate_pdf_file])
     yayinlandi_mi = models.BooleanField(default=False, verbose_name="Yayınlandı mı?")
     yayinlanma_secimi = models.CharField(max_length=20, choices=YAYINLANMA_SECENEKLERI, default='yayinlanmasin', verbose_name="Yayınlanma Seçimi")
     olusturulma_tarihi = models.DateTimeField(auto_now_add=True)
@@ -54,6 +56,16 @@ class DergiSayisi(models.Model):
     def save(self, *args, **kwargs):
         from django.utils import timezone
         from django.utils.text import slugify
+        
+        # Resim optimizasyonu
+        if self.kapak_gorseli:
+            optimized_image = optimize_image(self.kapak_gorseli, max_width=1200, max_height=1200)
+            if optimized_image:
+                self.kapak_gorseli.save(
+                    self.kapak_gorseli.name,
+                    optimized_image,
+                    save=False
+                )
         
         # Slug oluştur: 2025-Eylul formatında (Türkçe karakterleri dönüştür)
         if not self.slug:
@@ -134,7 +146,7 @@ class Makale(models.Model):
     baslik = models.CharField(max_length=255, verbose_name="Başlık")
     slug = models.SlugField(max_length=255, unique=True, blank=True, help_text="Bu alan otomatik oluşturulur.")
     aciklama = models.TextField(verbose_name="Açıklama/Özet")
-    pdf_dosyasi = models.FileField(upload_to=article_pdf_path, verbose_name="PDF Dosyası")
+    pdf_dosyasi = models.FileField(upload_to=article_pdf_path, verbose_name="PDF Dosyası", validators=[validate_pdf_file])
     anahtar_kelimeler = models.CharField(max_length=255, verbose_name="Anahtar Kelimeler", help_text="Kelimeleri virgül (,) ile ayırınız.", blank=True)
     yazarlar = models.ManyToManyField(Yazar, related_name='makaleler', verbose_name="Yazarlar")
     dergi_sayisi = models.ForeignKey(DergiSayisi, on_delete=models.SET_NULL, null=True, blank=True, related_name='makaleler', verbose_name="Dergi Sayısı")
@@ -206,7 +218,7 @@ class DergiIcerigi(models.Model):
     icerik_turu = models.CharField(max_length=20, choices=ICERIK_TURLERI, verbose_name="İçerik Türü")
     aciklama = models.TextField(verbose_name="Açıklama/Özet", blank=True, null=True)
     icerik = models.TextField(verbose_name="İçerik", help_text="Ana içerik metni")
-    pdf_dosyasi = models.FileField(upload_to=content_pdf_path, verbose_name="PDF Dosyası", null=True, blank=True)
+    pdf_dosyasi = models.FileField(upload_to=content_pdf_path, verbose_name="PDF Dosyası", null=True, blank=True, validators=[validate_pdf_file])
     anahtar_kelimeler = models.CharField(max_length=255, verbose_name="Anahtar Kelimeler", help_text="Kelimeleri virgül (,) ile ayırınız.", blank=True)
     yazarlar = models.ManyToManyField(Yazar, related_name='dergi_icerikleri', verbose_name="Yazarlar", blank=True)
     dergi_sayisi = models.ForeignKey(DergiSayisi, on_delete=models.SET_NULL, null=True, blank=True, related_name='icerikler', verbose_name="Dergi Sayısı")

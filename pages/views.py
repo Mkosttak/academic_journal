@@ -92,12 +92,12 @@ class SayilarListView(ListView):
         # Seçili yılı al (URL parametresinden)
         secili_yil = self.request.GET.get('yil')
         
-        # Dergi sayılarını yıl ve ay'a göre sırala (sadece yayınlanmış olanlar)
+        # Dergi sayılarını yıl ve ay'a göre sırala (sadece yayınlanmış olanlar) - Optimized
         dergi_sayilari = DergiSayisi.objects.filter(
             yayinlandi_mi=True
         ).annotate(
             yayindaki_makale_sayisi=Count('makaleler', filter=Q(makaleler__goster_makaleler_sayfasinda=True))
-        ).order_by('-yil', '-ay', '-sayi_no')
+        ).select_related().prefetch_related('makaleler').order_by('-yil', '-ay', '-sayi_no')
         
         # Yıllara göre gruplama (sidebar için)
         yillar = defaultdict(list)

@@ -3,6 +3,7 @@ import json
 from django import forms
 from .models import Makale, DergiSayisi, Yazar
 from users.models import User
+from core.validators import CustomValidators
 
 # --- YENİ MİXİN ---
 class YazarFormMixin:
@@ -140,11 +141,23 @@ class MakaleForm(YazarFormMixin, forms.ModelForm):
     def clean_pdf_dosyasi(self):
         pdf = self.cleaned_data.get('pdf_dosyasi')
         if pdf:
-            if not pdf.name.lower().endswith('.pdf'):
-                raise forms.ValidationError('Sadece PDF dosyası yükleyebilirsiniz.')
-            if pdf.size > 10 * 1024 * 1024:
-                raise forms.ValidationError('PDF dosyası en fazla 10MB olabilir.')
+            # Gelişmiş PDF validasyonu
+            CustomValidators.validate_pdf_file(pdf)
         return pdf
+    
+    def clean_baslik(self):
+        baslik = self.cleaned_data.get('baslik')
+        if baslik:
+            # İçerik güvenliği kontrolü
+            CustomValidators.validate_content_safety(baslik)
+        return baslik
+    
+    def clean_aciklama(self):
+        aciklama = self.cleaned_data.get('aciklama')
+        if aciklama:
+            # İçerik güvenliği kontrolü
+            CustomValidators.validate_content_safety(aciklama)
+        return aciklama
 
 # --- EDİTÖR MAKALE FORMU ---
 class EditorMakaleForm(YazarFormMixin, forms.ModelForm):
@@ -192,8 +205,20 @@ class EditorMakaleForm(YazarFormMixin, forms.ModelForm):
     def clean_pdf_dosyasi(self):
         pdf = self.cleaned_data.get('pdf_dosyasi')
         if pdf:
-            if not pdf.name.lower().endswith('.pdf'):
-                raise forms.ValidationError('Sadece PDF dosyası yükleyebilirsiniz.')
-            if pdf.size > 10 * 1024 * 1024:
-                raise forms.ValidationError('PDF dosyası en fazla 10MB olabilir.')
+            # Gelişmiş PDF validasyonu
+            CustomValidators.validate_pdf_file(pdf)
         return pdf
+    
+    def clean_baslik(self):
+        baslik = self.cleaned_data.get('baslik')
+        if baslik:
+            # İçerik güvenliği kontrolü
+            CustomValidators.validate_content_safety(baslik)
+        return baslik
+    
+    def clean_aciklama(self):
+        aciklama = self.cleaned_data.get('aciklama')
+        if aciklama:
+            # İçerik güvenliği kontrolü
+            CustomValidators.validate_content_safety(aciklama)
+        return aciklama

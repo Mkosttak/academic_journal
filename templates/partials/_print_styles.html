@@ -1,0 +1,113 @@
+<!-- Print Styles -->
+<style media="print">
+    /* Print-specific styles */
+    @page {
+        margin: 1cm;
+        size: A4;
+    }
+    
+    body {
+        font-size: 12pt;
+        line-height: 1.4;
+        color: #000;
+        background: #fff;
+    }
+    
+    /* Hide navigation and non-essential elements */
+    .navbar,
+    .btn,
+    .btn-group,
+    .dropdown,
+    .modal,
+    .toast,
+    .alert,
+    .card-header,
+    .sidebar,
+    .footer,
+    #btn-back-to-top,
+    .loading-spinner,
+    .loading-overlay {
+        display: none !important;
+    }
+    
+    /* Show only main content */
+    .container,
+    .main-content,
+    .card-body {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    /* Typography for print */
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        color: #000 !important;
+    }
+    
+    p, li {
+        orphans: 3;
+        widows: 3;
+    }
+    
+    /* Links */
+    a {
+        color: #000 !important;
+        text-decoration: underline !important;
+    }
+    
+    a[href]:after {
+        content: " (" attr(href) ")";
+        font-size: 10pt;
+        color: #666;
+    }
+    
+    /* Images */
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid;
+    }
+    
+    /* Tables */
+    table {
+        page-break-inside: avoid;
+        border-collapse: collapse;
+    }
+    
+    th, td {
+        border: 1px solid #000;
+        padding: 4pt;
+    }
+    
+    /* Page breaks */
+    .page-break {
+        page-break-before: always;
+    }
+    
+    /* Article specific */
+    .article-meta {
+        border-bottom: 1px solid #000;
+        padding-bottom: 10pt;
+        margin-bottom: 15pt;
+    }
+    
+    .article-content {
+        font-size: 11pt;
+        line-height: 1.5;
+    }
+    
+    /* Hide interactive elements */
+    .form-control,
+    .form-select,
+    input,
+    textarea,
+    select {
+        border: 1px solid #000 !important;
+        background: #fff !important;
+    }
+}
+</style>

@@ -18,8 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
 from articles.views import MakaleDetailView
 from .admin import admin_site
+from core.sitemaps import StaticViewSitemap, MakaleSitemap, DergiSayisiSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'makaleler': MakaleSitemap,
+    'dergi_sayilari': DergiSayisiSitemap,
+}
 
 urlpatterns = [
     path('admin/', admin_site.urls),
@@ -37,6 +45,13 @@ urlpatterns = [
     # 'pages' uygulamasındaki URL'leri ana dizinden çağıracağımız için path boş olacak
     path('dashboard/', include('dashboard.urls')),
     path('', include('pages.urls')),
+    
+    # SEO URLs
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', include('core.urls')),
+    
+    # Monitoring URLs
+    path('monitoring/', include('core.urls')),
 ]
 
 # Geliştirme ortamında medya dosyalarını sunmak için

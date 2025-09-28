@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import User
+from core.validators import CustomValidators
 
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(
@@ -21,6 +22,30 @@ class CustomUserCreationForm(UserCreationForm):
         help_texts = {
             'username': None,
         }
+    
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if username:
+            CustomValidators.validate_username(username)
+        return username
+    
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if first_name:
+            CustomValidators.validate_name(first_name)
+        return first_name
+    
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        if last_name:
+            CustomValidators.validate_name(last_name)
+        return last_name
+    
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+        if password1:
+            CustomValidators.validate_password_strength(password1)
+        return password1
 
 class CustomUserChangeForm(forms.ModelForm):
     # Parolayı bu formda gösterme
@@ -54,18 +79,33 @@ class CustomUserChangeForm(forms.ModelForm):
 
     def clean_profile_resmi(self):
         img = self.cleaned_data.get('profile_resmi')
-        if img and hasattr(img, 'content_type'):
-            if not img.content_type.startswith('image/'):
-                raise forms.ValidationError('Sadece resim dosyası yükleyebilirsiniz.')
-            if img.size > 5 * 1024 * 1024:
-                raise forms.ValidationError('Profil resmi en fazla 5MB olabilir.')
+        if img:
+            # Gelişmiş resim validasyonu
+            CustomValidators.validate_image_file(img)
         return img
 
     def clean_resume(self):
         resume = self.cleaned_data.get('resume')
         if resume:
-            if not resume.name.lower().endswith('.pdf'):
-                raise forms.ValidationError('Sadece PDF dosyası yükleyebilirsiniz.')
-            if resume.size > 10 * 1024 * 1024:
-                raise forms.ValidationError('Özgeçmiş dosyası en fazla 10MB olabilir.')
+            # Gelişmiş PDF validasyonu
+            CustomValidators.validate_pdf_file(resume)
         return resume
+    
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if first_name:
+            CustomValidators.validate_name(first_name)
+        return first_name
+    
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        if last_name:
+            CustomValidators.validate_name(last_name)
+        return last_name
+    
+    def clean_biyografi(self):
+        biyografi = self.cleaned_data.get('biyografi')
+        if biyografi:
+            # İçerik güvenliği kontrolü
+            CustomValidators.validate_content_safety(biyografi)
+        return biyografi

@@ -231,6 +231,16 @@ class AdminDergiIcerigiListView(AdminRequiredMixin, ListView):
             queryset = queryset.filter(yayinda_mi=True)
         elif status == 'draft':
             queryset = queryset.filter(yayinda_mi=False)
+        
+        # Tarih filtreleme
+        yil = self.request.GET.get('yil')
+        if yil:
+            queryset = queryset.filter(dergi_sayisi__yil=yil)
+            
+        ay = self.request.GET.get('ay')
+        if ay:
+            queryset = queryset.filter(dergi_sayisi__ay=ay)
+            
             
         # Arama
         query = self.request.GET.get('q')
@@ -246,6 +256,15 @@ class AdminDergiIcerigiListView(AdminRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['icerik_turleri'] = DergiIcerigi.ICERIK_TURLERI
+        
+        # Yıl seçenekleri (mevcut yıllar)
+        from articles.models import DergiSayisi
+        yillar = DergiSayisi.objects.values_list('yil', flat=True).distinct().order_by('-yil')
+        context['yillar'] = yillar
+        
+        # Ay seçenekleri
+        context['aylar'] = DergiSayisi.AYLAR
+        
         return context
 
 

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sunucu Hatası - 500{% endblock %}
+
+{% block description %}Sunucuda bir hata oluştu. Lütfen daha sonra tekrar deneyin.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <div class="error-page">
+                <h1 class="display-1 text-danger">500</h1>
+                <h2 class="h3 mb-3">Sunucu Hatası</h2>
+                <p class="lead mb-4">
+                    Sunucumuzda geçici bir sorun yaşanıyor. 
+                    Lütfen birkaç dakika sonra tekrar deneyin.
+                </p>
+                
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Önemli:</strong> Bu hata kaydedildi ve teknik ekibimiz bilgilendirildi.
+                </div>
+                
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                    <a href="{% url 'anasayfa' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-house me-2"></i>Ana Sayfaya Dön
+                    </a>
+                    <button onclick="window.location.reload()" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Sayfayı Yenile
+                    </button>
+                </div>
+                
+                <div class="mt-5">
+                    <h4 class="h5 mb-3">Yardım</h4>
+                    <p class="text-muted">
+                        Sorun devam ederse lütfen bizimle iletişime geçin:
+                    </p>
+                    <a href="{% url 'iletisim' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-envelope me-2"></i>İletişim
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    padding: 3rem 0;
+}
+
+.display-1 {
+    font-size: 8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .display-1 {
+        font-size: 6rem;
+    }
+}
+</style>
+{% endblock %}

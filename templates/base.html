@@ -5,6 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Akademik Dergi{% endblock %}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{% block description %}Akademik araştırma ve makale yayınlama platformu. En son akademik makaleleri keşfedin ve kendi çalışmalarınızı yayınlayın.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}akademik dergi, makale, araştırma, bilim, akademi{% endblock %}">
+    <meta name="author" content="{% block author %}Akademik Dergi{% endblock %}">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}Akademik Dergi{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Akademik araştırma ve makale yayınlama platformu.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'images/logo.png' %}{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="Akademik Dergi">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Akademik Dergi{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Akademik araştırma ve makale yayınlama platformu.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/logo.png' %}{% endblock %}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    
+    <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -13,6 +39,13 @@
     <link rel="icon" type="image/x-icon" href="{% static 'images/logos/favicon.ico' %}">
     <link rel="icon" type="image/png" href="{% static 'images/logos/favicon.png' %}">
     <link rel="apple-touch-icon" href="{% static 'images/logos/favicon.png' %}">
+    
+    <!-- Schema.org JSON-LD -->
+    {% block structured_data %}{% endblock %}
+    
+    <!-- Print Styles -->
+    {% include 'partials/_print_styles.html' %}
+    
     {% block extra_css %}{% endblock %}
     <style>
         body {
@@ -173,14 +206,12 @@
             if (searchModal && searchInput) {
                 searchModal.addEventListener('shown.bs.modal', function () {
                     searchInput.focus();
-                    // Body'ye blur class ekle ve scroll'u engelle
-                    document.body.classList.add('modal-blur');
+                    // Sadece scroll'u engelle, blur efekti kaldırıldı
                     document.body.style.overflow = 'hidden';
                 });
                 
-                // Modal kapandığında blur class'ı kaldır ve scroll'u geri aç
+                // Modal kapandığında scroll'u geri aç
                 searchModal.addEventListener('hidden.bs.modal', function () {
-                    document.body.classList.remove('modal-blur');
                     document.body.style.overflow = '';
                 });
                 

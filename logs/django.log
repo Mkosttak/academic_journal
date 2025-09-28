@@ -1,0 +1,799 @@
+INFO 2025-09-28 13:35:18,506 autoreload 21012 11560 Watching for file changes with StatReloader
+INFO 2025-09-28 13:35:18,852 autoreload 2816 2220 Watching for file changes with StatReloader
+INFO 2025-09-28 13:35:35,223 basehttp 21012 5588 "GET / HTTP/1.1" 200 29923
+INFO 2025-09-28 13:35:35,331 basehttp 21012 5588 "GET /static/css/style.css HTTP/1.1" 200 38162
+INFO 2025-09-28 13:35:35,332 basehttp 21012 16304 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 13:35:35,334 basehttp 21012 9860 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 13:35:35,671 basehttp 21012 9860 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 13:35:35,677 basehttp 21012 16304 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 13:35:37,530 basehttp 21012 5588 "GET /kullanici/giris/ HTTP/1.1" 200 37393
+INFO 2025-09-28 13:35:40,400 basehttp 21012 5588 "POST /kullanici/giris/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:35:40,412 basehttp 21012 5588 "GET / HTTP/1.1" 200 35405
+INFO 2025-09-28 13:35:43,491 basehttp 21012 5588 "GET /dashboard/ HTTP/1.1" 200 61717
+WARNING 2025-09-28 13:35:50,109 log 21012 5588 Not Found: /monitoring
+WARNING 2025-09-28 13:35:50,110 basehttp 21012 5588 "GET /monitoring HTTP/1.1" 404 4741
+WARNING 2025-09-28 13:35:50,162 log 21012 5588 Not Found: /favicon.ico
+WARNING 2025-09-28 13:35:50,163 basehttp 21012 5588 "GET /favicon.ico HTTP/1.1" 404 4744
+WARNING 2025-09-28 13:36:09,432 log 21012 5588 Not Found: /monitoring
+WARNING 2025-09-28 13:36:09,433 basehttp 21012 5588 "GET /monitoring HTTP/1.1" 404 4741
+INFO 2025-09-28 13:37:38,206 basehttp 21012 5588 "GET /editorler/ HTTP/1.1" 200 40771
+INFO 2025-09-28 13:37:38,237 basehttp 21012 5588 "GET /static/js/style.js HTTP/1.1" 304 0
+INFO 2025-09-28 13:37:42,695 basehttp 21012 5588 "GET /makaleler/makale-ekle/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:37:42,716 basehttp 21012 5588 "GET /makaleler/yeni-ekle/ HTTP/1.1" 200 49726
+INFO 2025-09-28 13:37:44,838 autoreload 2816 2220 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\urls.py changed, reloading.
+INFO 2025-09-28 13:37:44,898 autoreload 21012 11560 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\urls.py changed, reloading.
+INFO 2025-09-28 13:37:45,481 autoreload 3932 8936 Watching for file changes with StatReloader
+INFO 2025-09-28 13:37:45,505 autoreload 6136 21800 Watching for file changes with StatReloader
+INFO 2025-09-28 13:37:48,866 basehttp 3932 3064 "POST /makaleler/yeni-ekle/ HTTP/1.1" 200 50846
+INFO 2025-09-28 13:37:54,612 basehttp 3932 3064 "GET /sayilar/ HTTP/1.1" 200 45749
+INFO 2025-09-28 13:37:54,637 basehttp 3932 3064 "GET /static/images/default-journal-cover.png HTTP/1.1" 304 0
+INFO 2025-09-28 13:37:56,906 autoreload 6136 21800 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:37:56,983 autoreload 3932 8936 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:37:57,537 autoreload 22096 2444 Watching for file changes with StatReloader
+INFO 2025-09-28 13:37:57,633 autoreload 9036 6168 Watching for file changes with StatReloader
+INFO 2025-09-28 13:37:57,725 basehttp 22096 18460 "GET / HTTP/1.1" 200 34614
+INFO 2025-09-28 13:38:00,577 basehttp 22096 18460 "GET /kullanici/kayit-ol/ HTTP/1.1" 200 45665
+INFO 2025-09-28 13:38:02,877 autoreload 22096 2444 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:38:02,966 autoreload 9036 6168 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:38:03,462 autoreload 18876 15248 Watching for file changes with StatReloader
+INFO 2025-09-28 13:38:03,521 autoreload 18360 11796 Watching for file changes with StatReloader
+INFO 2025-09-28 13:38:03,754 basehttp 18876 5868 "GET / HTTP/1.1" 200 34614
+INFO 2025-09-28 13:38:07,811 autoreload 18876 15248 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:38:07,844 autoreload 18360 11796 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:38:08,465 autoreload 5588 12452 Watching for file changes with StatReloader
+INFO 2025-09-28 13:38:08,473 autoreload 22356 14732 Watching for file changes with StatReloader
+INFO 2025-09-28 13:38:34,073 autoreload 5588 12452 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 13:38:34,158 autoreload 22356 14732 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 13:38:34,520 autoreload 456 5152 Watching for file changes with StatReloader
+INFO 2025-09-28 13:38:34,616 autoreload 8752 15600 Watching for file changes with StatReloader
+INFO 2025-09-28 13:38:37,863 basehttp 456 22700 "GET /monitoring HTTP/1.1" 301 0
+INFO 2025-09-28 13:38:38,921 basehttp 456 22724 "GET /monitoring/ HTTP/1.1" 200 40426
+INFO 2025-09-28 13:38:38,943 basehttp 456 22724 "GET /static/js/style.js HTTP/1.1" 304 0
+ERROR 2025-09-28 13:38:50,726 log 456 22724 Internal Server Error: /monitoring/api/
+ERROR 2025-09-28 13:38:50,727 basehttp 456 22724 "GET /monitoring/api/ HTTP/1.1" 500 113
+INFO 2025-09-28 13:39:03,109 basehttp 456 22724 "GET /admin HTTP/1.1" 301 0
+INFO 2025-09-28 13:39:03,135 basehttp 456 10688 "GET /admin/ HTTP/1.1" 200 11282
+INFO 2025-09-28 13:39:03,191 basehttp 456 10688 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-09-28 13:39:03,199 basehttp 456 10688 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-09-28 13:39:11,466 autoreload 8752 15600 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:39:11,628 autoreload 456 5152 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:39:12,099 autoreload 12536 14332 Watching for file changes with StatReloader
+INFO 2025-09-28 13:39:12,206 autoreload 14176 21968 Watching for file changes with StatReloader
+INFO 2025-09-28 13:39:15,421 autoreload 12536 14332 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:39:15,524 autoreload 14176 21968 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:39:15,951 autoreload 22172 21756 Watching for file changes with StatReloader
+INFO 2025-09-28 13:39:16,004 autoreload 16144 12128 Watching for file changes with StatReloader
+INFO 2025-09-28 13:39:26,929 basehttp 22172 5476 "GET /monitoring/test/ HTTP/1.1" 200 402
+INFO 2025-09-28 13:39:31,256 basehttp 22172 5476 - Broken pipe from ('127.0.0.1', 53928)
+ERROR 2025-09-28 13:39:48,932 log 3004 1096 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\http\request.py", line 191, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+INFO 2025-09-28 13:39:55,910 basehttp 22172 6696 "GET /monitoring/ HTTP/1.1" 200 40426
+INFO 2025-09-28 13:39:55,939 basehttp 22172 6696 "GET /static/js/style.js HTTP/1.1" 304 0
+INFO 2025-09-28 13:40:05,481 autoreload 22172 21756 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 13:40:06,010 autoreload 16144 12128 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 13:40:06,185 autoreload 8984 22416 Watching for file changes with StatReloader
+INFO 2025-09-28 13:40:06,548 autoreload 4348 2928 Watching for file changes with StatReloader
+INFO 2025-09-28 13:40:16,224 basehttp 8984 3092 "POST /kullanici/cikis/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:40:16,262 basehttp 8984 3092 "GET / HTTP/1.1" 200 29923
+INFO 2025-09-28 13:40:20,596 basehttp 8984 3092 "GET /monitoring/ HTTP/1.1" 200 35735
+INFO 2025-09-28 13:40:29,014 autoreload 8984 22416 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:40:29,170 autoreload 4348 2928 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:40:29,610 autoreload 20200 11532 Watching for file changes with StatReloader
+INFO 2025-09-28 13:40:29,748 autoreload 7708 22724 Watching for file changes with StatReloader
+INFO 2025-09-28 13:40:33,803 autoreload 20200 11532 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:40:33,948 autoreload 7708 22724 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:40:34,350 autoreload 21840 11240 Watching for file changes with StatReloader
+INFO 2025-09-28 13:40:34,465 autoreload 10872 11028 Watching for file changes with StatReloader
+INFO 2025-09-28 13:40:47,787 autoreload 21840 11240 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\urls.py changed, reloading.
+INFO 2025-09-28 13:40:47,895 autoreload 10872 11028 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 13:40:48,295 autoreload 6160 9520 Watching for file changes with StatReloader
+INFO 2025-09-28 13:40:48,411 autoreload 2796 2532 Watching for file changes with StatReloader
+ERROR 2025-09-28 13:40:51,413 log 6160 3096 Internal Server Error: /monitoring/api/
+ERROR 2025-09-28 13:40:51,414 basehttp 6160 3096 "GET /monitoring/api/ HTTP/1.1" 500 113
+INFO 2025-09-28 13:41:07,899 autoreload 6160 9520 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:41:07,928 autoreload 2796 2532 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:41:08,454 autoreload 10296 3520 Watching for file changes with StatReloader
+INFO 2025-09-28 13:41:08,456 autoreload 19248 6108 Watching for file changes with StatReloader
+INFO 2025-09-28 13:41:10,816 autoreload 10296 3520 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:41:10,823 autoreload 19248 6108 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:41:11,501 autoreload 8784 23216 Watching for file changes with StatReloader
+INFO 2025-09-28 13:41:11,501 autoreload 22900 2004 Watching for file changes with StatReloader
+INFO 2025-09-28 13:41:20,646 basehttp 22900 9676 "GET /monitoring/api/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:41:20,669 basehttp 22900 9676 "GET /admin/login/?next=/monitoring/api/ HTTP/1.1" 200 4247
+INFO 2025-09-28 13:41:21,993 autoreload 8784 23216 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\admin.py changed, reloading.
+INFO 2025-09-28 13:41:22,083 autoreload 22900 2004 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\admin.py changed, reloading.
+INFO 2025-09-28 13:41:22,435 autoreload 22332 19328 Watching for file changes with StatReloader
+INFO 2025-09-28 13:41:22,517 autoreload 6100 9344 Watching for file changes with StatReloader
+INFO 2025-09-28 13:42:27,155 autoreload 22332 19328 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\admin.py changed, reloading.
+INFO 2025-09-28 13:42:27,227 autoreload 6100 9344 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\admin.py changed, reloading.
+INFO 2025-09-28 13:42:27,622 autoreload 15608 11044 Watching for file changes with StatReloader
+INFO 2025-09-28 13:42:27,692 autoreload 20256 5092 Watching for file changes with StatReloader
+INFO 2025-09-28 13:42:31,922 autoreload 15608 11044 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\admin.py changed, reloading.
+INFO 2025-09-28 13:42:31,979 autoreload 20256 5092 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\admin.py changed, reloading.
+INFO 2025-09-28 13:42:32,376 autoreload 9772 18360 Watching for file changes with StatReloader
+INFO 2025-09-28 13:42:32,435 autoreload 1568 8708 Watching for file changes with StatReloader
+INFO 2025-09-28 13:42:56,931 autoreload 9772 18360 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:42:56,986 autoreload 1568 8708 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:42:57,368 autoreload 20244 6692 Watching for file changes with StatReloader
+INFO 2025-09-28 13:42:57,426 autoreload 10936 5508 Watching for file changes with StatReloader
+INFO 2025-09-28 13:43:11,605 basehttp 20244 3224 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:43:11,627 basehttp 20244 3224 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4229
+INFO 2025-09-28 13:43:11,770 basehttp 20244 21756 "GET /static/admin/css/login.css HTTP/1.1" 200 951
+INFO 2025-09-28 13:43:11,770 basehttp 20244 14924 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-09-28 13:43:11,775 basehttp 20244 1544 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-09-28 13:43:11,777 basehttp 20244 10064 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-09-28 13:43:11,777 basehttp 20244 3224 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-09-28 13:43:11,778 basehttp 20244 12068 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-09-28 13:43:11,807 basehttp 20244 12068 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+WARNING 2025-09-28 13:43:11,832 log 20244 12068 Not Found: /favicon.ico
+WARNING 2025-09-28 13:43:11,833 basehttp 20244 12068 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 13:43:17,254 basehttp 20244 12068 "GET / HTTP/1.1" 200 29923
+INFO 2025-09-28 13:43:17,279 basehttp 20244 10064 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 13:43:17,279 basehttp 20244 12068 "GET /static/css/style.css HTTP/1.1" 200 38162
+INFO 2025-09-28 13:43:17,281 basehttp 20244 3224 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 13:43:17,685 basehttp 20244 3224 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 13:43:17,691 basehttp 20244 12068 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 13:43:19,964 basehttp 20244 10064 "GET /monitoring/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:43:19,969 basehttp 20244 10064 "GET /admin/login/?next=/monitoring/ HTTP/1.1" 200 4239
+WARNING 2025-09-28 13:43:20,026 log 20244 10064 Not Found: /favicon.ico
+WARNING 2025-09-28 13:43:20,026 basehttp 20244 10064 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 13:43:33,896 basehttp 20244 10064 "POST /admin/login/?next=/monitoring/ HTTP/1.1" 302 0
+WARNING 2025-09-28 13:43:34,541 log 20244 1544 Forbidden (CSRF token from POST incorrect.): /admin/login/
+WARNING 2025-09-28 13:43:34,541 basehttp 20244 1544 "POST /admin/login/?next=/monitoring/ HTTP/1.1" 403 2515
+INFO 2025-09-28 13:43:34,909 basehttp 20244 10064 - Broken pipe from ('127.0.0.1', 54071)
+INFO 2025-09-28 13:43:47,337 basehttp 20244 1544 "GET /admin/login/?next=/monitoring/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:43:47,357 basehttp 20244 1544 "GET /admin/ HTTP/1.1" 200 11282
+INFO 2025-09-28 13:43:50,112 basehttp 20244 1544 "GET /admin/ HTTP/1.1" 200 11282
+INFO 2025-09-28 13:43:50,136 basehttp 20244 14924 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-09-28 13:43:50,136 basehttp 20244 21756 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-09-28 13:43:50,136 basehttp 20244 1544 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-09-28 13:43:50,137 basehttp 20244 23228 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-09-28 13:43:50,138 basehttp 20244 22556 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-09-28 13:43:50,138 basehttp 20244 19912 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-09-28 13:43:50,140 basehttp 20244 19912 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-09-28 13:43:50,144 basehttp 20244 22556 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-09-28 13:43:50,145 basehttp 20244 19912 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+WARNING 2025-09-28 13:43:50,155 log 20244 19912 Not Found: /favicon.ico
+WARNING 2025-09-28 13:43:50,156 basehttp 20244 19912 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 13:43:53,488 basehttp 20244 19912 "GET /admin/ HTTP/1.1" 200 11282
+INFO 2025-09-28 13:43:57,217 basehttp 20244 19912 "GET / HTTP/1.1" 200 34614
+WARNING 2025-09-28 13:43:57,258 basehttp 20244 19912 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 13:43:57,265 basehttp 20244 22556 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 13:44:03,588 autoreload 10936 5508 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:44:03,823 autoreload 20244 6692 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:44:04,181 autoreload 23248 10652 Watching for file changes with StatReloader
+INFO 2025-09-28 13:44:04,364 autoreload 11500 15984 Watching for file changes with StatReloader
+INFO 2025-09-28 13:44:05,501 basehttp 23248 6876 "GET /monitoring/ HTTP/1.1" 200 40426
+INFO 2025-09-28 13:44:06,649 autoreload 11500 15984 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:44:07,302 autoreload 22436 8936 Watching for file changes with StatReloader
+INFO 2025-09-28 13:44:07,545 autoreload 23248 10652 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:44:08,061 autoreload 22824 8400 Watching for file changes with StatReloader
+INFO 2025-09-28 13:44:17,052 basehttp 22436 3468 "GET /monitoring/ HTTP/1.1" 200 40426
+INFO 2025-09-28 13:44:22,072 basehttp 22436 3468 "GET /admin/ HTTP/1.1" 200 11282
+INFO 2025-09-28 13:44:29,602 basehttp 22436 3468 "GET / HTTP/1.1" 200 34614
+INFO 2025-09-28 13:44:31,652 basehttp 22436 3468 "GET /admin/ HTTP/1.1" 200 11282
+INFO 2025-09-28 13:44:41,545 basehttp 22436 3468 "POST /admin/logout/ HTTP/1.1" 200 3656
+INFO 2025-09-28 13:44:43,967 basehttp 22436 3468 "GET / HTTP/1.1" 200 29923
+INFO 2025-09-28 13:44:47,565 basehttp 22436 3468 "GET /monitoring/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:44:47,579 basehttp 22436 3468 "GET /admin/login/?next=/monitoring/ HTTP/1.1" 200 4239
+ERROR 2025-09-28 13:44:57,739 log 8316 6060 Internal Server Error: /admin/monitoring/
+Traceback (most recent call last):
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\defaulttags.py", line 1035, in find_library
+    return parser.libraries[name]
+           ~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'humanize'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\admin.py", line 98, in monitoring_view
+    return render(request, 'admin/monitoring_dashboard.html', context)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\defaulttags.py", line 1097, in load
+    lib = find_library(parser, name)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\defaulttags.py", line 1037, in find_library
+    raise TemplateSyntaxError(
+    ...<5 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: 'humanize' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+core_seo
+debugger_tags
+form_tags
+highlighting
+i18n
+indent_text
+l10n
+log
+static
+syntax_color
+tz
+widget_tweaks
+widont
+INFO 2025-09-28 13:45:37,056 autoreload 22824 8400 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:45:37,484 autoreload 22436 8936 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:45:37,584 autoreload 17472 12536 Watching for file changes with StatReloader
+INFO 2025-09-28 13:45:38,016 autoreload 1500 2444 Watching for file changes with StatReloader
+INFO 2025-09-28 13:46:00,162 basehttp 17472 23148 "GET /monitoring/api/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:46:00,188 basehttp 17472 23148 "GET /admin/login/?next=/monitoring/api/ HTTP/1.1" 200 4247
+INFO 2025-09-28 13:46:02,084 basehttp 17472 23148 "GET / HTTP/1.1" 200 29923
+INFO 2025-09-28 13:46:02,117 basehttp 17472 23148 "GET /static/js/style.js HTTP/1.1" 304 0
+INFO 2025-09-28 13:46:07,592 autoreload 17472 12536 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:46:07,803 autoreload 1500 2444 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:46:08,206 autoreload 12584 7824 Watching for file changes with StatReloader
+INFO 2025-09-28 13:46:08,366 autoreload 22836 21704 Watching for file changes with StatReloader
+INFO 2025-09-28 13:46:17,570 autoreload 12584 7824 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:46:17,733 autoreload 22836 21704 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:46:18,138 autoreload 21624 12784 Watching for file changes with StatReloader
+INFO 2025-09-28 13:46:18,271 autoreload 14724 14476 Watching for file changes with StatReloader
+INFO 2025-09-28 13:46:26,498 autoreload 21624 12784 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:46:26,677 autoreload 14724 14476 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:46:27,158 autoreload 22848 21208 Watching for file changes with StatReloader
+INFO 2025-09-28 13:46:27,279 autoreload 20980 13160 Watching for file changes with StatReloader
+INFO 2025-09-28 13:46:31,515 autoreload 22848 21208 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\admin.py changed, reloading.
+INFO 2025-09-28 13:46:31,625 autoreload 20980 13160 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\admin.py changed, reloading.
+INFO 2025-09-28 13:46:32,107 autoreload 3044 22236 Watching for file changes with StatReloader
+INFO 2025-09-28 13:46:32,163 autoreload 14464 1888 Watching for file changes with StatReloader
+WARNING 2025-09-28 13:46:43,865 log 3724 9344 Forbidden: /monitoring/
+WARNING 2025-09-28 13:46:59,342 log 22348 22372 Forbidden: /monitoring/api/
+INFO 2025-09-28 13:47:19,179 autoreload 14464 1888 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\admin.py changed, reloading.
+INFO 2025-09-28 13:47:19,255 autoreload 3044 22236 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\admin.py changed, reloading.
+INFO 2025-09-28 13:47:19,644 autoreload 5344 21756 Watching for file changes with StatReloader
+INFO 2025-09-28 13:47:19,716 autoreload 10792 18800 Watching for file changes with StatReloader
+INFO 2025-09-28 13:48:18,405 basehttp 5344 8188 "GET / HTTP/1.1" 200 29923
+INFO 2025-09-28 13:48:18,488 basehttp 5344 12204 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 13:48:18,489 basehttp 5344 21972 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+INFO 2025-09-28 13:48:18,491 basehttp 5344 8188 "GET /static/css/style.css HTTP/1.1" 200 38162
+WARNING 2025-09-28 13:48:18,826 basehttp 5344 8188 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 13:48:18,833 basehttp 5344 21972 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+ERROR 2025-09-28 13:48:22,574 log 5344 12204 Internal Server Error: /monitoring/
+Traceback (most recent call last):
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\urls\base.py", line 81, in reverse
+    extra, resolver = resolver.namespace_dict[ns]
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^
+KeyError: 'users'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 134, in dispatch
+    return self.handle_no_permission()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py", line 24, in handle_no_permission
+    return render(self.request, '403.html', status=403)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\urls\base.py", line 92, in reverse
+    raise NoReverseMatch("%s is not a registered namespace" % key)
+django.urls.exceptions.NoReverseMatch: 'users' is not a registered namespace
+ERROR 2025-09-28 13:48:22,579 basehttp 5344 12204 "GET /monitoring/ HTTP/1.1" 500 190184
+WARNING 2025-09-28 13:48:22,669 log 5344 12204 Not Found: /favicon.ico
+WARNING 2025-09-28 13:48:22,669 basehttp 5344 12204 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 13:48:40,389 autoreload 5344 21756 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:48:40,399 autoreload 10792 18800 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:48:40,861 autoreload 8352 3120 Watching for file changes with StatReloader
+INFO 2025-09-28 13:48:40,879 autoreload 11944 22180 Watching for file changes with StatReloader
+WARNING 2025-09-28 13:48:57,995 log 6560 9336 Forbidden: /monitoring/
+WARNING 2025-09-28 13:49:16,986 log 8352 23216 Forbidden: /monitoring/
+WARNING 2025-09-28 13:49:16,987 basehttp 8352 23216 "GET /monitoring/ HTTP/1.1" 403 30531
+INFO 2025-09-28 13:49:17,076 basehttp 8352 6308 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 13:49:17,080 basehttp 8352 23216 "GET /static/css/style.css HTTP/1.1" 200 38162
+INFO 2025-09-28 13:49:17,081 basehttp 8352 14480 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 13:49:17,395 basehttp 8352 23216 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 13:49:17,419 basehttp 8352 14480 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 13:49:23,881 autoreload 8352 3120 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:49:23,925 autoreload 11944 22180 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\views.py changed, reloading.
+INFO 2025-09-28 13:49:24,396 autoreload 8868 3632 Watching for file changes with StatReloader
+INFO 2025-09-28 13:49:24,424 autoreload 20276 5504 Watching for file changes with StatReloader
+INFO 2025-09-28 13:49:26,099 basehttp 8868 10976 "GET /kullanici/giris/ HTTP/1.1" 200 37393
+INFO 2025-09-28 13:49:29,233 basehttp 8868 10976 "POST /kullanici/giris/ HTTP/1.1" 200 37398
+INFO 2025-09-28 13:49:34,280 basehttp 8868 10976 "POST /kullanici/giris/ HTTP/1.1" 200 37398
+INFO 2025-09-28 13:49:37,980 basehttp 8868 10976 "POST /kullanici/giris/ HTTP/1.1" 200 37398
+INFO 2025-09-28 13:49:38,067 basehttp 8868 10976 "GET /static/css/style.css HTTP/1.1" 200 38162
+INFO 2025-09-28 13:49:38,070 basehttp 8868 400 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 13:49:38,073 basehttp 8868 17892 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 13:49:38,187 basehttp 8868 17892 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 13:49:38,194 basehttp 8868 400 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 13:49:38,871 basehttp 8868 10976 "GET /sayilar/ HTTP/1.1" 200 41058
+INFO 2025-09-28 13:49:38,898 basehttp 8868 10976 "GET /static/images/default-journal-cover.png HTTP/1.1" 304 0
+INFO 2025-09-28 13:49:40,140 basehttp 8868 10976 "GET /kullanici/giris/ HTTP/1.1" 200 37393
+INFO 2025-09-28 13:49:42,829 basehttp 8868 10976 "POST /kullanici/giris/ HTTP/1.1" 200 37398
+INFO 2025-09-28 13:52:49,637 basehttp 8868 10976 "GET /kullanici/giris/ HTTP/1.1" 200 37393
+INFO 2025-09-28 13:52:49,671 basehttp 8868 10976 "GET /static/js/style.js HTTP/1.1" 304 0
+INFO 2025-09-28 13:52:50,544 autoreload 8868 3632 C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py changed, reloading.
+INFO 2025-09-28 13:52:50,859 autoreload 20276 5504 C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py changed, reloading.
+INFO 2025-09-28 13:52:51,277 autoreload 2324 9484 Watching for file changes with StatReloader
+INFO 2025-09-28 13:52:51,507 autoreload 20372 22900 Watching for file changes with StatReloader
+INFO 2025-09-28 13:52:53,023 basehttp 2324 15240 "POST /kullanici/giris/ HTTP/1.1" 200 38223
+INFO 2025-09-28 13:52:58,714 basehttp 2324 15240 "POST /kullanici/giris/ HTTP/1.1" 200 38223
+INFO 2025-09-28 13:53:04,203 basehttp 2324 15240 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:53:04,219 basehttp 2324 15240 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4229
+WARNING 2025-09-28 13:53:04,267 log 2324 15240 Not Found: /favicon.ico
+WARNING 2025-09-28 13:53:04,267 basehttp 2324 15240 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 13:53:06,451 basehttp 2324 15240 "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4436
+INFO 2025-09-28 13:53:48,821 autoreload 2324 9484 C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py changed, reloading.
+INFO 2025-09-28 13:53:48,828 autoreload 20372 22900 C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py changed, reloading.
+INFO 2025-09-28 13:53:49,322 autoreload 19912 8440 Watching for file changes with StatReloader
+INFO 2025-09-28 13:53:49,323 autoreload 5828 20420 Watching for file changes with StatReloader
+INFO 2025-09-28 13:53:50,659 basehttp 19912 11248 "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4439
+INFO 2025-09-28 13:54:09,654 basehttp 19912 11248 "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4436
+INFO 2025-09-28 13:54:09,796 basehttp 19912 11248 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-09-28 13:54:09,803 basehttp 19912 19192 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-09-28 13:54:09,806 basehttp 19912 6900 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-09-28 13:54:09,808 basehttp 19912 9596 "GET /static/admin/css/login.css HTTP/1.1" 200 951
+INFO 2025-09-28 13:54:09,808 basehttp 19912 10456 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-09-28 13:54:09,809 basehttp 19912 5444 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-09-28 13:54:09,811 basehttp 19912 10456 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+WARNING 2025-09-28 13:54:09,860 log 19912 10456 Not Found: /favicon.ico
+WARNING 2025-09-28 13:54:09,860 basehttp 19912 10456 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 13:54:11,786 basehttp 19912 10456 "GET / HTTP/1.1" 200 29923
+WARNING 2025-09-28 13:54:11,907 basehttp 19912 10456 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 13:54:11,913 basehttp 19912 5444 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 13:54:14,035 basehttp 19912 9596 "GET /kullanici/giris/ HTTP/1.1" 200 37827
+INFO 2025-09-28 13:54:16,650 basehttp 19912 9596 "POST /kullanici/giris/ HTTP/1.1" 200 39738
+INFO 2025-09-28 13:56:10,466 basehttp 19912 9596 "POST /kullanici/giris/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:56:10,477 basehttp 19912 9596 "GET / HTTP/1.1" 200 35406
+INFO 2025-09-28 13:56:10,499 basehttp 19912 9596 "GET /static/js/style.js HTTP/1.1" 304 0
+INFO 2025-09-28 13:56:18,785 basehttp 19912 9596 "GET /monitoring/ HTTP/1.1" 200 40821
+INFO 2025-09-28 13:56:22,357 basehttp 19912 9596 "GET /kullanici/my-profil/ HTTP/1.1" 200 35852
+INFO 2025-09-28 13:56:24,537 basehttp 19912 9596 "POST /kullanici/cikis/ HTTP/1.1" 302 0
+INFO 2025-09-28 13:56:24,542 basehttp 19912 9596 "GET / HTTP/1.1" 200 29923
+INFO 2025-09-28 13:56:26,489 basehttp 19912 9596 "GET /kullanici/kayit-ol/ HTTP/1.1" 200 40974
+INFO 2025-09-28 13:56:27,678 basehttp 19912 9596 "POST /kullanici/kayit-ol/ HTTP/1.1" 200 41700
+INFO 2025-09-28 13:56:30,201 basehttp 19912 9596 "GET /kullanici/giris/ HTTP/1.1" 200 37827
+INFO 2025-09-28 13:56:31,491 basehttp 19912 9596 "POST /kullanici/giris/ HTTP/1.1" 200 39376
+INFO 2025-09-28 13:57:37,397 autoreload 19912 8440 C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py changed, reloading.
+INFO 2025-09-28 13:57:37,912 autoreload 10688 9420 Watching for file changes with StatReloader
+INFO 2025-09-28 13:58:46,370 autoreload 10688 9420 C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py changed, reloading.
+INFO 2025-09-28 13:58:46,914 autoreload 21436 22744 Watching for file changes with StatReloader
+WARNING 2025-09-28 13:59:19,859 log 21436 19220 Forbidden (CSRF token from POST incorrect.): /kullanici/giris/
+WARNING 2025-09-28 13:59:19,859 basehttp 21436 19220 "POST /kullanici/giris/ HTTP/1.1" 403 2515
+WARNING 2025-09-28 13:59:19,903 log 21436 19220 Not Found: /favicon.ico
+WARNING 2025-09-28 13:59:19,904 basehttp 21436 19220 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 13:59:59,382 autoreload 21436 22744 C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py changed, reloading.
+INFO 2025-09-28 13:59:59,866 autoreload 22896 4060 Watching for file changes with StatReloader
+WARNING 2025-09-28 14:00:13,768 log 22896 3224 Forbidden (CSRF token from POST incorrect.): /kullanici/giris/
+WARNING 2025-09-28 14:00:13,768 basehttp 22896 3224 "POST /kullanici/giris/ HTTP/1.1" 403 2515
+WARNING 2025-09-28 14:00:13,807 log 22896 3224 Not Found: /favicon.ico
+WARNING 2025-09-28 14:00:13,807 basehttp 22896 3224 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 14:00:15,906 basehttp 22896 3224 "GET / HTTP/1.1" 200 29923
+INFO 2025-09-28 14:00:15,924 basehttp 22896 3224 "GET /static/js/style.js HTTP/1.1" 304 0
+WARNING 2025-09-28 14:00:15,986 basehttp 22896 3224 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:00:15,993 basehttp 22896 10536 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:00:17,376 basehttp 22896 2272 "GET /kullanici/giris/ HTTP/1.1" 200 39048
+INFO 2025-09-28 14:00:19,212 basehttp 22896 2272 "POST /kullanici/giris/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:00:19,217 basehttp 22896 2272 "GET /kullanici/giris/?error=1 HTTP/1.1" 200 39064
+INFO 2025-09-28 14:00:24,775 basehttp 22896 2272 "POST /kullanici/giris/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:00:24,781 basehttp 22896 2272 "GET /kullanici/giris/?error=1 HTTP/1.1" 200 39064
+INFO 2025-09-28 14:00:29,624 basehttp 22896 2272 "POST /kullanici/giris/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:00:29,636 basehttp 22896 2272 "GET / HTTP/1.1" 200 35406
+INFO 2025-09-28 14:00:33,352 basehttp 22896 2272 "GET /dashboard/ HTTP/1.1" 200 63012
+INFO 2025-09-28 14:01:57,092 basehttp 22896 2272 "GET /admin/ HTTP/1.1" 200 10885
+INFO 2025-09-28 14:01:57,145 basehttp 22896 2272 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-09-28 14:01:57,151 basehttp 22896 2272 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-09-28 14:01:57,151 basehttp 22896 22576 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-09-28 14:01:58,685 basehttp 22896 22576 "GET /admin/users/user/ HTTP/1.1" 200 24269
+INFO 2025-09-28 14:01:58,714 basehttp 22896 2272 "GET /static/admin/js/user_admin.js HTTP/1.1" 200 1582
+INFO 2025-09-28 14:01:58,718 basehttp 22896 22576 "GET /admin/jsi18n/ HTTP/1.1" 200 8200
+INFO 2025-09-28 14:02:04,976 basehttp 22896 22576 "GET /admin/users/user/2/change/ HTTP/1.1" 200 32653
+INFO 2025-09-28 14:02:04,997 basehttp 22896 22576 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2025-09-28 14:02:04,997 basehttp 22896 8516 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-09-28 14:02:05,000 basehttp 22896 2272 "GET /admin/jsi18n/ HTTP/1.1" 200 8200
+INFO 2025-09-28 14:02:05,025 basehttp 22896 8516 "GET /static/admin/img/icon-clock.svg HTTP/1.1" 200 677
+INFO 2025-09-28 14:02:05,025 basehttp 22896 2272 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-09-28 14:02:06,687 basehttp 22896 8516 "GET /admin/users/user/2/password/ HTTP/1.1" 200 12507
+INFO 2025-09-28 14:02:06,709 basehttp 22896 8516 "GET /static/admin/css/unusable_password_field.css HTTP/1.1" 200 663
+INFO 2025-09-28 14:02:06,709 basehttp 22896 2272 "GET /static/admin/js/unusable_password_field.js HTTP/1.1" 200 1480
+INFO 2025-09-28 14:02:15,423 basehttp 22896 2272 "POST /admin/users/user/2/password/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:02:15,449 basehttp 22896 2272 "GET /admin/users/user/2/change/ HTTP/1.1" 200 32800
+INFO 2025-09-28 14:02:15,478 basehttp 22896 2272 "GET /admin/jsi18n/ HTTP/1.1" 200 8200
+INFO 2025-09-28 14:02:15,489 basehttp 22896 2272 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-09-28 14:02:22,062 basehttp 22896 2272 "GET /monitoring/ HTTP/1.1" 200 40821
+ERROR 2025-09-28 14:02:24,243 log 22896 2272 Internal Server Error: /monitoring/api/
+ERROR 2025-09-28 14:02:24,243 basehttp 22896 2272 "GET /monitoring/api/ HTTP/1.1" 500 113
+INFO 2025-09-28 14:02:26,662 basehttp 22896 2272 "GET /makaleler/makale-ekle/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:02:26,675 basehttp 22896 2272 "GET /makaleler/yeni-ekle/ HTTP/1.1" 200 49728
+INFO 2025-09-28 14:02:27,523 basehttp 22896 2272 "GET /sayilar/ HTTP/1.1" 200 45749
+INFO 2025-09-28 14:02:27,550 basehttp 22896 2272 "GET /static/images/default-journal-cover.png HTTP/1.1" 304 0
+INFO 2025-09-28 14:06:47,759 autoreload 22896 4060 C:\Users\murat\OneDrive\Masaüstü\academic_journal\articles\views.py changed, reloading.
+INFO 2025-09-28 14:06:48,311 autoreload 14900 10252 Watching for file changes with StatReloader
+INFO 2025-09-28 14:06:52,583 autoreload 14900 10252 C:\Users\murat\OneDrive\Masaüstü\academic_journal\articles\views.py changed, reloading.
+INFO 2025-09-28 14:06:53,031 autoreload 19192 18728 Watching for file changes with StatReloader
+INFO 2025-09-28 14:06:58,307 autoreload 19192 18728 C:\Users\murat\OneDrive\Masaüstü\academic_journal\articles\views.py changed, reloading.
+INFO 2025-09-28 14:06:58,742 autoreload 18860 13504 Watching for file changes with StatReloader
+INFO 2025-09-28 14:07:07,054 autoreload 18860 13504 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 14:07:07,499 autoreload 18648 16224 Watching for file changes with StatReloader
+INFO 2025-09-28 14:07:50,510 autoreload 18648 16224 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 14:07:50,964 autoreload 9304 11776 Watching for file changes with StatReloader
+INFO 2025-09-28 14:08:39,090 autoreload 9304 11776 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\image_utils.py changed, reloading.
+INFO 2025-09-28 14:08:39,555 autoreload 9344 9356 Watching for file changes with StatReloader
+INFO 2025-09-28 14:09:00,152 autoreload 9344 9356 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\image_utils.py changed, reloading.
+INFO 2025-09-28 14:09:00,639 autoreload 480 23364 Watching for file changes with StatReloader
+INFO 2025-09-28 14:09:41,628 autoreload 480 23364 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 14:09:42,083 autoreload 22872 21904 Watching for file changes with StatReloader
+INFO 2025-09-28 14:09:53,459 autoreload 22872 21904 C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py changed, reloading.
+INFO 2025-09-28 14:09:53,918 autoreload 16088 5064 Watching for file changes with StatReloader
+INFO 2025-09-28 14:10:50,889 autoreload 16088 5064 C:\Users\murat\OneDrive\Masaüstü\academic_journal\articles\forms.py changed, reloading.
+INFO 2025-09-28 14:10:51,338 autoreload 924 21104 Watching for file changes with StatReloader
+INFO 2025-09-28 14:12:21,505 autoreload 924 21104 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:12:22,021 autoreload 3400 20452 Watching for file changes with StatReloader
+INFO 2025-09-28 14:12:35,762 autoreload 3468 14920 Watching for file changes with StatReloader
+INFO 2025-09-28 14:12:55,528 autoreload 3400 20452 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:12:55,960 autoreload 9772 12068 Watching for file changes with StatReloader
+INFO 2025-09-28 14:12:56,115 autoreload 3468 14920 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:12:56,546 autoreload 6572 22872 Watching for file changes with StatReloader
+INFO 2025-09-28 14:13:01,829 autoreload 6572 22872 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:13:02,259 autoreload 14452 21972 Watching for file changes with StatReloader
+INFO 2025-09-28 14:13:02,265 autoreload 9772 12068 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:13:02,701 autoreload 9916 17904 Watching for file changes with StatReloader
+INFO 2025-09-28 14:13:06,989 autoreload 9916 17904 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:13:07,439 autoreload 11128 23232 Watching for file changes with StatReloader
+INFO 2025-09-28 14:13:07,553 autoreload 14452 21972 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:13:07,979 autoreload 4348 13208 Watching for file changes with StatReloader
+INFO 2025-09-28 14:14:10,766 autoreload 11128 23232 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:14:11,126 autoreload 4348 13208 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\validators.py changed, reloading.
+INFO 2025-09-28 14:14:11,248 autoreload 11380 21684 Watching for file changes with StatReloader
+INFO 2025-09-28 14:14:11,606 autoreload 22184 7460 Watching for file changes with StatReloader
+INFO 2025-09-28 14:14:27,196 autoreload 15516 14820 Watching for file changes with StatReloader
+INFO 2025-09-28 14:14:43,026 autoreload 11380 21684 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\rate_limiting.py changed, reloading.
+INFO 2025-09-28 14:14:43,585 autoreload 23248 23228 Watching for file changes with StatReloader
+INFO 2025-09-28 14:14:43,719 autoreload 15516 14820 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\rate_limiting.py changed, reloading.
+INFO 2025-09-28 14:14:44,355 autoreload 10508 3000 Watching for file changes with StatReloader
+INFO 2025-09-28 14:14:46,690 autoreload 10508 3000 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\rate_limiting.py changed, reloading.
+INFO 2025-09-28 14:14:46,872 autoreload 23248 23228 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\rate_limiting.py changed, reloading.
+INFO 2025-09-28 14:14:47,322 autoreload 6444 13804 Watching for file changes with StatReloader
+INFO 2025-09-28 14:14:47,446 autoreload 4348 2892 Watching for file changes with StatReloader
+INFO 2025-09-28 14:14:47,644 basehttp 6444 8312 "GET /sayilar/ HTTP/1.1" 200 41058
+INFO 2025-09-28 14:14:47,752 basehttp 6444 8312 "GET /static/css/style.css HTTP/1.1" 200 38162
+INFO 2025-09-28 14:14:47,754 basehttp 6444 10572 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 14:14:47,755 basehttp 6444 22356 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+INFO 2025-09-28 14:14:47,982 basehttp 6444 8312 "GET /static/images/default-journal-cover.png HTTP/1.1" 200 1062922
+INFO 2025-09-28 14:14:47,983 basehttp 6444 22356 "GET /media/journal_covers/767b8bd9-2901-40ec-a538-8cc63f6924d8.jpg HTTP/1.1" 200 1296939
+INFO 2025-09-28 14:14:47,984 basehttp 6444 10572 "GET /media/journal_covers/ac7b146e-92af-4fe2-a9b7-5c05f43228f4.jpg HTTP/1.1" 200 1296939
+WARNING 2025-09-28 14:14:48,273 basehttp 6444 10572 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:14:48,297 basehttp 6444 22356 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:14:49,385 basehttp 6444 8312 "GET /kullanici/giris/ HTTP/1.1" 200 39048
+ERROR 2025-09-28 14:14:52,420 log 6444 8312 Internal Server Error: /kullanici/giris/
+Traceback (most recent call last):
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\views\decorators\debug.py", line 143, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\contrib\auth\views.py", line 89, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py", line 63, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\users\views.py", line 40, in form_valid
+    BruteForceProtection.record_successful_login(username, ip)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\rate_limiting.py", line 127, in record_successful_login
+    cache.delete(attempts_key)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\cache\backends\redis.py", line 200, in delete
+    return self._cache.delete(key)
+           ^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\cache\backends\redis.py", line 173, in _cache
+    return self._class(self._servers, **self._options)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\murat\OneDrive\Masaüstü\academic_journal\venv\Lib\site-packages\django\core\cache\backends\redis.py", line 40, in __init__
+    import redis
+ModuleNotFoundError: No module named 'redis'
+ERROR 2025-09-28 14:14:52,428 basehttp 6444 8312 "POST /kullanici/giris/ HTTP/1.1" 500 159164
+WARNING 2025-09-28 14:14:52,553 log 6444 8604 Not Found: /favicon.ico
+WARNING 2025-09-28 14:14:52,553 basehttp 6444 8604 "GET /favicon.ico HTTP/1.1" 404 4898
+INFO 2025-09-28 14:15:31,420 autoreload 6444 13804 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 14:15:31,437 autoreload 4348 2892 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 14:15:31,924 autoreload 14176 7468 Watching for file changes with StatReloader
+INFO 2025-09-28 14:15:31,925 autoreload 15608 16032 Watching for file changes with StatReloader
+INFO 2025-09-28 14:15:38,270 autoreload 14176 7468 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\rate_limiting.py changed, reloading.
+INFO 2025-09-28 14:15:38,277 autoreload 15608 16032 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\rate_limiting.py changed, reloading.
+INFO 2025-09-28 14:15:38,745 autoreload 8160 22048 Watching for file changes with StatReloader
+INFO 2025-09-28 14:15:38,745 autoreload 14388 1800 Watching for file changes with StatReloader
+INFO 2025-09-28 14:15:51,961 basehttp 8160 21904 "POST /kullanici/giris/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:15:51,992 basehttp 8160 21904 "GET / HTTP/1.1" 200 35405
+INFO 2025-09-28 14:15:52,086 basehttp 8160 21904 "GET /static/css/style.css HTTP/1.1" 200 38162
+INFO 2025-09-28 14:15:52,089 basehttp 8160 480 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 14:15:52,091 basehttp 8160 16316 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 14:15:52,710 basehttp 8160 16316 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:15:52,796 basehttp 8160 480 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:15:57,012 basehttp 8160 21904 "GET /makaleler/makale-ekle/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:15:57,033 basehttp 8160 21904 "GET /makaleler/yeni-ekle/ HTTP/1.1" 200 49726
+INFO 2025-09-28 14:15:58,342 basehttp 8160 21904 "POST /makaleler/yeni-ekle/ HTTP/1.1" 200 50846
+INFO 2025-09-28 14:16:04,466 autoreload 14388 1800 C:\Users\murat\OneDrive\Masaüstü\academic_journal\core\rate_limiting.py changed, reloading.
+INFO 2025-09-28 14:16:04,470 basehttp 8160 21904 "GET /kullanici/my-profil/ HTTP/1.1" 200 37025
+INFO 2025-09-28 14:16:04,551 autoreload 8160 22048 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 14:16:05,074 autoreload 23124 10224 Watching for file changes with StatReloader
+INFO 2025-09-28 14:16:05,146 autoreload 7456 5836 Watching for file changes with StatReloader
+INFO 2025-09-28 14:16:06,373 autoreload 23124 10224 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 14:16:06,442 autoreload 7456 5836 C:\Users\murat\OneDrive\Masaüstü\academic_journal\academic_journal\settings.py changed, reloading.
+INFO 2025-09-28 14:16:06,850 autoreload 11172 11144 Watching for file changes with StatReloader
+INFO 2025-09-28 14:16:06,947 autoreload 22532 22332 Watching for file changes with StatReloader
+INFO 2025-09-28 14:16:07,673 basehttp 11172 18872 "GET /dashboard/ HTTP/1.1" 200 63013
+INFO 2025-09-28 14:16:08,542 basehttp 11172 18872 "GET /editorler/ HTTP/1.1" 200 40771
+INFO 2025-09-28 14:16:09,701 basehttp 11172 18872 "GET /iletisim/ HTTP/1.1" 200 42125
+INFO 2025-09-28 14:16:11,416 basehttp 11172 18872 "POST /iletisim/ HTTP/1.1" 200 42598
+INFO 2025-09-28 14:17:28,155 basehttp 11172 18872 "GET /sayilar/ HTTP/1.1" 200 45749
+INFO 2025-09-28 14:17:28,238 basehttp 11172 3080 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 14:17:28,239 basehttp 11172 18872 "GET /static/css/style.css HTTP/1.1" 200 38162
+INFO 2025-09-28 14:17:28,241 basehttp 11172 5476 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+INFO 2025-09-28 14:17:28,455 basehttp 11172 3080 "GET /static/images/default-journal-cover.png HTTP/1.1" 200 1062922
+INFO 2025-09-28 14:17:28,457 basehttp 11172 5476 "GET /media/journal_covers/767b8bd9-2901-40ec-a538-8cc63f6924d8.jpg HTTP/1.1" 200 1296939
+INFO 2025-09-28 14:17:28,457 basehttp 11172 18872 "GET /media/journal_covers/ac7b146e-92af-4fe2-a9b7-5c05f43228f4.jpg HTTP/1.1" 200 1296939
+WARNING 2025-09-28 14:17:28,617 basehttp 11172 18872 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:17:28,624 basehttp 11172 5476 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:18:10,764 basehttp 11172 3080 "GET /sayilar/ HTTP/1.1" 200 45602
+INFO 2025-09-28 14:18:10,788 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 200 37791
+INFO 2025-09-28 14:18:10,789 basehttp 11172 20256 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 14:18:10,791 basehttp 11172 1632 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+INFO 2025-09-28 14:18:10,964 basehttp 11172 3080 "GET /static/images/default-journal-cover.png HTTP/1.1" 200 1062922
+INFO 2025-09-28 14:18:10,965 basehttp 11172 20256 "GET /media/journal_covers/ac7b146e-92af-4fe2-a9b7-5c05f43228f4.jpg HTTP/1.1" 200 1296939
+INFO 2025-09-28 14:18:10,966 basehttp 11172 1632 "GET /media/journal_covers/767b8bd9-2901-40ec-a538-8cc63f6924d8.jpg HTTP/1.1" 200 1296939
+WARNING 2025-09-28 14:18:11,125 basehttp 11172 1632 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:18:11,131 basehttp 11172 20256 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:18:19,752 basehttp 11172 3080 "GET /sayilar/ HTTP/1.1" 200 45602
+INFO 2025-09-28 14:18:19,766 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:21,497 basehttp 11172 3080 "GET /sayilar/2025-Eylul/ HTTP/1.1" 200 50838
+INFO 2025-09-28 14:18:21,518 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:23,744 basehttp 11172 3080 "GET /sayilar/2025-Ocak/ HTTP/1.1" 200 42038
+INFO 2025-09-28 14:18:23,767 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:26,688 basehttp 11172 3080 "GET /makaleler/makale-ekle/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:18:26,703 basehttp 11172 3080 "GET /makaleler/yeni-ekle/ HTTP/1.1" 200 49579
+INFO 2025-09-28 14:18:26,724 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:27,495 basehttp 11172 3080 "GET /editorler/ HTTP/1.1" 200 40624
+INFO 2025-09-28 14:18:28,850 basehttp 11172 3080 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 42245
+INFO 2025-09-28 14:18:28,871 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:35,568 basehttp 11172 3080 "GET /dashboard/dergi-icerik/yeni/ HTTP/1.1" 200 43758
+INFO 2025-09-28 14:18:35,591 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:40,518 basehttp 11172 3080 "POST /dashboard/dergi-icerik/yeni/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:18:40,531 basehttp 11172 3080 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 44592
+INFO 2025-09-28 14:18:40,555 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:43,258 basehttp 11172 3080 "GET /dashboard/dergi-icerik/duzenle/ddsa/ HTTP/1.1" 200 43797
+INFO 2025-09-28 14:18:43,282 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:51,638 basehttp 11172 3080 "GET /dashboard/dergi-icerik/siralama/1/ HTTP/1.1" 200 46275
+INFO 2025-09-28 14:18:51,659 basehttp 11172 3080 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:51,660 basehttp 11172 22408 "GET /static/css/ordering.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:18:55,438 basehttp 11172 22408 "GET /dashboard/dergi-icerik/siralama/1/ HTTP/1.1" 200 46275
+INFO 2025-09-28 14:18:55,465 basehttp 11172 22408 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:19:02,144 basehttp 11172 22408 "GET /dashboard/dergi-icerik/siralama/1/ HTTP/1.1" 200 46275
+INFO 2025-09-28 14:19:02,165 basehttp 11172 22408 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:19:11,574 basehttp 11172 22408 "GET /dashboard/dergi-icerik/yeni/ HTTP/1.1" 200 43758
+INFO 2025-09-28 14:19:11,597 basehttp 11172 22408 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:19:16,869 basehttp 11172 22408 "POST /dashboard/dergi-icerik/yeni/ HTTP/1.1" 302 0
+INFO 2025-09-28 14:19:16,883 basehttp 11172 22408 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 48812
+INFO 2025-09-28 14:20:34,092 autoreload 11172 11144 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:20:34,615 autoreload 22532 22332 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:20:34,707 autoreload 10212 11380 Watching for file changes with StatReloader
+INFO 2025-09-28 14:20:35,146 autoreload 21104 924 Watching for file changes with StatReloader
+INFO 2025-09-28 14:20:41,090 autoreload 10212 11380 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:20:41,573 autoreload 21104 924 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:20:41,701 autoreload 17952 2492 Watching for file changes with StatReloader
+INFO 2025-09-28 14:20:42,193 autoreload 13272 20880 Watching for file changes with StatReloader
+INFO 2025-09-28 14:22:12,723 basehttp 17952 20464 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 55041
+INFO 2025-09-28 14:22:12,810 basehttp 17952 7284 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 14:22:12,811 basehttp 17952 20464 "GET /static/css/style.css HTTP/1.1" 200 37791
+INFO 2025-09-28 14:22:12,812 basehttp 17952 14904 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 14:22:13,196 basehttp 17952 14904 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:22:13,211 basehttp 17952 20464 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:22:21,053 basehttp 17952 7284 "GET /dashboard/dergi-icerik/?q=&status=&yil=2025&ay= HTTP/1.1" 200 56009
+INFO 2025-09-28 14:22:25,578 autoreload 17952 2492 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:22:25,996 autoreload 13272 20880 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:22:26,059 autoreload 19820 7324 Watching for file changes with StatReloader
+INFO 2025-09-28 14:22:26,480 autoreload 4044 5732 Watching for file changes with StatReloader
+INFO 2025-09-28 14:22:31,460 basehttp 19820 16260 "GET /dashboard/dergi-icerik/?q=&status=&yil=2025&ay=2 HTTP/1.1" 200 44469
+INFO 2025-09-28 14:22:34,006 basehttp 19820 16260 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 55041
+INFO 2025-09-28 14:24:15,275 basehttp 19820 16260 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 51638
+INFO 2025-09-28 14:24:15,363 basehttp 19820 20956 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 14:24:15,364 basehttp 19820 16260 "GET /static/css/style.css HTTP/1.1" 200 37791
+INFO 2025-09-28 14:24:15,365 basehttp 19820 22124 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 14:24:15,769 basehttp 19820 22124 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:24:15,774 basehttp 19820 16260 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:24:16,152 autoreload 19820 7324 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:24:16,661 autoreload 11508 8784 Watching for file changes with StatReloader
+INFO 2025-09-28 14:24:16,878 autoreload 4044 5732 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:24:17,379 autoreload 6128 14304 Watching for file changes with StatReloader
+INFO 2025-09-28 14:24:30,780 basehttp 11508 10336 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 51638
+INFO 2025-09-28 14:24:32,068 basehttp 11508 10336 "GET /dashboard/dergi-sayilari/ HTTP/1.1" 200 38490
+INFO 2025-09-28 14:24:32,856 autoreload 6128 14304 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:24:33,264 autoreload 11508 8784 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:24:33,358 autoreload 22868 11772 Watching for file changes with StatReloader
+INFO 2025-09-28 14:24:33,820 autoreload 6708 3112 Watching for file changes with StatReloader
+INFO 2025-09-28 14:24:34,685 autoreload 22868 11772 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:24:35,090 autoreload 6708 3112 C:\Users\murat\OneDrive\Masaüstü\academic_journal\dashboard\views.py changed, reloading.
+INFO 2025-09-28 14:24:35,140 autoreload 10492 6088 Watching for file changes with StatReloader
+INFO 2025-09-28 14:24:35,541 autoreload 18876 5572 Watching for file changes with StatReloader
+INFO 2025-09-28 14:24:37,054 basehttp 10492 13388 "GET /dashboard/iletisim/ HTTP/1.1" 200 40707
+INFO 2025-09-28 14:24:43,173 basehttp 10492 13388 "GET /dashboard/users/ HTTP/1.1" 200 47317
+INFO 2025-09-28 14:24:52,502 basehttp 10492 13388 "GET /dashboard/ HTTP/1.1" 200 62866
+INFO 2025-09-28 14:24:52,524 basehttp 10492 13388 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:24:56,425 basehttp 10492 13388 "GET /dashboard/dergi-sayilari/ HTTP/1.1" 200 38490
+INFO 2025-09-28 14:24:59,316 basehttp 10492 13388 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 51638
+INFO 2025-09-28 14:25:28,998 basehttp 10492 13388 "GET /dashboard/dergi-icerik/?q=&status=published&yil=&ay= HTTP/1.1" 200 45887
+INFO 2025-09-28 14:25:33,905 basehttp 10492 13388 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 51638
+INFO 2025-09-28 14:25:33,935 basehttp 10492 13388 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-09-28 14:25:41,698 basehttp 10492 13388 "GET /dashboard/dergi-icerik/?q=&status=published&yil=2025&ay= HTTP/1.1" 200 45931
+INFO 2025-09-28 14:25:58,103 basehttp 10492 13388 "GET /dashboard/dergi-icerik/?q=&status=published&yil=2025&ay= HTTP/1.1" 200 45931
+INFO 2025-09-28 14:25:58,193 basehttp 10492 13388 "GET /static/css/style.css HTTP/1.1" 200 37791
+INFO 2025-09-28 14:25:58,199 basehttp 10492 14540 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 14:25:58,201 basehttp 10492 12816 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 14:25:58,482 basehttp 10492 12816 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:25:58,488 basehttp 10492 14540 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:26:51,745 basehttp 10492 13388 "GET /dashboard/dergi-icerik/?q=&status=published&yil=2025&ay= HTTP/1.1" 200 46008
+INFO 2025-09-28 14:26:51,766 basehttp 10492 13388 "GET /static/css/style.css HTTP/1.1" 200 37791
+INFO 2025-09-28 14:26:51,766 basehttp 10492 20952 "GET /static/js/style.js HTTP/1.1" 200 11020
+INFO 2025-09-28 14:26:51,768 basehttp 10492 5748 "GET /static/images/logos/logo.png HTTP/1.1" 200 365313
+WARNING 2025-09-28 14:26:52,072 basehttp 10492 5748 "GET /static/images/logos/favicon.png HTTP/1.1" 404 1886
+WARNING 2025-09-28 14:26:52,085 basehttp 10492 20952 "GET /static/images/logos/favicon.ico HTTP/1.1" 404 1886
+INFO 2025-09-28 14:26:54,715 basehttp 10492 13388 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 51560
+INFO 2025-09-28 14:26:56,782 basehttp 10492 13388 "GET /dashboard/dergi-icerik/?q=&status=draft&yil=&ay= HTTP/1.1" 200 47672
+INFO 2025-09-28 14:26:59,018 basehttp 10492 13388 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 51560
+INFO 2025-09-28 14:27:02,998 basehttp 10492 13388 "GET /dashboard/dergi-icerik/?q=&status=draft&yil=&ay= HTTP/1.1" 200 47672
+INFO 2025-09-28 14:27:07,336 basehttp 10492 13388 "GET /dashboard/dergi-icerik/?q=&status=draft&yil=&ay=2 HTTP/1.1" 200 40792
+INFO 2025-09-28 14:27:12,216 basehttp 10492 13388 "GET /dashboard/dergi-icerik/ HTTP/1.1" 200 51560

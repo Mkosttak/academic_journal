@@ -136,6 +136,19 @@
 <div class="dashboard-container">
     <h1>📊 Admin Dashboard</h1>
     
+    <!-- Hızlı Erişim -->
+    <div class="quick-actions" style="margin-bottom: 30px;">
+        <a href="{% url 'admin:monitoring_dashboard' %}" class="button" style="background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
+            📊 Monitoring Dashboard
+        </a>
+        <a href="{% url 'admin:admin_dashboard' %}" class="button" style="background: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
+            📈 İstatistikler
+        </a>
+        <a href="/monitoring/" target="_blank" class="button" style="background: #6f42c1; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+            🔗 Tam Monitoring (Yeni Sekme)
+        </a>
+    </div>
+    
     <!-- İstatistikler -->
     <div class="stats-grid">
         <div class="stat-card">

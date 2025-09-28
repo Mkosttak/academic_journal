@@ -1,0 +1,257 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Monitoring Dashboard - {{ site_title|default:"Admin" }}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<meta name="csrf-token" content="{% csrf_token %}">
+<style>
+    .metric-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .metric-value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .metric-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    .health-status {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 0.8rem;
+    }
+    .health-ok {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .health-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    .health-error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .backup-list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    .refresh-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="module">
+    <h1>📊 Monitoring Dashboard</h1>
+    
+    <!-- Sistem Metrikleri -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value" id="cpu-usage">{{ system_metrics.cpu_percent|floatformat:1 }}%</div>
+                <div class="metric-label">CPU Kullanımı</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value" id="memory-usage">{{ system_metrics.memory_percent|floatformat:1 }}%</div>
+                <div class="metric-label">Bellek Kullanımı</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value" id="disk-usage">{{ system_metrics.disk_percent|floatformat:1 }}%</div>
+                <div class="metric-label">Disk Kullanımı</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value" id="status">
+                    {% if system_metrics.cpu_percent < 80 and db_health and cache_health %}
+                        <span class="health-status health-ok">Sağlıklı</span>
+                    {% elif system_metrics.cpu_percent < 90 %}
+                        <span class="health-status health-warning">Uyarı</span>
+                    {% else %}
+                        <span class="health-status health-error">Kritik</span>
+                    {% endif %}
+                </div>
+                <div class="metric-label">Genel Durum</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sağlık Kontrolleri -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="module">
+                <h2>🗄️ Veritabanı Sağlığı</h2>
+                {% if db_health %}
+                    <p class="success">✅ Veritabanı bağlantısı sağlıklı</p>
+                {% else %}
+                    <p class="error">❌ Veritabanı bağlantısında sorun</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="module">
+                <h2>💾 Cache Sağlığı</h2>
+                {% if cache_health %}
+                    <p class="success">✅ Cache sistemi sağlıklı</p>
+                {% else %}
+                    <p class="error">❌ Cache sisteminde sorun</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup Bilgileri -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="module">
+                <h2>💾 Son Yedekler</h2>
+                {% if recent_backups %}
+                    <div class="backup-list">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Dosya Adı</th>
+                                    <th>Boyut</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for backup in recent_backups %}
+                                <tr>
+                                    <td>{{ backup }}</td>
+                                    <td>
+                                        {{ backup|filesizeformat }}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin:monitoring_dashboard' %}?action=download&file={{ backup }}" class="button">İndir</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p>Henüz yedek bulunmuyor.</p>
+                {% endif %}
+                
+                <div class="submit-row">
+                    <a href="{% url 'admin:monitoring_dashboard' %}?action=backup" class="default">Yeni Yedek Oluştur</a>
+                    <a href="{% url 'admin:monitoring_dashboard' %}?action=cleanup" class="default">Eski Yedekleri Temizle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hızlı İşlemler -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="module">
+                <h2>⚡ Hızlı İşlemler</h2>
+                <div class="submit-row">
+                    <a href="{% url 'admin:monitoring_dashboard' %}?action=refresh" class="default">Verileri Yenile</a>
+                    <a href="{% url 'admin:monitoring_dashboard' %}?action=report" class="default">Detaylı Rapor</a>
+                    <a href="/monitoring/" target="_blank" class="default">Tam Monitoring Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Son Güncelleme -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="module">
+                <p class="help">
+                    <i class="icon-time"></i>
+                    Son güncelleme: <span id="last-update">{{ system_metrics.timestamp }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Yenile Butonu -->
+<button id="refresh-btn" class="btn btn-primary refresh-btn" title="Verileri Yenile">
+    🔄
+</button>
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const refreshBtn = document.getElementById('refresh-btn');
+    
+    function refreshData() {
+        // CSRF token'ını al
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                         document.querySelector('meta[name=csrf-token]')?.getAttribute('content');
+        
+        fetch('/monitoring/api/', {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                updateMetrics(data.data);
+            } else {
+                console.error('API Error:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+        });
+    }
+    
+    function updateMetrics(data) {
+        // Sistem metriklerini güncelle
+        document.getElementById('cpu-usage').textContent = data.system_metrics.cpu_percent.toFixed(1) + '%';
+        document.getElementById('memory-usage').textContent = data.system_metrics.memory_percent.toFixed(1) + '%';
+        document.getElementById('disk-usage').textContent = data.system_metrics.disk_percent.toFixed(1) + '%';
+        
+        // Durum güncelle
+        const statusElement = document.querySelector('#status .health-status');
+        if (data.status === 'healthy') {
+            statusElement.className = 'health-status health-ok';
+            statusElement.textContent = 'Sağlıklı';
+        } else {
+            statusElement.className = 'health-status health-warning';
+            statusElement.textContent = 'Uyarı';
+        }
+        
+        // Son güncelleme zamanını güncelle
+        document.getElementById('last-update').textContent = new Date().toLocaleString('tr-TR');
+    }
+    
+    // Event listener
+    refreshBtn.addEventListener('click', refreshData);
+    
+    // Otomatik yenileme (60 saniyede bir)
+    setInterval(refreshData, 60000);
+});
+</script>
+{% endblock %}

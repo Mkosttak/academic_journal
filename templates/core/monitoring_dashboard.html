@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Monitoring Dashboard - Akademik Dergi{% endblock %}
+{% block description %}Sistem performansı ve sağlık durumu izleme paneli{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<meta name="csrf-token" content="{% csrf_token %}">
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .metric-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .metric-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    .health-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    .health-ok {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .health-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    .health-error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .refresh-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-5 fw-bold text-primary">
+                    <i class="bi bi-graph-up me-3"></i>Monitoring Dashboard
+                </h1>
+                <button id="refresh-data" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Yenile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistem Metrikleri -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value" id="cpu-usage">{{ system_metrics.cpu_percent|floatformat:1 }}%</div>
+                <div class="metric-label">CPU Kullanımı</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value" id="memory-usage">{{ system_metrics.memory_percent|floatformat:1 }}%</div>
+                <div class="metric-label">Bellek Kullanımı</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value" id="disk-usage">{{ system_metrics.disk_percent|floatformat:1 }}%</div>
+                <div class="metric-label">Disk Kullanımı</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value" id="status">
+                    {% if system_metrics.cpu_percent < 80 and db_health and cache_health %}
+                        <span class="health-status health-ok">Sağlıklı</span>
+                    {% elif system_metrics.cpu_percent < 90 %}
+                        <span class="health-status health-warning">Uyarı</span>
+                    {% else %}
+                        <span class="health-status health-error">Kritik</span>
+                    {% endif %}
+                </div>
+                <div class="metric-label">Genel Durum</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sağlık Kontrolleri -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-database me-2"></i>Veritabanı Sağlığı</h5>
+                </div>
+                <div class="card-body">
+                    {% if db_health %}
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                            <span class="fs-5">Veritabanı bağlantısı sağlıklı</span>
+                        </div>
+                    {% else %}
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-x-circle-fill text-danger me-2" style="font-size: 1.5rem;"></i>
+                            <span class="fs-5">Veritabanı bağlantısında sorun</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-hdd me-2"></i>Cache Sağlığı</h5>
+                </div>
+                <div class="card-body">
+                    {% if cache_health %}
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                            <span class="fs-5">Cache sistemi sağlıklı</span>
+                        </div>
+                    {% else %}
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-x-circle-fill text-danger me-2" style="font-size: 1.5rem;"></i>
+                            <span class="fs-5">Cache sisteminde sorun</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Son Güncelleme -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <small class="text-muted">
+                        <i class="bi bi-clock me-1"></i>
+                        Son güncelleme: <span id="last-update">{{ system_metrics.timestamp }}</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Yenile Butonu -->
+<button id="refresh-btn" class="btn btn-primary refresh-btn" title="Verileri Yenile">
+    <i class="bi bi-arrow-clockwise"></i>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const refreshBtn = document.getElementById('refresh-btn');
+    const refreshDataBtn = document.getElementById('refresh-data');
+    
+    function refreshData() {
+        // CSRF token'ını al
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                         document.querySelector('meta[name=csrf-token]')?.getAttribute('content');
+        
+        fetch('/monitoring/api/', {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                updateMetrics(data.data);
+            } else {
+                console.error('API Error:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+        });
+    }
+    
+    function updateMetrics(data) {
+        // Sistem metriklerini güncelle
+        document.getElementById('cpu-usage').textContent = data.system_metrics.cpu_percent.toFixed(1) + '%';
+        document.getElementById('memory-usage').textContent = data.system_metrics.memory_percent.toFixed(1) + '%';
+        document.getElementById('disk-usage').textContent = data.system_metrics.disk_percent.toFixed(1) + '%';
+        
+        // Durum güncelle
+        const statusElement = document.querySelector('#status .health-status');
+        if (data.status === 'healthy') {
+            statusElement.className = 'health-status health-ok';
+            statusElement.textContent = 'Sağlıklı';
+        } else {
+            statusElement.className = 'health-status health-warning';
+            statusElement.textContent = 'Uyarı';
+        }
+        
+        // Son güncelleme zamanını güncelle
+        document.getElementById('last-update').textContent = new Date().toLocaleString('tr-TR');
+    }
+    
+    // Event listener'lar
+    refreshBtn.addEventListener('click', refreshData);
+    refreshDataBtn.addEventListener('click', refreshData);
+    
+    // Otomatik yenileme (30 saniyede bir)
+    setInterval(refreshData, 30000);
+});
+</script>
+{% endblock %}

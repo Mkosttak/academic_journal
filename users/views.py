@@ -33,11 +33,34 @@ class GirisYapView(LoginView):
 
     def form_valid(self, form):
         """Kullanıcı giriş yaptığında mesaj gösterir."""
+        from core.rate_limiting import BruteForceProtection, RateLimiter
+        # Başarılı login kaydet
+        username = form.cleaned_data.get('username')
+        ip = RateLimiter.get_client_ip(self.request)
+        BruteForceProtection.record_successful_login(username, ip)
+        
         messages.success(self.request, f"Hoş geldiniz, {form.get_user().get_full_name() or form.get_user().username}!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
+        """Form geçersiz olduğunda hata mesajları gösterir."""
+        from django.shortcuts import redirect
+        from django.urls import reverse
+        from core.rate_limiting import BruteForceProtection, RateLimiter
+        
+        # Başarısız login kaydet
+        username = form.cleaned_data.get('username', '')
+        ip = RateLimiter.get_client_ip(self.request)
+        BruteForceProtection.record_failed_login(username, ip)
+        
+        # Hata durumunda aynı sayfaya error parametresi ile redirect yap
+        return redirect(f"{reverse('login')}?error=1")
+    
+    def post(self, request, *args, **kwargs):
+        """POST isteğini işler ve debug bilgisi ekler."""
+        print(f"POST isteği alındı: {request.method}")
+        print(f"Form data: {request.POST}")
+        return super().post(request, *args, **kwargs)
 
 class CikisYapView(LogoutView):
     next_page = reverse_lazy('anasayfa')
